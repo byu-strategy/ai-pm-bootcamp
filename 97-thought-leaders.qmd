@@ -1,0 +1,28 @@
+---
+title: "Thought Leaders"
+editor: visual
+---
+
+## Thought Leaders
+
+| Category | Name | Description | Links |
+|----------|------|-------------|-------|
+| **Foundations & Methodology** | **Marty Cagan** | Founder of SVPG, author of *INSPIRED*, *EMPOWERED*, and *TRANSFORMED* | [Website](https://www.svpg.com/) • [LinkedIn](https://www.linkedin.com/in/cagan/) |
+| | **Dan Olsen** | Author of *The Lean Product Playbook*, consultant helping companies build products customers love | [Website](https://dan-olsen.com/) • [LinkedIn](https://www.linkedin.com/in/danolsen98/) • [X](https://x.com/danolsen) |
+| | **Teresa Torres** | Product discovery coach, author of *Continuous Discovery Habits*, creator of the Opportunity Solution Tree framework | [Website](https://www.producttalk.org/) • [LinkedIn](https://www.linkedin.com/in/teresatorres/) • [X](https://twitter.com/ttorres) • [Substack](https://producttalkdaily.substack.com/) |
+| | **Melissa Perri** | CEO of Produx Labs, author of *Escaping the Build Trap*, product strategy expert | [X](https://x.com/lissijean) |
+| **Strategy** | **Gibson Biddle** | Former VP Product at Netflix, creator of the DHM model (Delight customers in Hard-to-copy, Margin-enhancing ways) | [Website](https://www.gibsonbiddle.com) • [LinkedIn](https://www.linkedin.com/in/gibsonbiddle/) • [X](https://x.com/gibsonbiddle) • [Medium](https://gibsonbiddle.medium.com/) |
+| | **Shreyas Doshi** | Former product leader at Stripe, Twitter, Google, and Yahoo. Known for frameworks like the LNO System | [Website](https://shreyasdoshi.com/) • [LinkedIn](https://www.linkedin.com/in/shreyasdoshi/) |
+| **Growth & Scaling** | **Brian Balfour** | Founder/CEO of Reforge, former VP Growth at HubSpot, venture partner at Long Journey Ventures | [Website](https://brianbalfour.com/) • [LinkedIn](https://www.linkedin.com/in/bbalfour/) • [X](https://x.com/bbalfour) • [Reforge](https://www.reforge.com/) |
+| | **Casey Winters** | Growth advisor, former CPO at Eventbrite, led growth at Pinterest and Grubhub, partner at Reforge | [Blog](https://caseyaccidental.com/) • [LinkedIn](https://www.linkedin.com/in/caseywinters/) • [X](https://x.com/onecaseman) |
+| **Design & Leadership** | **Julie Zhuo** | Former VP Product Design at Facebook, author of *The Making of a Manager*, co-founder of Sundial | [Website](https://www.juliezhuo.com/) • [LinkedIn](https://www.linkedin.com/in/julie-zhuo/) • [X](https://x.com/joulee) • [Substack](https://lg.substack.com/) • [Medium](https://joulee.medium.com/) |
+| **Education & Community** | **Lenny Rachitsky** | Former Airbnb PM, author of Lenny's Newsletter, one of the most popular product management publications | [Substack](https://www.lennysnewsletter.com/) |
+| | **Aakash Gupta** | Product leader and educator sharing frameworks for product growth and strategy | [LinkedIn](https://www.linkedin.com/in/aagupta/) • [X](https://x.com/aakashg0) • [YouTube](https://www.youtube.com/@growproduct/videos) |
+| | **Paweł Huryn** | Product leader behind The Product Compass, sharing practical PM frameworks and insights | [LinkedIn](https://www.linkedin.com/in/pawel-huryn) |
+| | **Colin Matthews** | Product leader focused on AI product management and modern PM practices | [LinkedIn](https://www.linkedin.com/in/colinmatthews-pm/) |
+| **Tech & AI Visionaries** | **Marc Andreessen** | Co-founder of Andreessen Horowitz (a16z), creator of Netscape, influential voice on technology and startups | [X](https://x.com/pmarca) • [a16z Blog](https://a16z.com/author/marc-andreessen/) |
+| | **Aaron Levie** | Co-founder and CEO of Box, known for his insights on enterprise cloud and AI | [X](https://x.com/levie) • [LinkedIn](https://www.linkedin.com/in/boxaaron/) |
+
+
+
+

@@ -3,6 +3,364 @@ title: "Prompt Library"
 editor: visual
 ---
 
+## Spec-Driven Development Workflow
+
+::: {.callout-tip}
+## Quick Copy Prompts
+All prompts below are in copyable code blocks. Just click to select and copy the entire prompt, then fill in the bracketed placeholders with your specific details.
+:::
+
+### Meta Prompt: Generate Custom Prompts
+
+Use this to create tailored prompts for your specific project context:
+
+```
+I need you to create a detailed prompt that will help me [specific task].
+
+Context about my project:
+- Product: [description]
+- Tech stack: [technologies]
+- Current phase: [discovery/design/implementation]
+- Key constraints: [list any constraints]
+
+The prompt should:
+1. Guide me to think through all critical aspects
+2. Help me avoid common pitfalls
+3. Produce output in [desired format]
+4. Be reusable for similar tasks
+
+Generate a comprehensive prompt I can use with an LLM to accomplish this task.
+```
+
+### Product Requirements Document (PRD)
+
+```
+Create a comprehensive Product Requirements Document for [product/feature name].
+
+Product Context:
+- Problem we're solving: [problem description]
+- Target users: [user personas]
+- Business goals: [key metrics/objectives]
+- Technical constraints: [technologies, dependencies, integrations]
+
+Generate a PRD that includes:
+
+1. **Executive Summary**
+   - Product vision in 2-3 sentences
+   - Key success metrics
+
+2. **Problem Statement**
+   - User pain points with evidence/data
+   - Current solutions and their limitations
+   - Opportunity size
+
+3. **Goals and Non-Goals**
+   - What this WILL accomplish
+   - What this explicitly WON'T do (scope boundaries)
+
+4. **User Stories and Use Cases**
+   - Primary user flows
+   - Edge cases to consider
+
+5. **Requirements**
+   - Functional requirements (must-haves)
+   - Non-functional requirements (performance, security, scalability)
+   - Dependencies on other systems
+
+6. **Success Metrics**
+   - How we'll measure if this is working
+   - Target values for each metric
+
+7. **Technical Considerations**
+   - Architecture implications
+   - Data models required
+   - API requirements
+   - Security and compliance needs
+
+8. **Open Questions**
+   - Unresolved decisions
+   - Areas needing research
+
+Format the entire document in clean markdown with clear headers and bullet points.
+```
+
+### User Stories
+
+```
+Generate comprehensive user stories for [feature name].
+
+Context:
+- User personas: [describe your users]
+- Feature purpose: [what problem does this solve]
+- Technical platform: [web/mobile/API/etc]
+
+For each user story, use this format:
+
+**As a** [specific user role/persona]
+**I want to** [specific action/capability]
+**So that** [clear benefit/value]
+
+**Acceptance Criteria:**
+- Given [precondition]
+- When [action/trigger]
+- Then [expected outcome]
+
+Generate 5-10 user stories covering:
+1. Happy path scenarios
+2. Edge cases
+3. Error conditions
+4. Different user permissions/roles
+
+Make each story atomic, testable, and independent.
+```
+
+### EARS Format Requirements
+
+```
+Convert the following feature requirements into EARS (Easy Approach to Requirements Syntax) format:
+
+[Paste your rough requirements here]
+
+For each requirement, use the appropriate EARS template:
+
+**Ubiquitous Requirements** (always active):
+"The [system] SHALL [requirement]"
+
+**Event-driven Requirements:**
+"WHEN [trigger/event] THEN the [system] SHALL [requirement]"
+
+**State-driven Requirements:**
+"WHILE [in a specific state] the [system] SHALL [requirement]"
+
+**Unwanted Behaviors:**
+"IF [unwanted condition occurs] THEN the [system] SHALL [requirement]"
+
+**Optional Features:**
+"WHERE [feature is included] the [system] SHALL [requirement]"
+
+Make each requirement:
+- Specific and measurable
+- Testable with clear pass/fail criteria
+- Independent of implementation details
+- Traceable to user stories
+```
+
+### Technical Architecture
+
+```
+Design a technical architecture for [product/feature].
+
+Current Stack:
+- Frontend: [framework]
+- Backend: [framework]
+- Database: [type]
+- Infrastructure: [cloud/hosting]
+
+Feature Requirements:
+[List key functional requirements]
+
+Provide a comprehensive architecture document including:
+
+1. **System Overview**
+   - High-level architecture diagram (use Mermaid or text description)
+   - Key components and their responsibilities
+   - Data flow between components
+
+2. **Component Design**
+   - Frontend components and state management
+   - Backend services and API structure
+   - Database schema and relationships
+   - External integrations
+
+3. **API Specification**
+   - Endpoint definitions (REST/GraphQL)
+   - Request/response formats
+   - Authentication/authorization approach
+
+4. **Data Models**
+   - Entity definitions
+   - Relationships and constraints
+   - Validation rules
+
+5. **Error Handling Strategy**
+   - How errors are caught and reported
+   - User-facing error messages
+   - Logging and monitoring approach
+
+6. **Security Considerations**
+   - Authentication method
+   - Authorization rules
+   - Data encryption
+   - Input validation
+
+7. **Testing Strategy**
+   - Unit test approach
+   - Integration test scenarios
+   - E2E test coverage
+
+Format in clean markdown with Mermaid diagrams where helpful.
+```
+
+### Implementation Task List
+
+```
+Break down this feature into granular, test-driven implementation tasks:
+
+Feature: [name]
+Requirements: [reference requirements doc or list key requirements]
+Architecture: [reference design doc or summarize approach]
+
+Create a numbered task list where each task:
+
+1. **Is small and focused** - Can be completed in 30-60 minutes
+2. **Follows TDD** - Write test first, then implementation
+3. **Is independently testable** - Has clear pass/fail criteria
+4. **References requirements** - Traces to specific requirement IDs
+5. **Builds incrementally** - Each task adds working functionality
+
+Format as:
+- [ ] 1. Task description
+  - Subtask or implementation note
+  - _Requirements: [requirement IDs]_
+
+- [ ] 2. Next task
+  - [ ] 2.1 Subtask if needed
+    - Implementation details
+    - _Requirements: [requirement IDs]_
+
+Focus ONLY on coding tasks (writing/modifying/testing code). Exclude:
+- Documentation writing
+- User testing
+- Deployment configuration
+- Performance monitoring setup
+
+Start with foundational tasks (interfaces, data models) and build up to features.
+```
+
+### Data Model Design
+
+```
+Design a comprehensive data model for [feature/system].
+
+Entities needed:
+[List main entities: User, Post, Comment, etc.]
+
+For each entity, provide:
+
+1. **Entity Name** and description
+2. **Attributes:**
+   - Field name
+   - Data type
+   - Constraints (required, unique, min/max, etc.)
+   - Default values
+   - Validation rules
+
+3. **Relationships:**
+   - Related entities
+   - Relationship type (one-to-one, one-to-many, many-to-many)
+   - Foreign keys
+   - Cascade behavior
+
+4. **Indexes:**
+   - Fields that should be indexed
+   - Composite indexes if needed
+
+5. **Sample Data:**
+   - 2-3 example records showing realistic data
+
+Use this format:
+```typescript
+interface EntityName {
+  id: string;              // UUID, primary key
+  fieldName: string;       // description, constraints
+  // ... more fields
+}
+```
+
+Include Mermaid ER diagram showing relationships.
+```
+
+### API Design
+
+```
+Design a RESTful API for [feature/system].
+
+Resources:
+[List main resources: users, posts, comments, etc.]
+
+For each endpoint, provide:
+
+**Endpoint:** `[METHOD] /api/resource`
+**Description:** What this endpoint does
+**Authentication:** Required? Type?
+**Request:**
+```json
+{
+  "field": "type and description"
+}
+```
+**Response:** `200 OK`
+```json
+{
+  "field": "type and description"
+}
+```
+**Error Responses:**
+- `400 Bad Request` - Invalid input
+- `401 Unauthorized` - Missing/invalid auth
+- `404 Not Found` - Resource doesn't exist
+
+**Validation Rules:**
+- Field requirements
+- Format constraints
+
+Include:
+1. All CRUD operations for main resources
+2. Authentication endpoints
+3. Any special operations (search, bulk actions, etc.)
+4. Rate limiting approach
+5. Pagination strategy for list endpoints
+```
+
+### Test Cases
+
+```
+Generate comprehensive test cases for [feature/component].
+
+Context:
+- Requirements: [key requirements]
+- Component type: [UI component/API/service/etc.]
+
+Provide test cases in three categories:
+
+**Unit Tests:**
+- [ ] Test 1: [description]
+  - Setup: [preconditions]
+  - Action: [what to do]
+  - Expected: [what should happen]
+  - Requirements: [IDs]
+
+**Integration Tests:**
+- [ ] Test 1: [description of component interaction]
+  - Setup: [system state]
+  - Action: [sequence of operations]
+  - Expected: [end result]
+  - Requirements: [IDs]
+
+**Edge Cases:**
+- [ ] Empty inputs
+- [ ] Maximum values
+- [ ] Invalid data
+- [ ] Concurrent operations
+- [ ] Network failures
+
+Make each test:
+- Independent (can run in any order)
+- Repeatable (same result every time)
+- Fast (no unnecessary delays)
+- Clear (obvious what's being tested)
+```
+
 ## Architecture
 
 Open ChatGPT (4o, not o1/o3/o4) and say:
@@ -154,3 +512,82 @@ And just like that, high-end, Airbnb-style icons are ready in seconds.
 This might be the easiest design cheat code of 2025.
 
 :::
+
+
+## AI Workflows
+
+::: {.callout-note collapse=true}
+
+## Cursor Workflow
+
+[Stanislav Beliaev CTO of GetFluently.App](https://www.linkedin.com/posts/stasbel_how-to-make-cursor-10x-more-useful-with-this-activity-7331676675308511232-ym7p/)
+
+How to make Cursor 10x more useful with this one system 👇
+
+At Fluently (AI English Coach → https://getfluently.app) we use Cursor to streamline our development process.
+
+By following these proven practices, you can ship features in hours, not days.
+
+→ Before using Cursor:
+
+• Ask Claude (or ChatGPT) to create a clear, detailed plan in markdown
+• Have the AI ask clarifying questions, critique its own plan, and regenerate if needed
+• Save this plan as "instructions. md" for easy reference during development.
+• Use ChatGPT to add an extra planning layer before coding by another AI, reducing errors and complexity.
+
+→ Workflow and incremental development:
+
+Break work into small, manageable tasks or feature increments.
+
+Use an Edit-Test loop:
+1. Write a failing test case first (TDD approach).
+2. Instruct AI to write code to pass the test.
+3. Run the test.
+4. If it fails, AI analyzes failure and fixes code.
+5. Repeat until tests pass.
+
+Review AI-generated changes after tests pass.
+Encourage AI to explain its chain of thought in prompts.
+
+→ Debugging
+
+• If stuck, ask Cursor to generate a detailed report of all files and their roles, including errors.
+• Use ChatGPT or Claude to analyze the report and suggest fixes.
+• Use tools like gitingest.com to collect all scripts, configs, and relevant files in a single page for easier AI ingestion.
+• Refer to the latest documentation via context7.com for up-to-date info.
+
+→ Cursor-specific tips
+
+• Use CursorRules to set broad project rules (always in AI context). Search Cursor Directory for examples.
+• Typical rule: Write tests → write code → run tests → update code until tests pass.
+• Use /Reference open editors to quickly add files to AI context.
+• Use cursorignore to exclude irrelevant files.
+• Keep context short by explicitly adding files via @. Longer context can confuse AI.
+• Start new chats when the context becomes too long.
+• Resync or reindex code frequently to keep AI up to date.
+• Notepads are useful for frequently used prompts.
+
+→ Version control and file management
+
+• Use Git often to commit changes regularly.
+• Avoid large sets of uncommitted changes.
+• Creating files and folders (e.g., touch, mkdir) is always acceptable.
+• Running tests (Vitest, PM test, NR test, build, tsc) is always allowed.
+
+→ Optional settings and modes
+
+Enable YOLO mode to have AI write tests automatically.
+
+Use a system prompt in "Rules for AI" in Cursor settings:
+• Keep answers concise and direct.
+• Suggest alternative solutions.
+• Avoid unnecessary explanations.
+• Prioritize technical details over generic advice.
+
+:::
+
+## References
+
+[How To Get The Most Out Of Vibe Coding](https://www.ycombinator.com/library/MN-how-to-get-the-most-out-of-vibe-coding), Y Combinator Startup School 
+
+

@@ -1,0 +1,773 @@
+---
+title: "Going Farther with AI"
+format: html
+---
+
+## Introduction
+
+Once you've mastered the basics of AI-assisted development, there's a whole world of advanced capabilities that can 10x your productivity. This chapter covers power-user techniques that transform Claude Code from a helpful assistant into a sophisticated development platform.
+
+You'll learn how to:
+
+- Manage context effectively for long-running projects
+- Create and use specialized skills for repetitive tasks
+- Run multiple Claude instances in parallel
+- Integrate external tools through MCP servers
+
+These techniques are what separate occasional Claude users from power users who ship production applications daily.
+
+## Context Management
+
+### The Context Window Challenge
+
+Every conversation with Claude has a context window—a limit on how much information can be active at once. For simple tasks, this isn't an issue. But when you're building complex features across multiple sessions, context management becomes critical.
+
+The problem: as agents accumulate tool results, conversation history, and file reads, they eventually exhaust their effective context. You're forced to either truncate important information or accept degraded performance.
+
+### Two Complementary Solutions
+
+**Context Editing (Automatic)**
+
+Claude Code automatically removes stale tool calls and results as you approach token limits. Instead of losing information chaotically, it intelligently prunes outdated content while preserving conversation flow.
+
+In Anthropic's testing, context editing alone delivered:
+- 29% performance improvement
+- 84% reduction in token consumption
+- Maintained conversation coherence across 100+ turns
+
+**The Memory Tool (Manual)**
+
+For information that needs to persist across sessions, use the memory tool. Claude can store and retrieve knowledge outside the context window through a file-based system.
+
+```bash
+# Claude automatically manages memory, but you can review it
+cat ~/.claude/memory/project-name.json
+```
+
+Memory is perfect for:
+- Architectural decisions that inform future work
+- Research findings from previous sessions
+- Code patterns and conventions you've established
+- Bug fixes and their root causes
+
+### Best Practices
+
+**Be Explicit About What Matters**
+
+When starting a complex task, tell Claude what to remember:
+
+> "We're building a payment processing system. Remember that we're using Stripe for card payments, and all transactions must be logged to our audit table."
+
+**Use CLAUDE.md for Persistent Context**
+
+Instead of re-explaining project conventions every session, document them in `CLAUDE.md`:
+
+```markdown
+# Payment System Conventions
+
+## Testing
+- All payment handlers must have integration tests
+- Use Stripe test mode keys from .env.test
+- Mock external API calls in unit tests
+
+## Error Handling
+- All payment errors should return standardized error codes
+- Log failures to both application logs and audit trail
+- Never expose Stripe error messages directly to users
+```
+
+**Clear Context Between Major Tasks**
+
+Use `/clear` to reset context when switching between unrelated work:
+
+```bash
+# After finishing authentication feature
+/clear
+
+# Now work on reporting feature with fresh context
+```
+
+### When Context Editing Isn't Enough
+
+For extremely long-running projects (multi-week feature development), consider:
+
+1. **Session summaries**: Ask Claude to summarize progress at end of each session
+2. **Spec-driven development**: Use the `/add-feature` workflow to document requirements, design, and tasks in persistent files
+3. **Git commits as memory**: Commit frequently with detailed messages that Claude can read later
+
+The combination of automatic context editing + manual memory + persistent documentation handles projects of any size.
+
+## Claude Skills
+
+### What Are Skills?
+
+Skills are specialized instruction packages that teach Claude how to excel at specific tasks. Think of them as expert modes you can toggle on and off.
+
+Instead of re-explaining your company's brand guidelines every time you create a document, load a `brand-guidelines` skill. Instead of describing your testing philosophy repeatedly, activate a `webapp-testing` skill.
+
+### How Skills Work
+
+Each skill is a folder containing:
+
+```
+skill-name/
+├── SKILL.md          # Instructions and guidance
+└── resources/        # Templates, examples, scripts (optional)
+```
+
+The `SKILL.md` file uses YAML frontmatter plus markdown:
+
+```markdown
+---
+name: internal-comms
+description: Write internal communications using company formats (status reports, newsletters, incident reports)
+---
+
+# Internal Communications Standards
+
+## Voice and Tone
+- Clear and direct
+- No marketing jargon
+- Lead with the "why"
+
+## Status Report Format
+**Summary**: One sentence capturing current state
+**Progress**: Bullet points on what shipped
+**Blockers**: Specific problems needing help
+**Next Steps**: Commitments with dates
+```
+
+### Installing Skills from Anthropic
+
+The easiest way to get started is with Anthropic's official skill library:
+
+1. **Add the plugin repository**:
+   ```bash
+   claude mcp add --plugin-repo https://github.com/anthropics/skills
+   ```
+
+2. **Browse available skills**:
+   ```bash
+   /skill
+   ```
+
+3. **Activate a skill**:
+   ```bash
+   /skill document-skills:pdf
+   ```
+
+Useful built-in skills include:
+
+- `document-skills:xlsx` - Excel spreadsheet creation and analysis
+- `document-skills:docx` - Word document editing with tracked changes
+- `document-skills:pptx` - PowerPoint presentation creation
+- `example-skills:webapp-testing` - Browser testing with Playwright
+- `example-skills:canvas-design` - Visual design creation
+- `example-skills:brand-guidelines` - Anthropic brand application (example)
+
+### Creating Custom Skills
+
+For repetitive tasks specific to your organization, create custom skills:
+
+**Example: API Documentation Skill**
+
+```markdown
+---
+name: api-docs-writer
+description: Generate API documentation following company standards
+---
+
+# API Documentation Standards
+
+## Required Sections
+Every endpoint must document:
+- Purpose (one sentence)
+- Authentication requirements
+- Request parameters with types and constraints
+- Response schema with example
+- Error codes and meanings
+- Rate limiting details
+
+## Code Examples
+Provide examples in:
+- cURL
+- JavaScript (using our SDK)
+- Python (using requests library)
+
+## Testing
+All examples must be runnable against staging environment.
+Use placeholder values that clearly indicate what should be replaced.
+```
+
+Save to `.claude/skills/api-docs-writer/SKILL.md` in your project.
+
+**Using Your Custom Skill**:
+
+```bash
+# Activate the skill
+/skill api-docs-writer
+
+# Then work on documentation
+"Document the POST /api/v1/payments endpoint"
+```
+
+### Skill Development Tips
+
+**Be Specific About Format**
+
+Bad:
+> "Write good documentation"
+
+Good:
+> "Use semantic line breaks. Maximum 80 characters per line. Code blocks must specify language. Links use reference style."
+
+**Include Examples**
+
+Show, don't just tell. Include example outputs in your skill:
+
+```markdown
+## Example Output
+
+```json
+{
+  "endpoint": "/api/v1/users",
+  "method": "POST",
+  "auth": "Bearer token required",
+  "rate_limit": "100 requests/minute"
+}
+```
+```
+
+**Version Your Skills**
+
+Keep skills in version control alongside your code:
+
+```bash
+git add .claude/skills/
+git commit -m "Add API documentation skill v1.0"
+```
+
+### When to Use Skills vs. CLAUDE.md
+
+**Use CLAUDE.md for**:
+- Project architecture and conventions
+- Build and deployment commands
+- Testing requirements
+- Technology stack details
+
+**Use Skills for**:
+- Task-specific workflows
+- Document templates
+- Code generation patterns
+- Analysis procedures
+
+Skills are modular and portable. CLAUDE.md is project-specific and always active.
+
+## Parallel Agents
+
+### Why Run Multiple Claudes?
+
+Single-threaded development has inherent limits. While Claude is researching your database schema, you're blocked from asking about UI components. While it's implementing a feature, you can't review its work.
+
+Running parallel Claude instances unlocks:
+
+- **Concurrent work**: One Claude builds features while another writes tests
+- **Independent review**: One Claude writes code, another reviews it
+- **Exploratory research**: Research questions in one terminal while building in another
+- **Cross-verification**: Compare approaches to the same problem
+
+### Approach 1: Multiple Terminal Windows
+
+The simplest approach: open multiple terminals, each running `claude`.
+
+**Terminal 1 - Implementation**:
+```bash
+cd ~/my-project
+claude
+
+> "Implement the user authentication feature according to specs/auth/tasks.md"
+```
+
+**Terminal 2 - Review**:
+```bash
+cd ~/my-project
+claude
+
+> "Review the authentication implementation in src/auth/ and identify security issues"
+```
+
+**Terminal 3 - Testing**:
+```bash
+cd ~/my-project
+claude
+
+> "Write integration tests for the authentication flow"
+```
+
+Each session has independent context, so they won't interfere with each other.
+
+### Approach 2: Git Worktrees
+
+For working on completely separate features, use git worktrees to create multiple working directories from the same repository:
+
+```bash
+# Main working directory
+cd ~/my-project
+
+# Create worktree for payments feature
+git worktree add ../my-project-payments feature/payments
+
+# Create worktree for reporting feature
+git worktree add ../my-project-reporting feature/reporting
+```
+
+Now run Claude in each directory:
+
+```bash
+# Terminal 1
+cd ~/my-project-payments
+claude
+> "Work on payments integration"
+
+# Terminal 2
+cd ~/my-project-reporting
+claude
+> "Build analytics dashboard"
+```
+
+Benefits:
+- No merge conflicts while working
+- Each Claude has full project context
+- Features develop in isolation
+- Merge when ready via pull requests
+
+### Approach 3: Task Agent Delegation
+
+Within a single Claude session, use the Task tool to spawn specialized subagents:
+
+```
+"Launch three agents in parallel:
+1. Explore agent to find all API endpoints
+2. General-purpose agent to analyze our error handling patterns
+3. Plan agent to outline the refactoring approach"
+```
+
+Claude will spawn three independent agents, each with specialized capabilities, and return their findings simultaneously.
+
+**When to use subagents**:
+- Quick research tasks
+- Code exploration
+- Parallel analysis
+- Fact-gathering before implementation
+
+**When to use separate terminals**:
+- Long-running feature development
+- Independent work streams
+- Code review of active development
+- Trying multiple approaches
+
+### Coordination Strategies
+
+**Shared Knowledge via Git**
+
+Let your Claudes communicate through commits:
+
+```bash
+# Implementation Claude
+git add src/auth/
+git commit -m "Implement JWT token generation
+
+Uses HS256 algorithm with 1-hour expiry.
+Tokens include user_id and role claims.
+Refresh tokens stored in Redis with 30-day TTL."
+
+# Review Claude (in different terminal)
+git pull
+"Review the JWT implementation in the latest commit"
+```
+
+**Division of Labor**
+
+Assign clear roles:
+
+- **Builder Claude**: Implements features from specs
+- **Reviewer Claude**: Reviews code for bugs, security issues, and test coverage
+- **Test Claude**: Writes comprehensive test suites
+- **Doc Claude**: Updates documentation and API specs
+
+**Convergence Points**
+
+Set milestones where work merges:
+
+1. Builder implements feature → commit
+2. Test Claude pulls and writes tests → commit
+3. Reviewer Claude pulls both → provides feedback
+4. Builder addresses feedback → final commit
+5. All work merged to main branch
+
+### Real-World Example: Building a Feature in 3 Parallel Streams
+
+**Terminal 1 - Backend**:
+```bash
+claude
+> "Implement the payment processing endpoints from specs/payments/tasks.md.
+Focus on tasks 1-5 (API routes and database layer)."
+```
+
+**Terminal 2 - Frontend**:
+```bash
+cd frontend/
+claude
+> "Build the payment form UI according to designs/payment-form.png.
+Integrate with the API endpoints being built in parallel."
+```
+
+**Terminal 3 - Testing**:
+```bash
+claude
+> "Write integration tests for the payment flow.
+Mock the Stripe API. Test both success and failure cases."
+```
+
+After 30 minutes:
+- Backend commits payment endpoints
+- Frontend commits payment form UI
+- Testing commits integration test suite
+- All three pull each other's work and verify integration
+- One Claude does final integration testing
+
+Time saved: ~60% compared to serial development.
+
+## MCP Servers: Extending Claude's Capabilities
+
+### What is MCP?
+
+Model Context Protocol (MCP) is a standardized interface that lets Claude interact with external tools and data sources. Think of it as a plugin system for AI.
+
+Instead of Claude being limited to reading files and running bash commands, MCP servers give it superpowers:
+
+- Access your Figma designs
+- Control browsers for testing
+- Query databases
+- Interact with cloud services
+- Use company-specific internal tools
+
+### Installing MCP Servers
+
+The basic command pattern:
+
+```bash
+claude mcp add <name> <command>
+```
+
+**Common MCP Servers**:
+
+```bash
+# Playwright for browser automation
+claude mcp add playwright npx @playwright/mcp@latest
+
+# Figma for design file access
+claude mcp add --transport http figma https://mcp.figma.com/mcp
+
+# GitHub for repository operations
+claude mcp add github npx @modelcontextprotocol/server-github
+
+# Filesystem for advanced file operations
+claude mcp add filesystem npx @modelcontextprotocol/server-filesystem
+```
+
+View installed servers:
+
+```bash
+claude mcp list
+```
+
+### Example 1: Figma MCP for Design-to-Code
+
+**Setup**:
+
+```bash
+# Install Figma MCP server
+claude mcp add --transport http figma https://mcp.figma.com/mcp
+
+# Authenticate
+claude
+> /mcp
+# Select "figma" → "Authenticate" → Grant access
+```
+
+**Usage**:
+
+```bash
+claude
+> "Here's the link to our dashboard design:
+https://www.figma.com/file/abc123/Dashboard?node-id=1%3A2
+
+Implement this as a React component using Tailwind CSS.
+Extract the exact colors, spacing, and typography from the design."
+```
+
+Claude will:
+1. Connect to Figma via MCP
+2. Extract design tokens (colors, spacing, fonts)
+3. Analyze component structure
+4. Generate code matching the design exactly
+
+**Benefits**:
+- No manual design token extraction
+- Pixel-perfect implementation
+- Automatic updates when designs change
+- No need to install Figma desktop app
+
+### Example 2: Playwright MCP for Testing
+
+**Setup**:
+
+```bash
+# Install Playwright MCP
+claude mcp add playwright npx @playwright/mcp@latest
+
+# No authentication needed for local testing
+```
+
+**Usage**:
+
+```bash
+claude
+> "Test our checkout flow:
+1. Navigate to http://localhost:3000
+2. Add a product to cart
+3. Fill out checkout form
+4. Submit payment
+5. Verify order confirmation appears
+
+Use realistic test data. Capture screenshots at each step."
+```
+
+Claude will:
+1. Launch a browser via Playwright MCP
+2. Navigate through the flow programmatically
+3. Use accessibility snapshots to understand page structure
+4. Fill forms and click buttons
+5. Assert expected outcomes
+6. Save screenshots for review
+
+**Benefits**:
+- No vision model needed (uses accessibility tree)
+- Fast and deterministic
+- Works in CI/CD environments
+- Generates reusable test code
+
+### Example 3: Database MCP for Direct Queries
+
+**Setup**:
+
+```bash
+# Install PostgreSQL MCP
+claude mcp add postgres npx @modelcontextprotocol/server-postgres
+
+# Configure connection
+# Edit .claude/mcp-settings.json to add connection string
+```
+
+**Usage**:
+
+```bash
+claude
+> "Query the database to find all users who signed up in the last 7 days
+but haven't completed onboarding. Export as CSV."
+```
+
+Claude will:
+1. Connect to database via MCP
+2. Write and execute SQL query
+3. Format results as CSV
+4. Save to file
+
+**Use cases**:
+- Ad-hoc data analysis
+- Report generation
+- Database migrations
+- Schema exploration
+
+### Creating Custom MCP Servers
+
+For company-specific tools, build your own MCP server:
+
+**Simple Node.js MCP Server**:
+
+```javascript
+// mcp-server-crm.js
+import { MCPServer } from '@modelcontextprotocol/sdk';
+
+const server = new MCPServer({
+  name: 'company-crm',
+  version: '1.0.0'
+});
+
+server.tool('get_customer', {
+  description: 'Fetch customer details by email',
+  parameters: {
+    email: { type: 'string', description: 'Customer email' }
+  }
+}, async ({ email }) => {
+  // Call your internal CRM API
+  const customer = await fetch(`https://crm.company.com/api/customers?email=${email}`);
+  return await customer.json();
+});
+
+server.listen();
+```
+
+**Install your custom server**:
+
+```bash
+claude mcp add company-crm node mcp-server-crm.js
+```
+
+**Use it**:
+
+```bash
+claude
+> "Look up customer john@example.com in our CRM and send them a personalized email about the new feature launch."
+```
+
+### MCP Configuration Management
+
+**Project-specific MCP servers**:
+
+Create `.mcp.json` in your project root:
+
+```json
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
+    },
+    "figma": {
+      "transport": "http",
+      "url": "https://mcp.figma.com/mcp"
+    }
+  }
+}
+```
+
+Commit this file so your team uses the same MCP configuration.
+
+**Global MCP servers**:
+
+Configured in `~/.claude/mcp-settings.json` for tools you use across all projects.
+
+### Security Considerations
+
+**MCP servers have broad access**. Before installing:
+
+1. **Review the source code** for unfamiliar servers
+2. **Use official servers** from Anthropic, Microsoft, Figma when possible
+3. **Understand permissions**: MCP servers can execute code, access files, make network requests
+4. **Sandbox testing**: Test new MCP servers in isolated projects first
+5. **Version pinning**: Use specific versions (`@playwright/mcp@1.2.3`) instead of `@latest` in production
+
+**Authentication best practices**:
+
+- Use environment variables for API keys
+- Never commit credentials to `.mcp.json`
+- Use separate dev/prod credentials
+- Rotate keys regularly
+
+## Putting It All Together
+
+You now have four power-user techniques:
+
+1. **Context management** - Work on long-running projects without losing important information
+2. **Skills** - Standardize repetitive tasks with reusable instruction packages
+3. **Parallel agents** - Multiply your throughput by running multiple Claudes
+4. **MCP servers** - Extend Claude's capabilities to your entire tool ecosystem
+
+### The Power User Workflow
+
+Here's how these techniques combine in practice:
+
+**Week 1 - Project Setup**:
+```bash
+# Set up persistent context
+echo "# Project Conventions" > CLAUDE.md
+vim CLAUDE.md  # Document architecture, testing standards, etc.
+
+# Install relevant MCP servers
+claude mcp add playwright npx @playwright/mcp@latest
+claude mcp add figma --transport http https://mcp.figma.com/mcp
+
+# Create project-specific skills
+mkdir -p .claude/skills/api-tester
+vim .claude/skills/api-tester/SKILL.md
+```
+
+**Week 2 - Parallel Development**:
+```bash
+# Terminal 1 - Build feature
+git worktree add ../project-payments feature/payments
+cd ../project-payments
+claude
+> "Implement payment processing per specs/payments/tasks.md"
+
+# Terminal 2 - Write tests
+cd ~/project
+claude
+> "Write integration tests for payments feature using Playwright MCP"
+
+# Terminal 3 - Update docs
+cd ~/project
+claude
+> "Update API documentation as payments endpoints are built"
+```
+
+**Week 3 - Polish and Ship**:
+```bash
+# Use skills for consistency
+claude
+> /skill api-docs-writer
+> "Generate final API documentation for payments endpoints"
+
+# Memory helps with context
+> "Review all architectural decisions we made during payments implementation.
+   Document any patterns we should reuse for subscriptions feature."
+
+# MCP servers for final testing
+> "Use Playwright to run full end-to-end test suite.
+   Test on Chrome, Firefox, and Safari.
+   Generate test report with screenshots."
+```
+
+### Measuring Your Progress
+
+You'll know you've mastered power-user techniques when:
+
+- ✅ You work on features for multiple days without re-explaining context
+- ✅ You have 2-3 Claude terminals running simultaneously
+- ✅ You've created at least one custom skill for your workflow
+- ✅ You use MCP servers for design-to-code or testing workflows
+- ✅ Your commit history shows parallel work streams merging smoothly
+- ✅ You spend more time building and less time explaining
+
+### Next Steps
+
+**Experiment with combinations**:
+- Skills + MCP: Create a skill that uses Playwright MCP for your specific testing needs
+- Memory + Parallel: Have one Claude maintain project knowledge while others build
+- CLAUDE.md + Skills: Document project conventions in CLAUDE.md, task workflows in skills
+
+**Share with your team**:
+- Commit `.claude/skills/` to version control
+- Document your MCP server setup in README
+- Create team conventions for parallel development
+- Share successful workflow patterns
+
+**Keep learning**:
+- Browse the Anthropic skills repository for inspiration
+- Read the MCP server documentation at modelcontextprotocol.io
+- Follow Claude Code release notes for new capabilities
+- Join the Claude Code community to share techniques
+
+The difference between a good PM who can use AI and a great PM who ships products is mastery of these power-user techniques. Practice them deliberately, and you'll build production applications faster than teams with 5x your headcount.

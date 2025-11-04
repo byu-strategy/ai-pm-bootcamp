@@ -1,215 +1,79 @@
 ---
-title: "Syllabus"
+title: "Welcome"
 author: "Scott Murff"
-date: "9/1/2025"
+date: "11/11/2025"
 format:
   html: default
   pdf: default
 ---
 
-# Syllabus
+## Overview
 
-*FALL 2025*
+Welcome to Scott Murff's Full-Stack Product Builder workshop.
 
-|                           |                       |
-|---------------------------|-----------------------|
-| **Instructor**            | Scott Murff           |
-| **Office Hours**          | 1:30–2:30 PM on T, TH |
-| **Office Hours Location** | 587 TNRB              |
-| **LMS**                   | LearningSuite         |
+In this workshop, we explore the hypothesis that: with the help of AI tools a new professional archetype is rising, that of *full-stack product builder*. 
 
-There are two sections of this course being taught under two different. Please note the details for your section.
+A full-stack product builder is someone who is able to play well across the entire digital product lifecycle of:
 
-|   | MSB 341 - Product Management - 003 | STRAT 490R - Creating Digital Products with AI: Strategy & Prototyping - 001 |
-|----|----|----|
-| **TAs** | Nate McCauley, David Fillmore, John Gilbert | Carter Adams, Eli Nelson, Taylor Wall |
-| **Class Time** | Fridays Only, 9:30 AM – 12:15 PM | Mondays Only, 3:30 AM – 4:45 PM |
-| **Class Location** | 230 TNRB | W242 TNRB |
+1) Strategy: figure out what to build, why, and for whom
+2) Design & Engineering: actually build, scale, and maintain the product
+3) Go-to-Market & Growth: Launch and distribute the product
+4) Data Science: Analyze product performance and make data driven bets for the next round of strategic choices.
 
-## Prerequisites
+Historically, especially in large organizations, no one person was competent at all of these things.
 
-*IS 201 - Introduction to Information Systems* OR similar. Students should have an interest in going deep on a technical level and learning to code with assistance from AI.
+We are now living in a world where high agency, curious, and ambitous individuals can learn to do all of these things relatively well. Not to say it's easy, but it's now possible whereas in the past it was actually impossible.
 
-## Required Materials
+The role of a Product Manager has always been demanding. Often labeled the "CEO of Product," the skillset required of a product manager are broad and typically include:
 
-A modern Laptop or desktop (Mac or Windows): - Operating Systems: macOS 10.15+ or Windows 10+ - Hardware: 4GB+ RAM (more is better)
+- Strategic thinking – setting vision, making trade-offs, and aligning with business goals
+- Customer insight – understanding user needs and pain points
+- Analytical ability – using data and critical thinking to guide decisions
+- Technical & design fluency – collaborating effectively with engineers and designers
+- Execution & organization – planning roadmaps, prioritizing, and delivering results
+- Communication & leadership – influencing, storytelling, and managing stakeholders
 
-AI Tools: - We will be using [Claude Code](https://www.anthropic.com/claude-code) throughout the course. Using Claude Code requires a paid Claude account (\~\$20 per month for the duration of the semester). Your total cost will be about \$85 after tax - Gemini is [free for students](https://gemini.google/students/) this year:
+The day-to-day responsibilities of different product managers can vary widely due to differences in organizational size. In smaller companies and startups, product managers may function as full-stack PMs, taking on a broad set of responsibilities that can include customer research, defining product strategy, writing requirements and even code, creating prototypes, tracking metrics, and handling marketing or sales support.
 
-[Innovators DNAs Resources and Assessment](https://apps.innovatorsdna.com/portal/byu-strat-2025) (special reduced price of \$20)
+By contrast, in larger organizations, roles tend to become much more specialized. Activities such as user research, data analysis, product design, or technical specification may be owned by separate functions (e.g. data scientists, designers, or technical product managers) allowing a PM to focus more narrowly on business strategy while still collaborating closely with specialized colleagues.
 
-All other materials are available online at no cost.
+This reality helps explain the ongoing debate about whether technical skills are important for product managers to have. In some companies, strong technical expertise is absolutely essential, while in others a PM can succeed without deep technical knowledge.
 
-## Description
+For our purposes we take the perspective that a PM must have relatively deep techincal knowledge to orchestrate AI in powerful ways. Fortunately, AI itself has dramatically accelerated how quickly one can learn technical skills. What used to take months can now be learned in days with focused effort.
 
-*Product Management/Creating Digital Products with AI: Strategy & Prototyping* immerses students in the evolving role of product managers in the era of AI-enabled innovation. This course combines strategic thinking with hands-on experimentation, giving students both the frameworks and the technical skills to envision, prototype, and launch AI-enhanced digital products.
+The focus of todays workshop will be on engineering and design skills. 
 
-Students will explore foundational concepts in product strategy, customer-centric design, and rapid iteration while learning how AI is transforming each stage of the product lifecycle. Core topics include identifying unmet customer needs, defining and validating minimum viable products (MVPs), accelerating prototyping, and gathering actionable user feedback.
+![](images/activities.png)
 
-In addition to standard product management tools such as GitHub, Jira, and Figma, students will work extensively with cutting-edge AI tools like Lovable, Replit, Cursor, and Claude Code. These tools enable them to ideate, design, and build at unprecedented speed, while gaining an understanding of how AI blurs traditional boundaries between product management, engineering, and design.
+If our hypothesis is correct we should see a convergence of skills into a single profile. That convergence can come from any direction. Today, our focus is on PMs developing engineering and design skills to become full-stack product builders.
 
-By the end of the semester, students will have developed, tested, and refined an AI-enabled product.
+![](images/full-stack-from-to.png)
 
-## Purpose
+The workshop is designed for technically inclined PMs and adjacent roles with some prior coding experience recommended, although not required. 
 
-This course develops students’ ability to integrate strategic thinking and technical execution to deliver products that create genuine value for others.
+You'll learn to:
 
-## Learning Outcomes
+- Use Claude Code for rapid product development using spec-driven development principles (must sign up for your own $20/month subscription)
+- Build and connect a full-stack app with a Supabase backend (Postgres relational database)
+- Deploy your app live on Vercel, with GitHub for version control
 
-| Learning Outcome | Supported BYU Aims |
-|----|----|
-| 1\. Understand the basics of how LLMs generate natural language. | Intellectually Enlarging |
-| 2\. Develop and articulate a product strategy. | Intellectually Enlarging, Lifelong Learning and Service |
-| 3\. Analyze the physical, mental, and spiritual impact your product is likely to have on its users. | Spiritually Strengthening, Character Building, Lifelong Learning and Service |
-| 4\. Create a digital product that delivers enduring value to a target customer group. | Intellectually Enlarging, Lifelong Learning and Service |
+## Schedule
 
-## Instructor Bio
+
+| Time                 | Event                                                                                           | Details                                                                                                      |
+|--------------------------------------|-------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------|
+| 12:45–1:15 pm        | Check-In                                                                                        | —                                                                                                            |
+| 1:15–5:15 pm         | Workshop                                                                                        | —                                                                                                            |
+| 3:00–3:15 pm         | Break                                                                                           | Refreshments provided                                                                                        |
+| 5:30 pm              | Dinner                                                                                          | Buffet style dinner served                                                                                   |
+| 6:00–7:00 pm         | Keynote & Panel Discussion                                                                      | **Keynote:** Dan Olsen – *Product Management in the Age of AI*<br>**Panel:** Dan Olsen, Ai-ling Chang (Weave), Tanner Rhodes (Meta); moderated by Scott Murff |
+| 7:00–9:00 pm         | After Events                                                                                    | Dessert, networking, and BYU basketball game watch party<br>Speed interviewing for BYU PM Internship Program |
+
+
+## Instrutor Bio
 
 Scott Murff is an Associate Teaching Professor of Strategy at the BYU Marriott School of Business, where he also serves as program director and teaches courses on business strategy, decision-making, and artificial intelligence. He brings over 15 years of experience at the intersection of business and technology, having worked as a consultant, product manager, and data scientist.
 
 Prior to joining BYU, Scott spent nearly seven years at McKinsey & Company in roles ranging from analytics specialist consultant to principal product manager, where he led product development and performance management initiatives for Fortune 500 clients. His earlier career includes building forecasting models as a VP at Zions Bancorporation and conducting regulatory research at the U.S. Office of the Comptroller of the Currency.
 
-Scott holds a Master’s degree in Management Science & Engineering from Stanford University and a B.A. in Economics with a minor in Math, from BYU. He is passionate about helping students apply AI, analytics, and strategy to meaningful real-world problems with both rigor and purpose.
-
-## Schedule
-
-See the [Schedule section](00-schedule.qmd) for a weekly schedule of class topics, assignments, due dates, etc.
-
-## Grading
-
-Below is the grading breakdown for each assessment in the course. Each point is weighted equally.
-
-| Type | Description<sup>1</sup> | \% of Grade | Points | Learning Outcome(s) Assessed |
-|----|----|----|----|----|
-| Exam | [Pre-Course Knowledge Check](00-assessments.qmd#pre-course-knowledge-check)<sup>2</sup> | 0% | 0 | 1,2,3,4 |
-| Exam | [Final Exam](00-assessments.qmd#final-exam) | 10% | 50 | 1,2,3,4 |
-| Quiz | [Quiz 1 - AI Product Management](01-pm-ai-era.qmd) | 2% | 10 | 1 |
-| Quiz | [Quiz 2 - LLMs 2](02-git-deployment.qmd) | 2% | 10 | 1 |
-| Quiz | [Quiz 3 - Product Strategy and Innovation](04-product-innovation.qmd) | 2% | 10 | 2 |
-| Quiz | [Quiz 4 - Customer Validation](04-value-prop-design.qmd) | 2% | 10 | 2 |
-| Quiz | [Quiz 5 - Mid-semester Feedback Survey](00-assessments.qmd#mid-semester-survey) | 2% | 10 |  |
-| Quiz | [Quiz 6 - GitHub and Collaboration](02-git-deployment.qmd) | 2% | 10 | 4 |
-| Quiz | [Quiz 7 - APIs and How the Internet Works](07-internet-fundamentals.qmd) | 2% | 10 | 4 |
-| Quiz | [Quiz 8 - Principles of Software Engineering and Design](08-software-engineering.qmd) | 2% | 10 | 4 |
-| Quiz | [Quiz 9 - AI Tools](09-ai-dev-platforms.qmd) | 2% | 10 | 4 |
-| Quiz | [Quiz 10 - Product Metrics and Data Analysis](11-product-metrics.qmd) | 2% | 10 | 4 |
-| Homework | [Homework 1 – Understanding Large Language Models](00-assessments.qmd#homework-1-understanding-large-language-models) | 8% | 40 | 1 |
-| Homework | [Homework 2 – Creating a Product Requirements Document (PRD)](00-assessments.qmd#homework-2-creating-a-product-requirements-document-prd) | 8% | 40 | 2, 3 |
-| Homework | [Homework 3 – Understanding the internet and APIs](00-assessments.qmd#homework-3-understanding-the-internet-and-apis) | 8% | 40 | 4 |
-| Homework | [Homework 4 – Using Git for collaboration and version control](00-assessments.qmd#homework-4-using-git-for-collaboration-and-version-control) | 8% | 40 | 4 |
-| Homework | [Homework 5 – Choosing the right AI tools](00-assessments.qmd#homework-5-choosing-the-right-ai-tools) | 8% | 40 | 4 |
-| Project | [Final Project](00-assessments.qmd#final-project) | 30% | 150 | 4 |
-|  | **TOTAL** | **100%** | **500** |  |
-
-::: {style="font-size:0.65em;"}
-**Notes:**
-
-1.  Completion of the Pre-Course Knowledge Check is required but does not affect your grade.
-2.  All assignments and quizzes are described in detail in [Assessments section](00-assessments.qmd).
-:::
-
-The course is **not** graded on a curve. It's possible for every student to earn an A.
-
-Achieving an A is challenging and reflects real commitment and excellence.
-
-The grading scale is show below:
-
-| Letter Grade | Percentage Range | GPA |
-|--------------|------------------|-----|
-| A            | 93–100%          | 4.0 |
-| A-           | 90–92%           | 3.7 |
-| B+           | 87–89%           | 3.4 |
-| B            | 83–86%           | 3.0 |
-| B-           | 80–82%           | 2.7 |
-| C+           | 77–79%           | 2.4 |
-| C            | 73–76%           | 2.0 |
-| C-           | 70–72%           | 1.7 |
-| D+           | 67–69%           | 1.4 |
-| D            | 63–66%           | 1.0 |
-| D-           | 60–62%           | 0.7 |
-| E (Fail)     | Below 60%        | 0.0 |
-
-### Late work policy
-
-**Quizzes**: By their nature, in-class quizzes cannot be accepted late.
-
-**Homework**: May be turned in up to 9 days late for partial credit with a 10% penalty per day according to the following schedule:
-
-| Days Late | Late Penalty |
-|-----------|--------------|
-| 1         | -10%         |
-| 2         | -20%         |
-| 3         | -30%         |
-| 4         | -40%         |
-| 5         | -50%         |
-| 6         | -60%         |
-| 7         | -70%         |
-| 8         | -80%         |
-| 9         | -90%         |
-| 10        | No Credit    |
-
-**Final Project**: The Final Project must be submitted by 11:59pm on the day of our final class period. Final Projects cannot be turned in late for credit.
-
-**Final Exam**: The Final Exam must be completed by the scheduled time. Final Exams cannot be taken late.
-
-## Classroom Culture
-
-### Mission and Aims
-
-The mission of Brigham Young University — founded, supported, and guided by The Church of Jesus Christ of Latter-day Saints — is to assist individuals in their quest for perfection and eternal life. That assistance should provide a period of intensive learning in a stimulating setting where a commitment to excellence is expected and the full realization of human potential is pursued.
-
-BYU seeks to develop students of faith, intellect, and character who have the skills and the desire to continue learning and to serve others throughout their lives.
-
-A BYU education should be (1) spiritually strengthening, (2) intellectually enlarging, and (3) character building, leading to (4) lifelong learning and service.
-
-Building on the foundational Mission and Aims, the Marriott School of Business aspires to transform the world through Christlike leadership by developing leaders of faith, intellect, and character guided by the following 4 values:
-
--   **Faith in Christ** - We value deep and abiding faith in Jesus Christ. Our faith gives us the capacity to envision a better future, the confidence to make that future happen, and the courage to act in the face of challenges.
-
--   **Integrity in Action** - We value integrity and hold ourselves to the highest moral and ethical standards. Acting with integrity builds trust, strengthens character, and focuses our ambitions on things of eternal consequence.
-
--   **Respect for All** - We value respect for all individuals as children of God and recognize the inherent worth, divine potential, and agency of each person. A climate of respect and belonging enhances our learning, facilitates collaboration, and encourages personal growth.
-
--   **Excellence** - We value excellence in learning, teaching, research, management, and leadership. An expectation of excellence magnifies our influence and motivates us to continually improve.
-
-We evaluate our decisions and actions by the impact they will have on the academic experience, professional preparation, character development, emotional well-being, and spiritual growth of our students.
-
-#### Prayer in class
-
-We will begin each class with prayer. Each class member is invited to be voice for the prayer at least once throughout the semester. The TAs will reach out prior to class to invite you to pray on a particular day. If you'd rather not be voice for a prayer please let me know on the first day of class so I can instruct the TAs accordingly.
-
-#### Laptop Policy
-
-You may use laptops in class for note taking or other class related purposes. Laptops should not be used for activities that would be a distraction to nearby students when your screen is in their line of sight (e.g. sports, instagram, etc.)
-
-#### Cold Calling
-
-I teach in a conversational discussion based style, which includes cold calling students to ask for your input or to pose questions. If you'd rather I not cold call on you please let me know on the first day of class so that I can avoid doing so. I have deep respect for individual learning styles and will make accommodations when needed.
-
-## Getting Help
-
-The following resources are available to get help:
-
--   Start with AI chat bots and the course website to see if they can assist
--   Use the course Slack channel to ask classmates for help
--   Attend TA or Professor office hours
--   Use **Slack** or email to contact one of the course TAs
--   Use **Slack** or email to contact Professor Murff
-
-## Honor Code
-
-In keeping with the principles of the BYU Honor Code, students are expected to be honest in all of their academic work. Academic honesty means, most fundamentally, that any work you present as your own must in fact be your own work and not that of another. Violations of this principle may result in a failing grade in the course and additional disciplinary action by the university. Students are also expected to adhere to the Dress and Grooming Standards. Adherence demonstrates respect for yourself and others and ensures an effective learning and working environment. It is the university's expectation, and every instructor's expectation in class, that each student will abide by all Honor Code standards. Please call the Honor Code Office at 422-2847 if you have questions about those standards.
-
-## Preventing & Responding to Sexual Misconduct
-
-The health and well-being of students is of paramount importance at Brigham Young University. If you or someone you know has experienced sexual harassment (including sexual violence), there are many resources available for assistance.
-
-In accordance with Title IX of the Education Amendments of 1972, BYU prohibits unlawful sex discrimination, including sexual harassment, against any participant in its education programs or activities. The university also prohibits sexual harassment by its personnel and students. Sexual harassment occurs when
-
-a person is subjected to unwelcome sexual speech or conduct so severe, pervasive, and offensive that it effectively denies their ability to access any BYU education program or activity; any aid, benefit, or service of BYU is conditioned on a person’s participation in unwelcome sexual conduct; or a person suffers sexual assault, dating violence, domestic violence, or stalking on the basis of sex. University policy requires all faculty members to promptly report incidents of sexual harassment that come to their attention in any way, including through face-to-face conversations, a written class assignment or paper, class discussion, email, text, or social media post. Incidents of sexual harassment should be reported to the Title IX Coordinator at t9coordinator\@byu.edu or (801) 422-8692 or 1085 WSC. Reports may also be submitted online at https://titleix.byu.edu/report or 1-888-238-1062 (24-hours a day).
-
-BYU offers confidential resources for those affected by sexual harassment, including the university’s Sexual Assault Survivor Advocate, as well as a number of non-confidential resources and services that may be helpful. Additional information about Title IX, the university’s Sexual Harassment Policy, reporting requirements, and resources can be found at http://titleix.byu.edu or by contacting the university’s Title IX Coordinator.
-
-## Student Disability
-
-Brigham Young University is committed to providing a working and learning atmosphere that reasonably accommodates qualified persons with disabilities. A disability is a physical or mental impairment that substantially limits one or more major life activities. Whether an impairment is substantially limiting depends on its nature and severity, its duration or expected duration, and its permanent or expected permanent or long-term impact. Examples include vision or hearing impairments, physical disabilities, chronic illnesses, emotional disorders (e.g., depression, anxiety), learning disorders, and attention disorders (e.g., ADHD). If you have a disability which impairs your ability to complete this course successfully, please contact the University Accessibility Center (UAC), 2170 WSC or 801-422-2767 to request a reasonable accommodation. The UAC can also assess students for learning, attention, and emotional concerns. If you feel you have been unlawfully discriminated against on the basis of disability, please contact the Equal Opportunity Office at 801-422-5895, eo_manager\@byu.edu, or visit https://hrs.byu.edu/equal-opportunity for help.”
+Scott holds a Master’s degree in Management Science & Engineering from Stanford University and a B.A. in Economics with a minor in Math, from BYU. He is passionate about helping people apply AI, analytics, and strategy to meaningful real-world problems.

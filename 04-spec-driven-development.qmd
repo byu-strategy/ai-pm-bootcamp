@@ -1,0 +1,812 @@
+---
+title: "Spec-Driven Development"
+format: html
+---
+
+## The Problem with Pure Vibe Coding
+
+Remember that to-do list app you built in the first chapter? It probably worked fine for a prototype. But what happens when you come back a week later and want to add user authentication? Or when you realize you need to handle edge cases like duplicate tasks or data persistence?
+
+You probably can't remember exactly what you asked Claude to do. The AI certainly doesn't remember. And if you ask it to add features, there's a good chance it will rewrite things in ways that break what was working before.
+
+This is the Achilles' heel of pure vibe coding: **it doesn't scale beyond quick prototypes**.
+
+As one developer put it on a popular tech forum: "Vibe coding got me 80% of the way there in 20% of the time. Then I spent 80% of my time fixing the last 20%."
+
+When you're building something that needs to work reliably, you run into problems:
+
+- **Context amnesia**: The AI forgets previous decisions across sessions
+- **Inconsistent implementations**: The same request yields wildly different code
+- **Debugging nightmares**: You can't trace why something was built a certain way
+- **Team chaos**: Other people can't see the reasoning behind your code
+- **Breaking changes**: Modifications break things because requirements were never documented
+
+This is where **Spec-Driven Development** comes in.
+
+## What is Spec-Driven Development?
+
+Spec-Driven Development (SDD) is exactly what it sounds like: you write specifications before you write code. But unlike the 100-page requirements documents of yesteryear that nobody read, modern SDD is lightweight, structured, and designed specifically for working with AI coding agents.
+
+At its core, SDD means creating three types of documents:
+
+1. **Requirements** - What should the system do? (user stories and acceptance criteria)
+2. **Design** - How will the system work? (architecture and data models)
+3. **Tasks** - What are the discrete implementation steps? (actionable checklist)
+
+Think of it as giving your AI assistant a detailed brief instead of vague instructions. The difference between saying "build me a house" versus handing over blueprints with specific dimensions, materials, and electrical layouts.
+
+Here's what Sean Grove from OpenAI said at the AI Engineer conference in 2025:
+
+> "Specifications, not prompts or code, are becoming the fundamental unit of programming, and writing specs is the new superpower."
+
+## Web Application Building Blocks: A PM's Guide
+
+Before we dive into spec-driven development, you need to understand what you're actually specifying. When you write requirements and design documents for web applications, you'll be working with four fundamental building blocks. Think of these as the main characters in every web app story:
+
+### Frontend (The User Interface)
+
+The **frontend** is everything users see and interact with in their browser. It's the buttons, forms, text, images, and animations. When you click "Add to Cart" on a shopping site, that button and the visual feedback you get - that's frontend.
+
+**Technologies you'll encounter:**
+- **HTML** - The structure (like the skeleton of a webpage)
+- **CSS** - The styling (colors, fonts, layouts)
+- **JavaScript** - The interactivity (what happens when you click things)
+- **Frameworks** - React, Vue, Svelte (tools that make building complex interfaces easier)
+
+**Real example:** In your to-do list app, the input box where you type tasks, the checkbox you click to mark tasks complete, and the list display - all frontend.
+
+**When specifying frontend:**
+```markdown
+WHEN user clicks "Add Task" button
+THEN system SHALL display the new task at top of list
+AND clear the input field
+AND show a success animation
+```
+
+### Backend (The Business Logic)
+
+The **backend** is the server-side code that runs behind the scenes. It handles the "business logic" - the rules and operations that make your app work. When you submit a login form, the backend checks if your password is correct. When you add a to-do item, the backend validates it and saves it.
+
+**Technologies you'll encounter:**
+- **Server frameworks** - Node.js/Express, Python/Django, Ruby on Rails
+- **APIs** - The connection points between frontend and backend (more on this below)
+- **Authentication** - Login systems, user sessions, permissions
+
+**Real example:** When you mark a to-do item complete, the backend receives that request, validates that you own that task, updates the status, and confirms the change.
+
+**When specifying backend:**
+```markdown
+WHEN user submits registration form with email "user@example.com"
+THEN system SHALL check if email already exists in database
+AND if exists, return error "Email already registered"
+AND if not exists, create new user account and send confirmation email
+```
+
+### Database (The Memory)
+
+The **database** is where your application stores data permanently. Think of it as your app's long-term memory. When you close your browser and come back later, how does the app remember your to-do items? The database.
+
+**Technologies you'll encounter:**
+- **SQL databases** - PostgreSQL, MySQL (organized like spreadsheets with tables and rows)
+- **NoSQL databases** - MongoDB, Firebase (organized like nested documents)
+- **ORMs** - Tools that let you interact with databases using normal code instead of database query language
+
+**Real example:** Your to-do list items are stored in a database table that might look like:
+
+| id  | user_id | task_text        | completed | created_at          |
+|-----|---------|------------------|-----------|---------------------|
+| 1   | 42      | "Buy groceries"  | false     | 2025-01-15 10:30:00 |
+| 2   | 42      | "Call dentist"   | true      | 2025-01-15 11:45:00 |
+
+**When specifying database:**
+```markdown
+## Data Model
+
+User table:
+- id (primary key)
+- email (unique, required)
+- password_hash (required)
+- display_name (required, 2-50 characters)
+- created_at (timestamp)
+
+Task table:
+- id (primary key)
+- user_id (foreign key to User)
+- task_text (required, max 500 characters)
+- completed (boolean, default false)
+- created_at (timestamp)
+```
+
+### API (The Messenger)
+
+**API** stands for Application Programming Interface, but think of it as the messenger system between frontend and backend. When your frontend needs data or wants to save something, it sends a request to an API endpoint. The backend processes it and sends a response back.
+
+**Common API patterns:**
+- **REST** - The most common style, uses HTTP methods (GET, POST, PUT, DELETE)
+- **GraphQL** - Lets frontend request exactly the data it needs
+- **Endpoints** - Specific URLs for specific operations (like `/api/tasks` or `/api/users/login`)
+
+**Real example:** When you add a to-do item:
+
+1. **Frontend** sends a POST request to `/api/tasks` with the task text
+2. **Backend** receives the request, validates the data, saves to database
+3. **Backend** sends response back: `{ success: true, task: { id: 123, text: "Buy groceries" } }`
+4. **Frontend** receives response and updates the UI
+
+**When specifying APIs:**
+```markdown
+## API Endpoint: POST /api/tasks
+
+**Purpose:** Create a new task for the authenticated user
+
+**Request:**
+{
+  "task_text": "Buy groceries"
+}
+
+**Response (Success - 201):**
+{
+  "success": true,
+  "task": {
+    "id": 123,
+    "task_text": "Buy groceries",
+    "completed": false,
+    "created_at": "2025-01-15T10:30:00Z"
+  }
+}
+
+**Response (Error - 400):**
+{
+  "success": false,
+  "error": "Task text cannot be empty"
+}
+```
+
+### How They Work Together: The Full Stack
+
+Here's how all four pieces work together when a user adds a to-do item:
+
+```{mermaid}
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant API
+    participant Backend
+    participant Database
+
+    User->>Frontend: Types "Buy groceries" and clicks Add
+    Frontend->>API: POST /api/tasks {"task_text": "Buy groceries"}
+    API->>Backend: Route request to task creation handler
+    Backend->>Backend: Validate task text is not empty
+    Backend->>Database: INSERT new task record
+    Database->>Backend: Return new task with id=123
+    Backend->>API: Return success response
+    API->>Frontend: { "success": true, "task": {...} }
+    Frontend->>User: Display new task in list
+```
+
+**This is called the "full stack"** - frontend, backend, database, and the APIs connecting them. When you become a **Full-Stack Product Builder**, you're able to specify requirements and design across all these layers.
+
+### Why This Matters for Writing Specs
+
+When you write specifications, you'll need to think about all these layers:
+
+**Bad spec (vague):**
+```
+The app should let users create accounts
+```
+
+**Good spec (covers all layers):**
+```markdown
+## User Registration Feature
+
+### Requirements
+WHEN user submits registration form with valid email and password
+THEN system SHALL create account and send confirmation email
+
+### Design
+
+**Frontend:**
+- Registration form at /signup with email and password fields
+- Client-side validation: email format, password minimum 8 characters
+- Display loading state during submission
+
+**API:**
+- POST /api/auth/register
+- Request: { email, password }
+- Response: { success, user } or { success: false, error }
+
+**Backend:**
+- Validate email format and uniqueness
+- Hash password using bcrypt
+- Create user record
+- Send confirmation email via SendGrid
+- Return JWT token for authentication
+
+**Database:**
+- Users table with: id, email (unique), password_hash, created_at
+```
+
+See the difference? The good spec thinks through the entire stack. This is what Claude Code (or any AI coding agent) needs to generate quality code.
+
+### Don't Panic
+
+This might feel like a lot if you're new to technical concepts. The good news: **you don't need to be an expert**. You just need enough understanding to write clear specifications.
+
+As you work through this workshop, these concepts will become second nature. You'll start naturally thinking: "This feature needs a frontend form, an API endpoint to submit it, backend validation, and a database table to store the results."
+
+And here's the best part: **Claude Code can help you learn**. When you're unsure about how something should work technically, you can ask:
+
+```
+I want to add user authentication to my app. Can you explain what
+database tables I'll need and what the API endpoints should look like?
+```
+
+The AI will explain the architecture and help you write the specs. You're not expected to know everything - you're expected to ask good questions and guide the implementation.
+
+## The SDD Workflow
+
+Most SDD approaches follow a similar pattern:
+
+```{mermaid}
+graph LR
+    A[Requirements] --> B[Design]
+    B --> C[Tasks]
+    C --> D[Implementation]
+    D --> E[Test & Review]
+    E --> F{Need Changes?}
+    F -->|Yes| A
+    F -->|No| G[Done]
+
+    style A fill:#e1f5ff
+    style B fill:#fff4e1
+    style C fill:#e8f5e9
+    style D fill:#f3e5f5
+    style E fill:#fce4ec
+```
+
+Instead of asking the AI to "build the entire authentication system," you:
+
+1. Write down what authentication needs to do (requirements)
+2. Design how it will work technically (design)
+3. Break it into small tasks (tasks)
+4. Have AI implement one task at a time (implementation)
+5. Test and iterate
+
+The key insight: **you guide the AI through small, controlled changes instead of letting it improvise an entire feature**.
+
+## Major SDD Approaches
+
+Several platforms have emerged with structured approaches to SDD. Let's look at the main ones:
+
+### Kiro's Three-File System
+
+[Kiro](https://kiro.dev/docs/specs/concepts/) has built a platform around three core specification files. Their approach is clean and straightforward:
+
+**requirements.md** uses EARS format (Easy Approach to Requirements Syntax):
+
+```markdown
+WHEN [trigger/condition]
+THE SYSTEM SHALL [expected behavior]
+```
+
+This format makes requirements testable and unambiguous. For example:
+
+```markdown
+WHEN a user submits login form with valid credentials
+THE SYSTEM SHALL redirect to dashboard within 2 seconds
+
+WHEN a user submits login form with invalid credentials
+THE SYSTEM SHALL display error message "Invalid username or password"
+AND not reveal which field was incorrect
+```
+
+No room for interpretation. Either it does this or it doesn't.
+
+**design.md** documents the technical blueprint:
+
+- System architecture and components
+- Data models and relationships
+- API endpoints and interfaces
+- Error handling strategies
+- Sequence diagrams showing how things interact
+
+**tasks.md** breaks implementation into trackable work items:
+
+```markdown
+- [ ] 1. Set up authentication middleware
+  - Install passport.js and dependencies
+  - Configure session management
+  - Requirements: 1.1, 1.2
+
+- [ ] 2. Create login form component
+  - Build form with email and password fields
+  - Add client-side validation
+  - Requirements: 2.1
+```
+
+Each task is small enough to implement and test independently.
+
+Kiro's philosophy is that these three documents become your "bridge between product vision and technical execution." When product and engineering are speaking from the same specifications, miscommunication drops dramatically.
+
+### GitHub Copilot Spec Kit
+
+GitHub released [Spec Kit](https://developer.microsoft.com/blog/spec-driven-development-spec-kit) as an open-source toolkit in early 2025. Their tagline: "version control for your thinking."
+
+It's not about exhaustive documentation. It's about making technical decisions explicit and reviewable before implementation.
+
+**The Specify CLI** bootstraps new projects:
+
+```bash
+uvx --from git+https://github.com/github/spec-kit.git specify init my-project
+```
+
+This creates a `.specify/` folder with templates and scripts.
+
+**Three slash commands** guide development:
+
+- `/specify` - Define what the feature should do (no technical decisions yet)
+- `/plan` - Choose technical approach (frameworks, architecture, database design)
+- `/tasks` - Break plan into implementable chunks for AI agents
+
+These commands integrate directly into GitHub Copilot in VS Code, so you never leave your editor.
+
+**The constitution.md file** is unique to Spec Kit. It establishes non-negotiable project principles:
+
+```markdown
+# Project Constitution
+
+## Security Non-Negotiables
+- All user data encrypted at rest and in transit
+- No credentials in environment variables or config files
+- All API calls require authentication tokens
+
+## Performance Standards
+- API responses < 200ms for 95th percentile
+- Page load time < 2 seconds
+- Database queries use connection pooling
+
+## Code Quality Rules
+- Test coverage stays above 80%
+- All functions have JSDoc comments
+- No TODO comments in main branch
+```
+
+Think of it as your project's foundational rulebook. When the AI suggests an approach that violates the constitution, you can point back and say "no, we established this principle upfront."
+
+One cool feature: Spec Kit lets you explore multiple implementations simultaneously. You can ask AI agents to "produce two completely different implementations based on the spec" - maybe one with PostgreSQL and another with MongoDB - and compare them before committing.
+
+### Claude Code's Planning Mode
+
+Claude Code takes a different approach. Instead of a CLI tool, it has **Planning Mode** built directly into the agent.
+
+Planning Mode is a read-only exploration environment. When you enable it, Claude Code can:
+
+- Research your existing codebase without making changes
+- Ask "what if" questions and explore alternatives
+- Load relevant context into its memory
+- Build understanding of how your system works
+- Draft specifications based on what it learns
+
+The key advantage: **zero risk of accidental changes during the planning phase**.
+
+Here's how a typical workflow looks:
+
+1. **Enter Planning Mode** - Tell Claude "let's plan a new feature for user profiles"
+2. **Research phase** - Claude explores your codebase, asks clarifying questions, identifies patterns
+3. **Draft specs** - Claude creates requirements.md, design.md, and tasks.md
+4. **Review together** - You review the specs, suggest changes, iterate
+5. **Exit Planning Mode** - Once specs are approved, exit and begin implementation
+6. **Execute tasks** - Ask Claude to implement one task at a time from tasks.md
+
+The separation between planning and execution is powerful. You can think through everything thoroughly without the pressure of "is this going to break my working code?"
+
+**Community implementations** have extended Claude's planning capabilities:
+
+- **cc-sdd** - Enforces the Requirements → Design → Tasks workflow automatically
+- **claude-code-spec-workflow** - Adds automated workflows for features and bug fixes
+- Custom **CLAUDE.md** configurations that codify SDD process at the project level
+
+Many developers configure their `.claude/` directory or global `~/.claude/CLAUDE.md` file to enforce consistent SDD workflows. For example, you can set rules like "always read requirements.md, design.md, and tasks.md before implementing any task" or "mark tasks complete by changing [ ] to [x] in tasks.md."
+
+### Other Notable Approaches
+
+**JetBrains Junie** integrates SDD directly into IntelliJ IDEA, PyCharm, and other JetBrains IDEs. Their approach emphasizes iterative refinement - you write initial specs, get AI-generated code, then improve the specs based on what you learned.
+
+**Cursor Composer** has been adding SDD features, letting you reference specification files in your prompts. Many developers create a `docs/` folder with requirements and design docs, then tell Composer "implement the user authentication feature as specified in docs/auth-spec.md."
+
+**Community frameworks** like [gotalab/cc-sdd](https://github.com/gotalab/cc-sdd) work across multiple AI coding platforms (Claude Code, Cursor, GitHub Copilot, Windsurf). The idea: establish your SDD workflow once, use it everywhere.
+
+## Why SDD Matters (Especially for PMs)
+
+If you're a PM building prototypes or even production features with AI, SDD gives you superpowers:
+
+**1. Your code becomes maintainable**
+
+When you return to a project weeks later, the specs remind you why things were built that way. No more "what was I thinking?" moments.
+
+**2. You can collaborate effectively**
+
+Other team members (or your future self) can read the specs and understand the system without deciphering code. Design reviews happen at the spec level, before expensive rewrites.
+
+**3. You catch problems early**
+
+Writing requirements forces you to think through edge cases. "What happens if the user submits an empty form?" "What if the API is down?" Address these in specs, not after deployment.
+
+**4. AI generates better code**
+
+When the AI has clear specifications, it produces code aligned with your actual intent. Less improvisation, fewer surprises.
+
+**5. You build the right thing**
+
+Spec-driven development creates traceability. Every line of code traces back to a specific requirement. During testing, you can verify "does this actually do what we said it should do?"
+
+## Getting Started: Your First SDD Feature
+
+Let's walk through a simple example. Suppose you want to add a "user profile settings" page to your app.
+
+### Step 1: Write Requirements
+
+Create `.claude/specs/user-profile-settings/requirements.md`:
+
+```markdown
+# User Profile Settings
+
+## User Story
+As a logged-in user, I want to update my profile information
+so that other users see accurate details about me.
+
+## Requirements
+
+### 1. Profile Form Display
+WHEN user navigates to /settings
+THEN system SHALL display form pre-populated with current profile data
+
+### 2. Form Validation
+WHEN user submits profile form
+THEN system SHALL validate:
+- Email format is valid
+- Display name is 2-50 characters
+- Bio is under 500 characters
+
+### 3. Save Changes
+WHEN validation passes
+THEN system SHALL save changes to database
+AND display success message "Profile updated"
+AND refresh profile data on page
+
+### 4. Error Handling
+WHEN validation fails
+THEN system SHALL display inline error messages
+AND not save any changes
+AND keep form populated with user's attempted edits
+```
+
+Notice how specific these are. No ambiguity about what "save changes" means.
+
+### Step 2: Create Design
+
+Create `.claude/specs/user-profile-settings/design.md`:
+
+```markdown
+# Design: User Profile Settings
+
+## Architecture
+- **Frontend**: React component with React Hook Form
+- **API**: PUT /api/user/profile endpoint
+- **Database**: Update users table (id, email, display_name, bio, updated_at)
+- **Authentication**: Requires valid JWT token
+
+## Data Model
+\`\`\`typescript
+interface UserProfile {
+  id: string
+  email: string
+  displayName: string
+  bio: string
+  updatedAt: Date
+}
+\`\`\`
+
+## API Specification
+
+**Endpoint**: PUT /api/user/profile
+
+**Request**:
+\`\`\`json
+{
+  "email": "user@example.com",
+  "displayName": "John Doe",
+  "bio": "Product Manager at Acme Corp"
+}
+\`\`\`
+
+**Response (Success - 200)**:
+\`\`\`json
+{
+  "success": true,
+  "message": "Profile updated",
+  "user": { ...updated user object }
+}
+\`\`\`
+
+**Response (Validation Error - 400)**:
+\`\`\`json
+{
+  "success": false,
+  "errors": {
+    "email": "Invalid email format",
+    "displayName": "Display name must be 2-50 characters"
+  }
+}
+\`\`\`
+
+## Validation Rules
+- Email: RFC 5322 compliant regex
+- Display name: 2-50 characters, alphanumeric plus spaces and hyphens
+- Bio: 0-500 characters
+
+## Error Handling
+- 401 Unauthorized: User not logged in → redirect to /login
+- 400 Bad Request: Validation errors → show inline error messages
+- 500 Server Error: Database failure → show generic error, log details
+```
+
+Now any developer (or AI) reading this knows exactly how to implement it.
+
+### Step 3: Break Into Tasks
+
+Create `.claude/specs/user-profile-settings/tasks.md`:
+
+```markdown
+# Implementation Tasks
+
+- [ ] 1. Create ProfileSettings React component
+  - Set up component file at components/ProfileSettings.tsx
+  - Import React Hook Form
+  - Define form state with email, displayName, bio fields
+  - _Requirements: 1, 2_
+
+- [ ] 2. Implement form validation
+  - Add email format validator using regex
+  - Add display name length validator (2-50 chars)
+  - Add bio length validator (0-500 chars)
+  - Display inline error messages
+  - _Requirements: 2, 4_
+
+- [ ] 3. Create API endpoint PUT /api/user/profile
+  - Set up route handler
+  - Add authentication middleware (verify JWT)
+  - Implement server-side validation
+  - Update database users table
+  - Return appropriate response (200 or 400)
+  - _Requirements: 3, 4_
+
+- [ ] 4. Connect frontend to API
+  - Add form submit handler
+  - Make PUT request to /api/user/profile
+  - Handle loading state (disable form during submission)
+  - Display success message on 200 response
+  - Display error messages on 400 response
+  - _Requirements: 3, 4_
+
+- [ ] 5. Add error boundary and edge cases
+  - Handle 401 Unauthorized (redirect to login)
+  - Handle 500 Server Error (show friendly message)
+  - Add loading spinner during submission
+  - Prevent double-submission
+  - _Requirements: 4_
+
+- [ ] 6. Write tests
+  - Unit tests for validation functions
+  - Integration test for API endpoint
+  - E2E test for complete user flow
+  - _Requirements: All_
+```
+
+Notice each task is small and specific. You could implement any one of these in 10-20 minutes.
+
+### Step 4: Implement with Claude Code
+
+Now you can ask Claude Code to implement tasks one at a time:
+
+```
+Please implement task 1: Create ProfileSettings React component.
+
+Reference files:
+- .claude/specs/user-profile-settings/requirements.md
+- .claude/specs/user-profile-settings/design.md
+```
+
+Claude has clear context and constraints. It knows the data model, the validation rules, and the expected behavior. The code it generates will align with your specifications.
+
+After implementing task 1, mark it complete in tasks.md:
+
+```markdown
+- [x] 1. Create ProfileSettings React component
+```
+
+Then move to task 2. One step at a time.
+
+## PRD Building Blocks for SDD
+
+If you're coming from a traditional PM background, you're familiar with Product Requirements Documents (PRDs). SDD specs are similar but optimized for AI consumption.
+
+**Essential sections:**
+
+1. **Problem Statement** - What problem does this solve?
+2. **User Stories** - Who benefits and how?
+3. **Functional Requirements** - What must the system do? (use EARS format)
+4. **Non-Functional Requirements** - Performance, security, accessibility standards
+5. **Success Metrics** - How will you measure if it works?
+6. **Out of Scope** - What are you explicitly NOT building?
+
+**Keep them scannable:**
+
+AI agents work best with structured, scannable documents. Use:
+- Bullet points over paragraphs
+- Code blocks for technical details
+- Tables for comparisons
+- Mermaid diagrams for visual clarity
+
+**Make them executable:**
+
+Use formats AI can parse (Markdown, YAML). Structure requirements consistently so AI agents can reference them programmatically:
+
+```markdown
+Requirement 2.1: Form Validation
+WHEN user submits form THEN system SHALL...
+```
+
+Then in your task: `_Requirements: 2.1_`
+
+This creates traceability from code back to requirements.
+
+## CLAUDE.md: Your SDD Configuration
+
+You can configure Claude Code to automatically follow your SDD workflow by adding instructions to your project's `CLAUDE.md` file or your global `~/.claude/CLAUDE.md`.
+
+Here's a starter template:
+
+```markdown
+# Spec-Driven Development Workflow
+
+## File Structure
+All specs are stored in `.claude/specs/{feature-name}/`
+- requirements.md
+- design.md
+- tasks.md
+
+## Workflow Rules
+
+### Planning Phase
+1. Always create requirements.md first
+2. Use EARS format: WHEN [trigger] THEN system SHALL [behavior]
+3. Get explicit approval before proceeding to design
+
+### Design Phase
+4. Read requirements.md before writing design
+5. Include data models, API specs, and error handling
+6. Get explicit approval before creating tasks
+
+### Implementation Phase
+7. Read ALL spec files before implementing any task
+8. Implement ONE task at a time
+9. Mark tasks complete: [ ] → [x]
+10. Wait for approval before proceeding to next task
+
+## Quality Standards
+- All functions require JSDoc comments
+- Test coverage must be ≥ 80%
+- No console.log statements in production code
+- All user inputs must be validated server-side
+```
+
+With this in place, Claude Code will automatically follow your preferred SDD process across all features.
+
+## SDD in Practice: Tips and Gotchas
+
+**Start small**
+
+Don't try to spec your entire app at once. Pick one feature. Follow the Requirements → Design → Tasks workflow. Experience the benefits. Then expand to more features.
+
+**Specs are living documents**
+
+You'll discover things during implementation that weren't obvious during planning. That's fine. Update the specs. The goal isn't perfect foresight - it's maintaining a single source of truth.
+
+**Don't over-specify**
+
+You're not writing a legal contract. If the implementation detail doesn't matter, don't specify it. Give the AI room to use best practices.
+
+**Use AI to write specs**
+
+It's perfectly fine to ask Claude Code to help you write specifications:
+
+```
+I need to add a password reset feature. Can you help me draft
+requirements.md using EARS format? The feature should let users
+request a reset link via email, then set a new password.
+```
+
+Then you review and refine.
+
+**Pair SDD with code review**
+
+Have another person (or Claude in a fresh session) review your specs before implementation. Catching design flaws in specs is 10x cheaper than in code.
+
+## When to Use SDD vs. Pure Vibe Coding
+
+**Use pure vibe coding for:**
+- Quick throwaway prototypes
+- Exploring ideas ("what would this look like?")
+- One-off scripts and automations
+- Learning new technologies
+
+**Use spec-driven development for:**
+- Features that will be maintained
+- Code that multiple people touch
+- Anything going to production
+- Complex logic with edge cases
+- When you'll need to come back later
+
+In practice, you'll often start with vibe coding to explore, then transition to SDD once you know what you want to build.
+
+## Exercise: Add a Feature Using SDD
+
+Let's practice. Take the to-do list app you built in chapter 1 (or any project you're working on).
+
+**Your task**: Add a new feature using spec-driven development.
+
+Pick something relatively simple:
+- Add categories/tags to to-do items
+- Add due dates and reminders
+- Add a search/filter function
+- Add user authentication
+
+**Follow the workflow:**
+
+1. **Create requirements.md**
+   - Write 3-5 user stories
+   - Write EARS-format acceptance criteria for each
+   - Think through edge cases
+
+2. **Create design.md**
+   - Document data model changes needed
+   - Specify any new API endpoints
+   - Describe the UI changes
+   - Include error handling approach
+
+3. **Create tasks.md**
+   - Break implementation into 5-10 small tasks
+   - Each task should take 10-30 minutes
+   - Reference specific requirements in each task
+
+4. **Implement with Claude Code**
+   - Ask Claude to implement task 1
+   - Review the code
+   - Mark task complete
+   - Move to task 2
+
+**Observe the difference:**
+
+How does this feel compared to pure vibe coding? Is the code quality better? Do you feel more in control? Can you explain why the code looks the way it does?
+
+## The Path Forward
+
+Spec-driven development isn't about abandoning the speed and creativity of vibe coding. It's about adding structure where it matters.
+
+Think of it this way:
+- **Vibe coding** is like sketching with a pencil - fast, exploratory, low commitment
+- **SDD** is like working with blueprints - structured, reviewable, production-ready
+
+You need both.
+
+Use vibe coding to explore and prototype rapidly. Use SDD when you're ready to build something that lasts.
+
+The developers building AI-native companies at scale aren't choosing between creativity and structure. They're using AI to move faster through both phases - vibe coding to iterate on ideas quickly, then SDD to ship production-quality features reliably.
+
+As you continue through this workshop, we'll use SDD principles to build increasingly sophisticated features. The investment you make in learning this process now will pay dividends when you're building real products.
+
+The future belongs to PMs who can both vibe code a prototype in an afternoon and spec-drive a production feature the next day.
+
+That's where we're headed.

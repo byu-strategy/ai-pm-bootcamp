@@ -1,133 +1,13 @@
 ---
-title: "AI Product Management"
+title: "First Prototype"
+format: html
 ---
 
-::: tweet-center
-<blockquote class="twitter-tweet">
+## Streamlit
 
-<p lang="en" dir="ltr">
+## Modern Webstack
 
-Builder’s high is back...
-
-</p>
-
-— Madhu Guru (@realmadhuguru) <a href="https://twitter.com/realmadhuguru/status/1955451011323314641">August 13, 2025</a>
-
-</blockquote>
-:::
-
-```{=html}
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-```
-
-## History of Product Management
-
-At its simplest, product management is about identifying customer needs, aligning them with business goals, and working with cross-functional teams to build products that succeed in the market. The person responsible is the Product Manager (PM), often called the "CEO of the product."
-
-Some people take issue with the “CEO” comparison, since product managers typically influence without formal authority and often don’t have many direct reports. Still, like a CEO, the skills of a product manager are broad and typically include:
-
--   Strategic thinking – setting vision, making trade-offs, and aligning with business goals
--   Customer insight – understanding user needs and pain points
--   Analytical ability – using data and critical thinking to guide decisions
--   Technical & design fluency – collaborating effectively with engineers and designers
--   Execution & organization – planning roadmaps, prioritizing, and delivering results
--   Communication & leadership – influencing, storytelling, and managing stakeholders
-
-Products can be hardware or software, but since software dominates in volume, product management is often associated with software, even though many of the principles can apply equally well to hardware. Today, many hardware products come with a software component or integrated app, at times blurring the line between hardware and software. The focus of this course is software products that can be built with the assistance of AI.
-
-Product Management, as a formal discipline and job title, traces its roots to Hewlett-Packard in the 1940s, where it emerged as a distinct driver of innovation in technology. Yet the concept predates HP: a 1931 Procter & Gamble memo introduced the role of “Brand Men,” whose responsibilities closely foreshadowed what would later be recognized as Product Management.
-
-![Image source: Wikimedia Commons](images/brand-men.jpg)
-
-Early influences such as the \[Scrum development process\](https://en.wikipedia.org/wiki/Scrum\_(software_development))) and the [Agile Manifesto](https://agilemanifesto.org/) reshaped how products are built, while initiatives like Google’s Associate Product Manager (APM) program and influential books helped standardize best practices. In recent years, PM has become one of the most sought-after careers, and today the field is entering a new era with the rise of the AI Product Manager.
-
-![A History of Product Management; Aakash Gupta and Scott Murff](images/pm-history.png)
-
-The personal computer revolution of the 1980s brought computing into offices and homes. The rise of the internet in the 1990s connected the world and created entirely new industries, from e-commerce to online media. In the 2000s, broadband (i.e. high-speed internet access) and cloud computing made software cheaper to build, scale, and distribute, while the launch of the iPhone in 2007 ushered in the smartphone era putting powerful applications directly into billions of people’s hands.
-
-In 2011, Marc Andreessen, co-founder of the venture capital firm Andreessen Horowitz (a16z) (known for its influential early investments in companies like Facebook, Airbnb, and Coinbase) famously observed that [*Software Is Eating the World*](https://a16z.com/why-software-is-eating-the-world/).
-
-AI now appears to be on track to “eat the world” again, this time at a much faster pace. The launch of ChatGPT on November 30, 2022, marked a turning point, catalyzing mass adoption of generative AI and enabling the rise of the AI Product Manager.
-
-Marc now predicts that [*AI Will Save the World*](https://a16z.com/ai-will-save-the-world/), but this certainly won't happen automatically. Because human nature is what it is, there will be plenty of people using AI in ways that are damaging to both individuals and society. Indeed, we are living in the time when:
-
-> “Discoveries latent with such potent power, either for the blessing or the destruction of human beings as to make men’s responsibility in controlling them the most gigantic ever placed in human hands. … This age is fraught with limitless perils, as well as untold possibilities.” *--David O. McKay, in Conference Report, Oct. 1966, 4.*
-
-**You have the incredibly exciting and challenging opportunity to harness AI to improve the world. This class will help prepare you to seize that opportunity.**
-
-Over the past two decades, many companies adopted a *product trio* team structure for building software products. This structure brings together three complementary roles: the product manager, who defines the vision, strategy, and priorities; the designer, who ensures usability, aesthetics, and a seamless user experience; and one or more engineers, who turn ideas into functional, scalable solutions. By balancing business objectives, user needs, and technical feasibility, the trio has emerged as a proven way to foster cross-functional collaboration and accelerate product development.
-
-AI and the tools we will use in this course are having a major impact and disrupting what had become a stable organizational model. This is true because AI changes both the division of labor within the trio and the speed and scale at which individuals and teams can operate.
-
-## AI Product Management
-
-With AI, a PM can quickly generate wireframes, mockups, or even working product demos without waiting on design or engineering support. Instead of handing off abstract requirements, they can test tangible ideas with users in days, not weeks. This doesn’t eliminate the need for designers and engineers, but it shifts when and how they are engaged. Designers can focus on higher-fidelity experience and brand expression, while engineers concentrate on scalability, integration, and technical soundness.
-
-It remains to be seen how this will fully play out, but early indications suggest that shifts in how PMs, designers, and engineers work together are real and lasting. With the right AI tools some ambitious individuals may be able to wear all three hats to varying degrees.
-
-Below are a selection of anecdotes from leaders in the field that provides some insight into how things are shifting.
-
-::: tweet-center
-<blockquote class="twitter-tweet">
-
-<p lang="en" dir="ltr">
-
-Vibe coding is here to stay. I'd been worried it might be a fad, but I talked to the founder of an infrastructure company who's in a position to see how well vibe-coded apps are doing, and he said a lot of them are making money.
-
-</p>
-
-— Paul Graham (@paulg) <a href="https://twitter.com/paulg/status/1956458026652799173?ref_src=twsrc%5Etfw"> August 15, 2025 </a>
-
-</blockquote>
-:::
-
-```{=html}
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-```
-
-::: embed-center
-<iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7362122859722256384?collapsed=1" height="567" width="504" frameborder="0" allowfullscreen title="Embedded post">
-
-</iframe>
-:::
-
-### AI-Powered PM
-
-An AI-Powered PM utilizes AI tools as a core part of their own workflow to enhance productivity and efficiency in tasks like prototyping and coding. 
-
-It's likely that eventually all PMs will eventually become AI-powered PMs. Individual companies will make this transition at varying speeds. It's happening at companies like Shopify and Coinbase.
-
-::: tweet-center
-<blockquote class="twitter-tweet">
-
-<p lang="en" dir="ltr">
-
-We are adding a coding section to all of our Product Managers interviews at <a href="https://twitter.com/Shopify?ref_src=twsrc%5Etfw">@Shopify</a>.<br><br> We'll start with APM interviews. We expect candidates to build a prototype of the product they suggested in the case interview.<br><br> There is no excuse for PMs not building prototypes.
-
-</p>
-
-— Kaz Nejatian (@CanadaKaz) <a href="https://twitter.com/CanadaKaz/status/1955629733460562404?ref_src=twsrc%5Etfw"> August 13, 2025 </a>
-
-</blockquote>
-:::
-
-```{=html}
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-```
-
-## AI Product PM
-
-An AI Product PM builds products where AI is a core feature. This means they need a good understanding of what AI can and can’t do, how to measure its performance, and how to design around its limitations. They balance accuracy, speed, cost, and safety. They work closely with engineers and designers to shape the product, test ideas, and ship features.
-
-Becoming an AI Product PM is challenging because you must do everything a traditional PM does—defining problems, leading teams, and shipping products—while also deeply understanding how AI works. This means grasping its strengths, limits, risks, and how to design around them. Because the bar is so high, AI Product PMs have quickly become the best-compensated roles in product management.
-
-Pawel Huryn has put together a comprehensive roadmap for becoming an AI Product PM shown below:
-
-![AI Product Management Learning Roadmap from Paweł Huryn](images/ai-pm-roadmap.jpeg)
-
-## Let's Build!
-
-### The Command Line
+## The Command Line (CLI)/Terminal
 
 In order to be a serious AI-Powered PM or AI Product PM, you need to get comfortable interacting with your computer via the [Terminal or command line](https://en.wikipedia.org/wiki/Command-line_interface).
 
@@ -593,4 +473,3 @@ Spend the next 15 minutes coming up with another application. For simplicity for
 ## Student Demos
 
 Let's see some of the apps that you built.
-

@@ -1,93 +1,268 @@
 ---
-title: "Tech Stack Components"
+title: "AI Tool Reference"
 editor: visual
+---
+
+## Quick Reference
+
+This page provides a practical reference for AI-assisted development tools. Tools are organized by technical complexity, from browser-based to command-line interfaces which we've used in this course.
+
+## Browser-Based Tools
+
+**When to use:** Quick prototyping, idea validation, no local setup required
+
+### Lovable
+Full-stack app builder through conversation
+
+- **What it builds:** React frontend + Supabase backend
+- **Speed:** Hours to working MVP
+- **Learning curve:** Minimal
+- **Link:** [lovable.dev](https://lovable.dev/)
+
+{{< video https://www.youtube.com/embed/dwsoP6DfU70 >}}
+
+### V0 by Vercel
+UI component generator
+
+- **What it builds:** React + Tailwind components
+- **Speed:** Minutes per component
+- **Learning curve:** Minimal
+- **Link:** [v0.dev](https://v0.dev/)
+
+### Bolt.new
+Full-stack development environment in browser
+
+- **What it builds:** Complete applications with deployment
+- **Speed:** Hours to working prototype
+- **Learning curve:** Low
+- **Link:** [bolt.new](https://bolt.new/)
+
+### Replit
+Browser IDE with AI assistant
+
+- **What it builds:** Multi-language projects
+- **Speed:** Varies by project
+- **Learning curve:** Low to medium
+- **Link:** [replit.com](https://replit.com/)
+
+---
+
+## Desktop IDEs
+
+**When to use:** Professional development, complex projects, team collaboration
+
+### Cursor
+AI-first code editor built on VS Code
+
+- **Key features:**
+  - Composer: Multi-file editing
+  - Tab: AI autocomplete
+  - Chat: Conversational coding
+- **Best for:** Technical PMs and engineers wanting AI assistance
+- **Learning curve:** Medium
+- **Link:** [cursor.sh](https://cursor.sh/)
+
+### Windsurf
+
+Agentic IDE with autonomous refactoring
+
+- **Key features:**
+  - Cascade mode: Large-scale multi-file changes
+  - Deep codebase understanding
+  - Autonomous agent capabilities
+- **Best for:** Developers comfortable with AI making bigger changes
+- **Learning curve:** Medium to high
+- **Link:** [codeium.com/windsurf](https://codeium.com/windsurf)
+
+{{< video https://www.youtube.com/embed/oLmHdymHHg0 >}}
+
+### GitHub Copilot
+AI pair programmer that works in any editor
+
+- **Key features:**
+  - Inline code suggestions
+  - Works in VS Code, JetBrains, Vim, etc.
+  - Context-aware completions
+- **Best for:** Anyone who codes regularly
+- **Learning curve:** Low
+- **Link:** [github.com/features/copilot](https://github.com/features/copilot)
+
+---
+
+## Command Line Tools
+
+**When to use:** Maximum control, automation, transparent workflows
+
+### Claude Code (CLI)
+
+Terminal-based agentic development tool
+
+- **Key features:**
+  - Plan mode: Understand before changing
+  - MCP servers: Extend capabilities
+  - Project memory: Persistent context
+- **Best for:** Technical PMs, terminal-comfortable developers
+- **Learning curve:** Medium to high
+- **Install:** `npm install -g @anthropic-ai/claude-code`
+
+**Essential commands:**
+
+| Command | Action |
+|---------|--------|
+| `Shift + Tab` | Toggle plan mode |
+| `/clear` | Clear context |
+| `#` | Add to project memory |
+| `@filename` | Reference files |
+
+### Aider
+Git-aware AI coding assistant
+
+- **Key features:**
+  - Automatic git commits
+  - Multiple AI model support
+  - Git workflow integration
+- **Best for:** Developers who live in terminal
+- **Learning curve:** Medium
+- **Link:** [aider.chat](https://aider.chat/)
+
+### Cline
+
+VS Code extension with agentic capabilities
+
+- **Key features:**
+  - Claude reasoning in VS Code
+  - Web browsing
+  - File editing and command execution
+- **Best for:** VS Code users wanting Claude
+- **Learning curve:** Low to medium
+- **Install:** VS Code extension marketplace
+
+### GitHub Copilot CLI
+
+Agentic coding assistant in terminal
+
+- **Key features:**
+  - AI agent that understands code and GitHub context
+  - Build, edit, debug, and refactor code
+  - MCP extensibility for custom capabilities
+  - Preview actions before execution
+- **Best for:** Terminal-native development with GitHub integration
+- **Learning curve:** Low to medium
+- **Install:** `npm install -g @github/copilot`
+- **Requires:** Active GitHub Copilot subscription
+- **Model:** Claude Sonnet 4.5 (default)
+
+### Gemini CLI
+
+Open-source AI agent from Google
+
+- **Key features:**
+  - Gemini 2.5 Pro with 1M token context window
+  - Google Search grounding
+  - Built-in tools for file operations and shell commands
+  - MCP support for extensions
+- **Best for:** Research-heavy tasks, free tier available
+- **Learning curve:** Low to medium
+- **Install:** `npm install -g @google/gemini-cli@latest`
+- **Free tier:** 60 requests/min, 1,000 requests/day
+- **Link:** [github.com/google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli)
+
+### OpenAI Codex CLI
+
+Lightweight coding agent from OpenAI
+
+- **Key features:**
+  - Read, modify, and execute code locally
+  - OpenAI reasoning models in terminal
+  - Runs directly on your machine
+  - Secure local operation
+- **Best for:** OpenAI users wanting terminal-based coding assistance
+- **Learning curve:** Low to medium
+- **Install:** `npm install -g @openai/codex`
+- **Setup:** `codex --login` (requires OpenAI API key)
+- **Requirements:** Node.js 22+, macOS/Linux (Windows via WSL)
+- **Link:** [github.com/openai/codex](https://github.com/openai/codex)
+
+---
+
+## Supporting Services
+
+### Backend & Database
+
+**Supabase** - Open source Firebase alternative
+- PostgreSQL database
+- Instant REST and GraphQL APIs
+- Authentication and storage
+- Real-time subscriptions
+- **Link:** [supabase.com](https://supabase.com/)
+
+### Frontend Tools
+
+**Stitch by Google** - Prompt-to-UI component generator
+- Generate React components from natural language
+- **Link:** [stitch.withgoogle.com](https://stitch.withgoogle.com/)
+
+### Presentations
+
+**Gamma** - AI presentation builder
+- Generate slide decks from prompts
+- Good for pitch decks and updates
+- **Link:** [gamma.app](https://gamma.app/)
+
+---
+
+## AI Chat Interfaces
+
+For research, brainstorming, and code assistance:
+
+| Tool | Best For |
+|------|----------|
+| **ChatGPT** | General tasks, coding help, broad knowledge |
+| **Claude** | Complex reasoning, long documents, coding |
+| **Perplexity** | Research with citations, current information |
+| **Gemini** | Google workspace integration |
+| **DeepSeek** | Open source alternative |
+
 ---
 
 ## Programming Languages
 
-| Language     | Description                                                                 |
-|--------------|-----------------------------------------------------------------------------|
-| **Python**   | High-level, versatile, beginner-friendly; popular for AI, data science, and web apps. |
-| **JavaScript** | Core language of the web; runs in browsers and servers (with Node.js).       |
-| **TypeScript** | TypeScript is a superset of JavaScript — you write .ts files, but browsers and servers don’t understand TypeScript directly.
-Instead, TypeScript is compiled (or transpiled) into plain JavaScript. |
-| **Java**     | Object-oriented, cross-platform; widely used in enterprise apps and Android. |
-| **C**        | Low-level, fast, portable; forms the basis of many other languages.          |
-| **C++**      | Extension of C with OOP features; used in systems, games, and high-performance apps. |
-| **C#**       | Microsoft’s language for .NET; popular in enterprise software and Unity games. |
-| **Go (Golang)** | Designed by Google; simple, fast, great for concurrency and cloud apps.     |
-| **Rust**     | Systems language focused on safety and performance; gaining popularity in infrastructure. |
-| **PHP**      | Server-side scripting language; powers many websites, including WordPress.   |
-| **Ruby**     | Simple and elegant syntax; best known for Ruby on Rails web framework.       |
-| **Swift**    | Apple’s language for iOS/macOS development; safe and fast.                   |
-| **Kotlin**   | Modern, concise JVM language; official language for Android development.     |
-| **R**        | Specialized in statistics and data analysis; widely used in academia.        |
-| **SQL**      | Domain-specific language for managing and querying relational databases.     |
+Languages with strong AI tool support:
 
-## Claude Code
+| Language | Primary Use | AI Support |
+|----------|------------|------------|
+| **JavaScript/TypeScript** | Web development (frontend and backend) | Excellent |
+| **Python** | Backend, data processing, AI/ML | Excellent |
+| **HTML/CSS** | Web structure and styling | Excellent |
+| **SQL** | Database queries | Very Good |
 
-`shift + tab` to turn on plan mode. Recommended before changing the code base
+::: {.callout-note}
+With AI coding assistants, you focus on **what** you want to build, not memorizing syntax. Describe your intent in natural language and let AI generate the code.
+:::
 
-`/clear` to clear the context window
-
-`#` to add something to "memory" which is equivalent to adding to your claude.md file.
+---
 
 ## MCP Servers
 
-### Playwright
+Model Context Protocol extends Claude Code capabilities. Install as needed:
 
+### Playwright - Browser Automation
 ```bash
 claude mcp add playwright npx @playwright/mcp@latest
 ```
 
+**Enables:**
+- Automated browser testing
+- Screenshot capture
+- Web interface interaction
+
 {{< video https://www.youtube.com/embed/xOO8Wt_i72s >}}
 
+### Common MCP Servers
+- **File system** - Access files outside project
+- **Database** - Direct database connections
+- **API** - External service integration
 
-
-
-
-![](images/ai-tools.jpeg)
-
-## Front end
-
-[Stitch by Google](https://stitch.withgoogle.com/)
-
-## Backend
-
--   Supabase
-
-## No-Code
-
--   Lovable
-
-{{< video https://www.youtube.com/embed/dwsoP6DfU70 >}}
-
--   V0
-
-## Low-Code
-
-## Pro-Code
-
-### Windsurf
-
-{{< video https://www.youtube.com/embed/oLmHdymHHg0 >}}
-
-### Cursor
-
-### VS Code
-
-## Presentations
-
--   Gamma
-
-## ChatBots
-
--   ChatGPT
--   Gemini
--   Claude
--   Perplexity
--   DeepSeek
--   Grok
--   Le Chat
-
-### Open Source
+::: {.callout-tip}
+Start simple. Only add MCP servers when you need specific capabilities. Each server adds complexity.
+:::
