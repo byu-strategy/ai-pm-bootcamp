@@ -11,7 +11,7 @@ format:
 
 Welcome to Scott Murff's Full-Stack Product Builder workshop.
 
-In this workshop, we explore the hypothesis that: with the help of AI tools a new professional archetype is rising, that of *full-stack product builder*. 
+In this workshop, we explore the hypothesis that: with the help of AI tools a new professional archetype is arising, that of *full-stack product builder*. 
 
 A full-stack product builder is someone who is able to play well across the entire digital product lifecycle of:
 

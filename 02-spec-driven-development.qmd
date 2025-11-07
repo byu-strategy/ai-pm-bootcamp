@@ -3,51 +3,38 @@ title: "Spec-Driven Development"
 format: html
 ---
 
-## The Problem with Pure Vibe Coding
 
-Remember that to-do list app you built in the first chapter? It probably worked fine for a prototype. But what happens when you come back a week later and want to add user authentication? Or when you realize you need to handle edge cases like duplicate tasks or data persistence?
+> In the near future, the person who communicates most effectively is the most valuable programmer. If you can communicate effectively, you can program. 
+>
+>Moving forward, the new scarce skill is writing specifications that fully capture the intent and values [of what you want to build]. Whoever masters that becomes the most valuable programmer. There's a reasonable chance that this is going to be the coders of today. This is already very similar to what we do. However, product managers also write specifications...
+>
+> *Sean Grove, Engineer at OpenAI*
 
-You probably can't remember exactly what you asked Claude to do. The AI certainly doesn't remember. And if you ask it to add features, there's a good chance it will rewrite things in ways that break what was working before.
+The antidote for the "AI-slop" that might be generated from careless Vibe Coding is *Spec-Driven Development.*
 
-This is the Achilles' heel of pure vibe coding: **it doesn't scale beyond quick prototypes**.
+Spec-Driven Development (SDD) is exactly what it sounds like: you write specifications before code. It's a more structured and methodical approach than just typing or speaking a stream of conciousness, and praying.
 
-As one developer put it on a popular tech forum: "Vibe coding got me 80% of the way there in 20% of the time. Then I spent 80% of my time fixing the last 20%."
-
-When you're building something that needs to work reliably, you run into problems:
-
-- **Context amnesia**: The AI forgets previous decisions across sessions
-- **Inconsistent implementations**: The same request yields wildly different code
-- **Debugging nightmares**: You can't trace why something was built a certain way
-- **Team chaos**: Other people can't see the reasoning behind your code
-- **Breaking changes**: Modifications break things because requirements were never documented
-
-This is where **Spec-Driven Development** comes in.
-
-## What is Spec-Driven Development?
-
-Spec-Driven Development (SDD) is exactly what it sounds like: you write specifications before you write code. But unlike the 100-page requirements documents of yesteryear that nobody read, modern SDD is lightweight, structured, and designed specifically for working with AI coding agents.
-
-At its core, SDD means creating three types of documents:
+At its core, SDD means creating three types of documents which you can think of collectively as an AI-native version of a Product Requirements Document (PRD):
 
 1. **Requirements** - What should the system do? (user stories and acceptance criteria)
 2. **Design** - How will the system work? (architecture and data models)
 3. **Tasks** - What are the discrete implementation steps? (actionable checklist)
 
-Think of it as giving your AI assistant a detailed brief instead of vague instructions. The difference between saying "build me a house" versus handing over blueprints with specific dimensions, materials, and electrical layouts.
+The primary audience is an AI agent rather than a colleague, although the documents retain the benefit of being human readable, in form of markdown text (.md) files. 
 
-Here's what Sean Grove from OpenAI said at the AI Engineer conference in 2025:
+Like a typical PRD this collection of documents serves as the blueprint and architectural drawings of the product.
 
-> "Specifications, not prompts or code, are becoming the fundamental unit of programming, and writing specs is the new superpower."
+Once you have high quality specs the AI agents can get to work building what you communicated in a high fidelity way.
 
-## Web Application Building Blocks: A PM's Guide
+## Web/Mobile Application Building Blocks
 
-Before we dive into spec-driven development, you need to understand what you're actually specifying. When you write requirements and design documents for web applications, you'll be working with four fundamental building blocks. Think of these as the main characters in every web app story:
+Before we dive deeper into spec-driven development, we need a solid understanding of what we are actually specifying. When you write requirements and design documents for web applications, you'll be working with four fundamental building blocks.
 
 ### Frontend (The User Interface)
 
-The **frontend** is everything users see and interact with in their browser. It's the buttons, forms, text, images, and animations. When you click "Add to Cart" on a shopping site, that button and the visual feedback you get - that's frontend.
+The **frontend** is everything users see and interact with in their browser or on a smartphone. It's the buttons, forms, text, images, and animations. When you click "Add to Cart" on a shopping site, that button and the visual feedback you get, that's frontend.
 
-**Technologies you'll encounter:**
+** Common Technologies you'll encounter:**
 - **HTML** - The structure (like the skeleton of a webpage)
 - **CSS** - The styling (colors, fonts, layouts)
 - **JavaScript** - The interactivity (what happens when you click things)

@@ -31,31 +31,13 @@ These commands work seamlessly across **macOS** or **Windows** but there is a li
 
 **If You Are Using Windows — Do This First**
 
-**Step 1: Install Git Bash using `winget`**
-
-Within VS Code, open a Terminal and run:
-
-```bash
-winget install --id Git.Git -e --source winget
-```
-
-This installs **Git for Windows**, which includes **Git Bash**.
-
-After installation, verify that it worked:
-
-```bash
-git --version
-```
-
-If you see a version number (like `git version 2.46.0`), you’re ready to go.
-
 **Step 2: Set Git Bash as the Default Terminal in VS Code**
 
 1. Open **VS Code**.
 2. Press `Ctrl + Shift + P` to open the Command Palette.
 3. Type `Terminal: Select Default Profile` and press **Enter**.
 4. Choose **Git Bash** from the list.
-5. Open a new terminal tab (`Ctrl + ~`) — it should now start with `bash$` or `MINGW64` instead of `PS`.
+5. Open a new terminal tab (`Ctrl + ~`) it should now start with `bash$` or `MINGW64` instead of `PS`.
 
 Now your VS Code terminal behaves almost identical to macOS (with a few exceptions noted below), and you can copy-paste the commands below directly.
 

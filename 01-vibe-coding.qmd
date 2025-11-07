@@ -58,7 +58,7 @@ A few month's earlier in March of 2025, Jared Friedman, a YC managing partner sh
 
 {{< video https://www.youtube.com/embed/IACHfKmZMr8 >}}
 
-There are now a slew of high-growth companies have arisen than enable so called vibe coding which Dan Olsen has done a nice job of summarizing in the chart below:
+There are now a slew of new high-growth companies that have arisen that enable so called vibe coding which Dan Olsen has done a nice job of summarizing in the chart below:
 
 ![](/images/dan-olsen-vibe-coding.jpeg)
 
@@ -172,6 +172,6 @@ I don't like the term "vibe coding" because it sounds unserious, and frankly, mu
 
 ![](/images/vibe-clean-up.png)
 
-Don't be the reason someone has to hire one of these. 
+Don't be the reason your boss has bring in a Vibe Code Cleanup Specialist.
 
-Going forward I will use terms like "build with AI", "agentic coding," "ai-assisted coding", "AI builder", "full-stack product builder", and "AI engineer" to describe what we are striving to do do and become. To do these terms justice we will follow a rigorous spec-driven development process guiding AI to write code that will stand up to scrutiny in a world class engineering organization.
+Going forward I will use terms like "build with AI", "agentic coding," "ai-assisted coding", "AI builder", "full-stack product builder", and "AI engineer" to describe what we are striving to do and become. To do these terms justice we will follow a rigorous development process guiding AI to write code that will stand up to scrutiny in a world class engineering organization.

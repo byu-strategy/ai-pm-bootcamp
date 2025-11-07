@@ -3,7 +3,7 @@ title: "Thought Leaders"
 editor: visual
 ---
 
-## Thought Leaders
+The table below contains a listing of influential thought leaders in the the field of product management. You can learn a lot from them through their various channels which are linked below:
 
 | Category | Name | Description | Links |
 |----------|------|-------------|-------|

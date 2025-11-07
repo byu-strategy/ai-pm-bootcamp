@@ -16,7 +16,7 @@ Full-stack app builder through conversation
 
 - **What it builds:** React frontend + Supabase backend
 - **Speed:** Hours to working MVP
-- **Learning curve:** Minimal
+- **Learning curve:** Minimal 
 - **Link:** [lovable.dev](https://lovable.dev/)
 
 {{< video https://www.youtube.com/embed/dwsoP6DfU70 >}}
@@ -63,9 +63,7 @@ AI-first code editor built on VS Code
 - **Link:** [cursor.sh](https://cursor.sh/)
 
 ### Windsurf
-
 Agentic IDE with autonomous refactoring
-
 - **Key features:**
   - Cascade mode: Large-scale multi-file changes
   - Deep codebase understanding
@@ -94,9 +92,7 @@ AI pair programmer that works in any editor
 **When to use:** Maximum control, automation, transparent workflows
 
 ### Claude Code (CLI)
-
 Terminal-based agentic development tool
-
 - **Key features:**
   - Plan mode: Understand before changing
   - MCP servers: Extend capabilities
@@ -126,9 +122,7 @@ Git-aware AI coding assistant
 - **Link:** [aider.chat](https://aider.chat/)
 
 ### Cline
-
 VS Code extension with agentic capabilities
-
 - **Key features:**
   - Claude reasoning in VS Code
   - Web browsing
@@ -138,50 +132,34 @@ VS Code extension with agentic capabilities
 - **Install:** VS Code extension marketplace
 
 ### GitHub Copilot CLI
-
-Agentic coding assistant in terminal
-
+AI-powered command line assistant
 - **Key features:**
-  - AI agent that understands code and GitHub context
-  - Build, edit, debug, and refactor code
-  - MCP extensibility for custom capabilities
-  - Preview actions before execution
-- **Best for:** Terminal-native development with GitHub integration
-- **Learning curve:** Low to medium
-- **Install:** `npm install -g @github/copilot`
-- **Requires:** Active GitHub Copilot subscription
-- **Model:** Claude Sonnet 4.5 (default)
+  - Natural language to shell commands
+  - Git command suggestions
+  - Explains what commands do
+- **Best for:** Learning terminal commands, writing complex bash scripts
+- **Learning curve:** Low
+- **Install:** `gh extension install github/gh-copilot`
 
 ### Gemini CLI
-
-Open-source AI agent from Google
-
+Google's AI assistant in terminal
 - **Key features:**
-  - Gemini 2.5 Pro with 1M token context window
-  - Google Search grounding
-  - Built-in tools for file operations and shell commands
-  - MCP support for extensions
-- **Best for:** Research-heavy tasks, free tier available
+  - Multimodal AI (text, images, code)
+  - Google Search integration
+  - Long context window
+- **Best for:** Research-heavy tasks, using Google's AI models
 - **Learning curve:** Low to medium
-- **Install:** `npm install -g @google/gemini-cli@latest`
-- **Free tier:** 60 requests/min, 1,000 requests/day
-- **Link:** [github.com/google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli)
+- **Install:** `npm install -g @google/generative-ai-cli`
 
-### OpenAI Codex CLI
-
-Lightweight coding agent from OpenAI
-
+### GitHub Codex
+AI code generation and completion
 - **Key features:**
-  - Read, modify, and execute code locally
-  - OpenAI reasoning models in terminal
-  - Runs directly on your machine
-  - Secure local operation
-- **Best for:** OpenAI users wanting terminal-based coding assistance
-- **Learning curve:** Low to medium
-- **Install:** `npm install -g @openai/codex`
-- **Setup:** `codex --login` (requires OpenAI API key)
-- **Requirements:** Node.js 22+, macOS/Linux (Windows via WSL)
-- **Link:** [github.com/openai/codex](https://github.com/openai/codex)
+  - Natural language to code translation
+  - Multiple programming languages
+  - Code explanation and refactoring
+- **Best for:** Quick code generation, learning new languages
+- **Learning curve:** Low
+- **Note:** Powers GitHub Copilot
 
 ---
 

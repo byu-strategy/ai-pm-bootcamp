@@ -15,20 +15,20 @@ book:
     - part: Topics
       chapters:
         - 01-vibe-coding.qmd
-        - 04-spec-driven-development.qmd
+        - 02-spec-driven-development.qmd
         - 03-git-deployment.qmd
         #- 03-product-architecture.qmd
-        - 05-power-users.qmd
+        - 04-power-users.qmd
         # - 02-first-prototype.qmd
     - part: Resources
       chapters:
     # Resources and Appendices
       - 99-prompts.qmd
+      - 99-further-reading.qmd
       - 97-thought-leaders.qmd
       - 95-eng-checklist.qmd
       - 96-code-base-review.qmd
       - 98-tools.qmd
-      # - 99-further-reading.qmd
 
 
 bibliography: references.bib
@@ -46,5 +46,8 @@ format:
     number-sections: false
 execute:
   eval: false
+
+mermaid:
+  theme: default
     
 toc-title: On this page

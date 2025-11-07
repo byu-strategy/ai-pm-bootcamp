@@ -1,0 +1,35 @@
+# Further Reading {.unnumbered}
+
+This page contains curated articles, videos, and other resources to deepen your understanding of AI-assisted development and Claude Code.
+
+## Articles
+
+**Claude Code: What It Is, How It's Different, and Why Non-Technical People Should Use It**
+
+**Author:** Teresa Torres
+
+**Published:** October 29, 2025
+
+**Source:** Product Talk
+
+This article explains how Claude Code differs from browser-based Claude by enabling automatic file access, parallel task processing, and reusable workflows. Torres demonstrates these capabilities through a detailed competitive analysis example and emphasizes that you don't need coding experience, just basic familiarity with file organization and simple terminal commands.
+
+[Read the full article](https://www.producttalk.org/claude-code-what-it-is-and-how-its-different/)
+
+## Videos
+
+### AI-Assisted Development with Claude Code
+
+An in-depth video exploring AI-assisted development workflows and techniques using Claude Code.
+
+[Watch on YouTube](https://www.youtube.com/watch?v=8rABwKRsec4)
+
+---
+
+## Additional Resources
+
+Looking for more resources? Check out:
+
+- [Thought Leaders](97-thought-leaders.qmd) - Key voices in the AI-assisted development space
+- [Tools](98-tools.qmd) - Essential tools and platforms
+- [Prompts](99-prompts.qmd) - Prompt engineering resources

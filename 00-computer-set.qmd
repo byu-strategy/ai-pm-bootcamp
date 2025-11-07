@@ -2,11 +2,9 @@
 title: "Computer Set-up"
 ---
 
-*Plan for about 15 minutes to install the necessary software for the workshop.*
+*Plan for about 20 minutes to install the necessary software for the workshop. This can be completed on your own before the workshop or during check-in from 12:45-1:15 in person at the event* 
 
-**Laptop Requirement:** You must bring your own Windows or MacOS laptop with at least 4GB of RAM.
-
-Complete the following set-up steps prior to the workshop. Workshop check-in starts at 12:45 PM, 30 minutes before the workshop kicks off at 1:15 PM, so you may also complete these steps during check-in.
+**Laptop Requirement:** You must bring your own Windows or MacOS laptop with at least 4GB of RAM. Also bring a charging cord and a mouse if you like using one.
 
 **If any any point you get stuck or something is not working as expeceted take a screen shot or copy/paste the text you see into ChatGPT and ask for help troubleshooting. If something is still not working then send an email to [strategy-program@byu.edu](mailto:strategy-program@byu.edu) for assistance.**
 

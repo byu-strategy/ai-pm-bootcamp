@@ -54,9 +54,16 @@ The book follows a three-part structure defined in `_quarto.yml`:
 - `index.qmd` - Landing page and schedule
 - `00-computer-set.qmd` - Pre-workshop setup instructions for installing Claude Code, VS Code, Git, Node, Python
 - `01-vibe-coding.qmd` - Introduction to AI-assisted coding and the vibe coding movement
-- `02-first-prototype.qmd` - Building first prototypes and command line basics
+- `02-spec-driven-development.qmd` - Structured approach to feature development
 - `03-git-deployment.qmd` - Version control and deployment workflows
-- `04-spec-driven-development.qmd` - Structured approach to feature development
+- `04-power-users.qmd` - Power user techniques and advanced workflows
+- `99-prompts.qmd` - Prompt engineering resources
+- `99-first-prototype.qmd` - Building first prototypes and command line basics
+- `99-llms-prompt-engineering.qmd` - LLMs and prompt engineering fundamentals
+- `95-eng-checklist.qmd` - Engineering checklist
+- `96-code-base-review.qmd` - Code base review guidelines
+- `97-thought-leaders.qmd` - Thought leaders in AI-assisted development
+- `98-tools.qmd` - Tools and resources
 - `_header.html` / `_footer.html` - Custom HTML injected into all pages
 - `styles.css` - Custom CSS styling
 - `references.bib` - Bibliography for citations
@@ -65,7 +72,7 @@ The book follows a three-part structure defined in `_quarto.yml`:
 ### Chapter Naming Convention
 
 - `00-*` - Setup and prerequisites
-- `01-05` - Core workshop topics
+- `01-04` - Core workshop topics (active chapters in Topics section)
 - `95-99` - Resources, tools, and appendices
 
 ## Deployment
