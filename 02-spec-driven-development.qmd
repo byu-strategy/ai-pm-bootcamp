@@ -10,9 +10,9 @@ format: html
 >
 > *Sean Grove, Engineer at OpenAI*
 
-The antidote for the "AI-slop" that might be generated from careless Vibe Coding is *Spec-Driven Development.*
+The antidote for the "AI-slop" that may be generated from careless Vibe Coding is *Spec-Driven Development.*
 
-Spec-Driven Development (SDD) is exactly what it sounds like: you write specifications before code. It's a more structured and methodical approach than just typing or speaking a stream of conciousness, and praying.
+Spec-Driven Development (SDD) is exactly what it sounds like: you write specifications before code. It's a more structured and methodical approach than just typing or speaking a stream of conciousness, and then praying.
 
 At its core, SDD means creating three types of documents which you can think of collectively as an AI-native version of a Product Requirements Document (PRD):
 
@@ -20,7 +20,7 @@ At its core, SDD means creating three types of documents which you can think of 
 2. **Design** - How will the system work? (architecture and data models)
 3. **Tasks** - What are the discrete implementation steps? (actionable checklist)
 
-The primary audience is an AI agent rather than a colleague, although the documents retain the benefit of being human readable, in form of markdown text (.md) files. 
+The primary audience for these docs is an AI agent rather than a colleague, although the documents retain the benefit of being human readable in form of markdown text (.md) files. 
 
 Like a typical PRD this collection of documents serves as the blueprint and architectural drawings of the product.
 
@@ -28,40 +28,47 @@ Once you have high quality specs the AI agents can get to work building what you
 
 ## Web/Mobile Application Building Blocks
 
-Before we dive deeper into spec-driven development, we need a solid understanding of what we are actually specifying. When you write requirements and design documents for web applications, you'll be working with four fundamental building blocks.
+Before we dive deeper into spec-driven development, we need a solid understanding of what we are actually specifying. When you write requirements and design documents for web or mobile applications, you'll be working with several fundamental building blocks: frontend, server, apis, and database.
+
+![](/images/eng-landscape.png)
 
 ### Frontend (The User Interface)
 
-The **frontend** is everything users see and interact with in their browser or on a smartphone. It's the buttons, forms, text, images, and animations. When you click "Add to Cart" on a shopping site, that button and the visual feedback you get, that's frontend.
+The **frontend** is everything users see and interact with - whether in a browser or on a smartphone. It's the buttons, forms, text, images, and animations. When you click "Add to Cart" on a shopping site, that button and the visual feedback you get, that's frontend.
 
-** Common Technologies you'll encounter:**
-- **HTML** - The structure (like the skeleton of a webpage)
-- **CSS** - The styling (colors, fonts, layouts)
-- **JavaScript** - The interactivity (what happens when you click things)
-- **Frameworks** - React, Vue, Svelte (tools that make building complex interfaces easier)
+**Technologies you'll encounter:**
 
-**Real example:** In your to-do list app, the input box where you type tasks, the checkbox you click to mark tasks complete, and the list display - all frontend.
+**Web:**
 
-**When specifying frontend:**
+- **HTML/CSS/JavaScript** - Structure, styling, and interactivity
+- **Frameworks** - React, Vue, Svelte (for complex interfaces)
+
+**Mobile:**
+
+- **Native** - Swift (iOS), Kotlin (Android) for platform-specific apps
+- **Cross-platform** - React Native, Flutter (one codebase for both iOS and Android)
+
+**Example of how to specify a frontend feature:**
+
 ```markdown
-WHEN user clicks "Add Task" button
+WHEN user taps "Add Task" button
 THEN system SHALL display the new task at top of list
 AND clear the input field
-AND show a success animation
+AND show a success animation (fade-in on web, slide-in on mobile)
 ```
 
 ### Backend (The Business Logic)
 
-The **backend** is the server-side code that runs behind the scenes. It handles the "business logic" - the rules and operations that make your app work. When you submit a login form, the backend checks if your password is correct. When you add a to-do item, the backend validates it and saves it.
+The **backend** is the server-side code that runs behind the scenes. It handles the "business logic" which are the rules and operations that make your app work. When you submit a login form, the backend checks if your password is correct. When you add a to-do item, the backend validates it and saves it.
 
 **Technologies you'll encounter:**
+
 - **Server frameworks** - Node.js/Express, Python/Django, Ruby on Rails
 - **APIs** - The connection points between frontend and backend (more on this below)
+- **Backend Services** - Firebase, Supabase, AWS Amplify (backend-as-a-service for mobile apps)
 - **Authentication** - Login systems, user sessions, permissions
 
-**Real example:** When you mark a to-do item complete, the backend receives that request, validates that you own that task, updates the status, and confirms the change.
-
-**When specifying backend:**
+**Example of specifying a backend feature:**
 ```markdown
 WHEN user submits registration form with email "user@example.com"
 THEN system SHALL check if email already exists in database
@@ -71,21 +78,24 @@ AND if not exists, create new user account and send confirmation email
 
 ### Database (The Memory)
 
-The **database** is where your application stores data permanently. Think of it as your app's long-term memory. When you close your browser and come back later, how does the app remember your to-do items? The database.
+The **database** is where your application stores data permanently. Think of it as your app's long-term memory. Whether users access from a browser or mobile device, the database ensures their data persists.
 
 **Technologies you'll encounter:**
-- **SQL databases** - PostgreSQL, MySQL (organized like spreadsheets with tables and rows)
-- **NoSQL databases** - MongoDB, Firebase (organized like nested documents)
-- **ORMs** - Tools that let you interact with databases using normal code instead of database query language
 
-**Real example:** Your to-do list items are stored in a database table that might look like:
+- **SQL databases** - PostgreSQL, MySQL (data organized like spreadsheets with tables and rows)
+- **NoSQL databases** - MongoDB, Firebase Firestore (organized like nested documents)
+- **Mobile-friendly options** - Firebase, Supabase (real-time sync across devices)
+- **Local storage** - SQLite (on-device storage for mobile apps), IndexedDB (browser storage)
+
+For example, in a to-do list app, items are stored in a SQL database table that might look like:
 
 | id  | user_id | task_text        | completed | created_at          |
 |-----|---------|------------------|-----------|---------------------|
 | 1   | 42      | "Buy groceries"  | false     | 2025-01-15 10:30:00 |
 | 2   | 42      | "Call dentist"   | true      | 2025-01-15 11:45:00 |
 
-**When specifying database:**
+**Example or specifying the database design**
+
 ```markdown
 ## Data Model
 
@@ -106,12 +116,13 @@ Task table:
 
 ### API (The Messenger)
 
-**API** stands for Application Programming Interface, but think of it as the messenger system between frontend and backend. When your frontend needs data or wants to save something, it sends a request to an API endpoint. The backend processes it and sends a response back.
+**API** stands for Application Programming Interface which is unfortuate because it doesn't describe very well what an API does. An API is the messenger system carries information between the frontend and backend. If you need to display data onscreen (your frontend) then an API provides the rails to retreive this data from the database.
 
 **Common API patterns:**
 - **REST** - The most common style, uses HTTP methods (GET, POST, PUT, DELETE)
 - **GraphQL** - Lets frontend request exactly the data it needs
-- **Endpoints** - Specific URLs for specific operations (like `/api/tasks` or `/api/users/login`)
+- **WebSocket** - Real-time, two-way communication (chat apps, live updates)
+- **Mobile-specific** - Native SDKs (Firebase SDK, AWS SDK) that wrap API calls in mobile-friendly code
 
 **Real example:** When you add a to-do item:
 
@@ -151,7 +162,7 @@ Task table:
 
 ### How They Work Together: The Full Stack
 
-Here's how all four pieces work together when a user adds a to-do item:
+Here's how all four pieces work together when a user adds a to-do item (same flow for web and mobile):
 
 ```{mermaid}
 sequenceDiagram
@@ -161,7 +172,7 @@ sequenceDiagram
     participant Backend
     participant Database
 
-    User->>Frontend: Types "Buy groceries" and clicks Add
+    User->>Frontend: Types "Buy groceries" and taps/clicks Add
     Frontend->>API: POST /api/tasks {"task_text": "Buy groceries"}
     API->>Backend: Route request to task creation handler
     Backend->>Backend: Validate task text is not empty
@@ -172,7 +183,7 @@ sequenceDiagram
     Frontend->>User: Display new task in list
 ```
 
-**This is called the "full stack"** - frontend, backend, database, and the APIs connecting them. When you become a **Full-Stack Product Builder**, you're able to specify requirements and design across all these layers.
+**This is called the "full stack"** - frontend (web/mobile), backend, database, and the APIs connecting them. When you become a **Full-Stack Product Builder**, you're able to specify requirements and design across all these layers for both web and mobile platforms.
 
 ### Why This Matters for Writing Specs
 
@@ -193,10 +204,11 @@ THEN system SHALL create account and send confirmation email
 
 ### Design
 
-**Frontend:**
-- Registration form at /signup with email and password fields
+**Frontend (Web & Mobile):**
+- Registration form with email and password fields
 - Client-side validation: email format, password minimum 8 characters
 - Display loading state during submission
+- Web: /signup route | Mobile: RegisterScreen component
 
 **API:**
 - POST /api/auth/register
@@ -214,7 +226,7 @@ THEN system SHALL create account and send confirmation email
 - Users table with: id, email (unique), password_hash, created_at
 ```
 
-See the difference? The good spec thinks through the entire stack. This is what Claude Code (or any AI coding agent) needs to generate quality code.
+See the difference? The good spec thinks through the entire stack for both web and mobile. This is what Claude Code (or any AI coding agent) needs to generate quality code.
 
 ### Don't Panic
 
@@ -778,22 +790,3 @@ Pick something relatively simple:
 
 How does this feel compared to pure vibe coding? Is the code quality better? Do you feel more in control? Can you explain why the code looks the way it does?
 
-## The Path Forward
-
-Spec-driven development isn't about abandoning the speed and creativity of vibe coding. It's about adding structure where it matters.
-
-Think of it this way:
-- **Vibe coding** is like sketching with a pencil - fast, exploratory, low commitment
-- **SDD** is like working with blueprints - structured, reviewable, production-ready
-
-You need both.
-
-Use vibe coding to explore and prototype rapidly. Use SDD when you're ready to build something that lasts.
-
-The developers building AI-native companies at scale aren't choosing between creativity and structure. They're using AI to move faster through both phases - vibe coding to iterate on ideas quickly, then SDD to ship production-quality features reliably.
-
-As you continue through this workshop, we'll use SDD principles to build increasingly sophisticated features. The investment you make in learning this process now will pay dividends when you're building real products.
-
-The future belongs to PMs who can both vibe code a prototype in an afternoon and spec-drive a production feature the next day.
-
-That's where we're headed.
