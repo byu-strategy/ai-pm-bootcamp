@@ -205,7 +205,7 @@ Instead of asking the AI to "build the entire authentication system," you:
 4. Have AI implement one task at a time (implementation)
 5. Test and iterate
 
-The key insight: **you guide the AI through small, controlled changes instead of letting it improvise an entire feature**.
+The goal is to **guide the AI through small, controlled changes instead of letting it improvise an entire feature**.
 
 ## Major SDD Approaches
 
@@ -271,9 +271,9 @@ GitHub's Spec-Kit uses three main slash commands to guide development:
 - `/plan` - Choose technical approach (frameworks, architecture, database design)
 - `/tasks` - Break plan into implementable chunks for AI agents
 
-These commands integrate directly into GitHub Copilot in VS Code, so you never leave your editor.
+These commands integrate directly into whatever IDE/AI Agent you are using so you never leave your editor.
 
-**The constitution.md file** is unique to Spec Kit. It establishes non-negotiable project principles:
+**The constitution.md file** is also unique to Spec-Kit. It establishes non-negotiable project principles:
 
 ```markdown
 # Project Constitution
@@ -296,11 +296,27 @@ These commands integrate directly into GitHub Copilot in VS Code, so you never l
 
 Think of it as your project's foundational rulebook. When the AI suggests an approach that violates the constitution, you can point back and say "no, we established this principle upfront."
 
-One cool feature: Spec Kit lets you explore multiple implementations simultaneously. You can ask AI agents to "produce two completely different implementations based on the spec" - maybe one with PostgreSQL and another with MongoDB - and compare them before committing.
+You can install GitHub Spec-Kit by running this command in the terminal or asking Claude Code to run it for you. You may need to install dependecies which Claude Code can guide you through if needed.
+
+```bash
+uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
+```
+
+Then open the folder within VS code that you want to work from and run the following command.
+
+```bash
+specify init . --ai claude
+```
+
+When presented with the options to choose your script type select `sh` if using a Mac or `ps` if using Windows.
+
+![](images/spec-kit.png)
+
+Now Spec-Kit is set up. Start up Claude and you will have several new slash commands available to you. You will also see a new folder appear titled `.specify`.
 
 ### Claude Code's Planning Mode
 
-Claude Code takes a different approach. Instead of a CLI tool, it has **Planning Mode** built directly into the agent.
+While GitHub's Spec-Kit can be added to it, Claude Code has a native **Planning Mode** built directly into the agent that functions somewhat like SDD out of the box.
 
 Planning Mode is a read-only exploration environment. When you enable it, Claude Code can:
 
@@ -323,21 +339,11 @@ Here's how a typical workflow looks:
 
 The separation between planning and execution is powerful. You can think through everything thoroughly without the pressure of "is this going to break my working code?"
 
-**Community implementations** have extended Claude's planning capabilities:
+Many developers configure their `CLAUDE.md` file to enforce consistent SDD workflows. For example, you can set rules like "always read requirements.md, design.md, and tasks.md before implementing any task" or "mark tasks complete by changing [ ] to [x] in tasks.md."
 
-- **cc-sdd** - Enforces the Requirements → Design → Tasks workflow automatically
-- **claude-code-spec-workflow** - Adds automated workflows for features and bug fixes
-- Custom **CLAUDE.md** configurations that codify SDD process at the project level
+Going farther, you can implment Kiro's approach directly into Claude Code as described [here](https://github.com/Pimzino/spec-workflow-mcp).
 
-Many developers configure their `.claude/` directory or global `~/.claude/CLAUDE.md` file to enforce consistent SDD workflows. For example, you can set rules like "always read requirements.md, design.md, and tasks.md before implementing any task" or "mark tasks complete by changing [ ] to [x] in tasks.md."
-
-### Other Notable Approaches
-
-**JetBrains Junie** integrates SDD directly into IntelliJ IDEA, PyCharm, and other JetBrains IDEs. Their approach emphasizes iterative refinement - you write initial specs, get AI-generated code, then improve the specs based on what you learned.
-
-**Cursor Composer** has been adding SDD features, letting you reference specification files in your prompts. Many developers create a `docs/` folder with requirements and design docs, then tell Composer "implement the user authentication feature as specified in docs/auth-spec.md."
-
-**Community frameworks** like [gotalab/cc-sdd](https://github.com/gotalab/cc-sdd) work across multiple AI coding platforms (Claude Code, Cursor, GitHub Copilot, Windsurf). The idea: establish your SDD workflow once, use it everywhere.
+In October 2025 **Cursor** added a plan mode that is simliar to Claude Codes.
 
 ## Why SDD Matters (Especially for PMs)
 
@@ -365,190 +371,155 @@ Spec-driven development creates traceability. Every line of code traces back to 
 
 ## Getting Started: Your First SDD Feature
 
-Let's walk through a simple example. Suppose you want to add a "user profile settings" page to your app.
+Let's walk through building a sophisticated task management feature on top of the simple to-do list from the vibe coding chapter. We'll use prompts to have Claude Code create our specification documents and implement the feature step-by-step.
 
-### Step 1: Write Requirements
+### Step 1: Generate Requirements Document
 
-Create `.claude/specs/user-profile-settings/requirements.md`:
-
-```markdown
-# User Profile Settings
-
-## User Story
-As a logged-in user, I want to update my profile information
-so that other users see accurate details about me.
-
-## Requirements
-
-### 1. Profile Form Display
-WHEN user navigates to /settings
-THEN system SHALL display form pre-populated with current profile data
-
-### 2. Form Validation
-WHEN user submits profile form
-THEN system SHALL validate:
-- Email format is valid
-- Display name is 2-50 characters
-- Bio is under 500 characters
-
-### 3. Save Changes
-WHEN validation passes
-THEN system SHALL save changes to database
-AND display success message "Profile updated"
-AND refresh profile data on page
-
-### 4. Error Handling
-WHEN validation fails
-THEN system SHALL display inline error messages
-AND not save any changes
-AND keep form populated with user's attempted edits
-```
-
-Notice how specific these are. No ambiguity about what "save changes" means.
-
-### Step 2: Create Design
-
-Create `.claude/specs/user-profile-settings/design.md`:
+Open Claude Code and use this prompt:
 
 ```markdown
-# Design: User Profile Settings
+I want to build an advanced task management system that extends
+a basic to-do list with projects, tags, priorities, and due dates.
 
-## Architecture
-- **Frontend**: React component with React Hook Form
-- **API**: PUT /api/user/profile endpoint
-- **Database**: Update users table (id, email, display_name, bio, updated_at)
-- **Authentication**: Requires valid JWT token
-
-## Data Model
-\`\`\`typescript
-interface UserProfile {
-  id: string
-  email: string
-  displayName: string
-  bio: string
-  updatedAt: Date
-}
-\`\`\`
-
-## API Specification
-
-**Endpoint**: PUT /api/user/profile
-
-**Request**:
-\`\`\`json
-{
-  "email": "user@example.com",
-  "displayName": "John Doe",
-  "bio": "Product Manager at Acme Corp"
-}
-\`\`\`
-
-**Response (Success - 200)**:
-\`\`\`json
-{
-  "success": true,
-  "message": "Profile updated",
-  "user": { ...updated user object }
-}
-\`\`\`
-
-**Response (Validation Error - 400)**:
-\`\`\`json
-{
-  "success": false,
-  "errors": {
-    "email": "Invalid email format",
-    "displayName": "Display name must be 2-50 characters"
-  }
-}
-\`\`\`
-
-## Validation Rules
-- Email: RFC 5322 compliant regex
-- Display name: 2-50 characters, alphanumeric plus spaces and hyphens
-- Bio: 0-500 characters
-
-## Error Handling
-- 401 Unauthorized: User not logged in → redirect to /login
-- 400 Bad Request: Validation errors → show inline error messages
-- 500 Server Error: Database failure → show generic error, log details
+Please create a requirements.md file in .claude/specs/advanced-task-management/
+that includes:
+- User stories for a PM managing complex workflows
+- EARS format acceptance criteria (WHEN/THEN/SHALL)
+- Requirements for: task organization, project management, tag system,
+  filtering/sorting, and completion tracking
 ```
 
-Now any developer (or AI) reading this knows exactly how to implement it.
+Claude will generate a requirements document with specific, testable criteria. Review it and iterate until you're satisfied. The requirements should be unambiguous - no room for interpretation.
 
-### Step 3: Break Into Tasks
+### Step 2: Generate Design Document with Architecture Diagram
 
-Create `.claude/specs/user-profile-settings/tasks.md`:
+Once requirements are approved, use this prompt:
 
 ```markdown
-# Implementation Tasks
+Now create a design.md file in .claude/specs/advanced-task-management/
+based on the requirements.
 
-- [ ] 1. Create ProfileSettings React component
-  - Set up component file at components/ProfileSettings.tsx
-  - Import React Hook Form
-  - Define form state with email, displayName, bio fields
-  - _Requirements: 1, 2_
+Include:
+- ASCII architecture diagram showing component hierarchy and data flow
+- Data models (TypeScript interfaces for Task, Project, Tag)
+- Storage structure using JSON files (we'll use JSON for simplicity,
+  not a database)
+- UI component specifications with specific behaviors
+- Validation rules
+- Error handling strategies
 
-- [ ] 2. Implement form validation
-  - Add email format validator using regex
-  - Add display name length validator (2-50 chars)
-  - Add bio length validator (0-500 chars)
-  - Display inline error messages
-  - _Requirements: 2, 4_
-
-- [ ] 3. Create API endpoint PUT /api/user/profile
-  - Set up route handler
-  - Add authentication middleware (verify JWT)
-  - Implement server-side validation
-  - Update database users table
-  - Return appropriate response (200 or 400)
-  - _Requirements: 3, 4_
-
-- [ ] 4. Connect frontend to API
-  - Add form submit handler
-  - Make PUT request to /api/user/profile
-  - Handle loading state (disable form during submission)
-  - Display success message on 200 response
-  - Display error messages on 400 response
-  - _Requirements: 3, 4_
-
-- [ ] 5. Add error boundary and edge cases
-  - Handle 401 Unauthorized (redirect to login)
-  - Handle 500 Server Error (show friendly message)
-  - Add loading spinner during submission
-  - Prevent double-submission
-  - _Requirements: 4_
-
-- [ ] 6. Write tests
-  - Unit tests for validation functions
-  - Integration test for API endpoint
-  - E2E test for complete user flow
-  - _Requirements: All_
+Important: Use JSON file storage (data/app-data.json) rather than
+a database for this learning project.
 ```
 
-Notice each task is small and specific. You could implement any one of these in 10-20 minutes.
+The ASCII diagram will make the architecture crystal clear. Claude will show you exactly how components connect and where data lives.
 
-### Step 4: Implement with Claude Code
+### Step 3: Generate Implementation Tasks
 
-Now you can ask Claude Code to implement tasks one at a time:
-
-```
-Please implement task 1: Create ProfileSettings React component.
-
-Reference files:
-- .claude/specs/user-profile-settings/requirements.md
-- .claude/specs/user-profile-settings/design.md
-```
-
-Claude has clear context and constraints. It knows the data model, the validation rules, and the expected behavior. The code it generates will align with your specifications.
-
-After implementing task 1, mark it complete in tasks.md:
+With design approved, generate the task breakdown:
 
 ```markdown
-- [x] 1. Create ProfileSettings React component
+Create tasks.md in .claude/specs/advanced-task-management/ that breaks
+the design into implementation tasks.
+
+Requirements:
+- Numbered checkbox format (- [ ] 1. Task name)
+- Maximum two hierarchy levels (1, 1.1, 1.2, 2, 2.1)
+- Each task involves writing, modifying, or testing code
+- Reference specific requirements from requirements.md
+- Tasks should be completable in 15-30 minutes each
+- Start with data models and storage, then state management,
+  then UI components
 ```
 
-Then move to task 2. One step at a time.
+You'll get a concrete, step-by-step implementation plan.
+
+### Step 4: Implement Tasks One at a Time
+
+Now implement each task individually. For each task, use this prompt pattern:
+
+```markdown
+Please implement task 1: Set up project structure and data models.
+
+Requirements:
+- Reference .claude/specs/advanced-task-management/requirements.md
+- Reference .claude/specs/advanced-task-management/design.md
+- Add thorough code documentation:
+  - JSDoc comments for all functions explaining purpose, parameters,
+    and return values
+  - Inline comments for complex logic
+  - Type annotations for all TypeScript code
+- Follow the exact data models from design.md
+
+After implementation, mark task 1 as complete in tasks.md.
+```
+
+**Important**: Only implement ONE task per prompt. After Claude completes the task, review the code, test it, then move to the next task.
+
+For subsequent tasks:
+
+```markdown
+Please implement task 2: Build storage layer utilities.
+
+Requirements:
+- Reference .claude/specs/advanced-task-management/requirements.md
+- Reference .claude/specs/advanced-task-management/design.md
+- Add thorough code documentation (JSDoc + inline comments)
+- Implement error handling as specified in design.md
+- Write code that matches the Storage Layer API from design.md
+
+After implementation, mark task 2 as complete in tasks.md.
+```
+
+### Step 5: Generate Architecture Explanation
+
+After completing all implementation tasks, use this prompt to create documentation:
+
+```markdown
+Please create an ASCII architecture diagram and explanation document
+for the advanced task management system we just built.
+
+The document should:
+1. Show the complete system architecture in ASCII format
+2. Explain to a non-technical person how the system works using:
+   - Precise technical terms
+   - Simple, concise definitions of any jargon
+   - Clear description of data flow
+   - Example of what happens when a user creates a task
+
+Save this as .claude/specs/advanced-task-management/architecture-explained.md
+```
+
+This creates a bridge document that helps non-technical stakeholders understand what you built without getting lost in code.
+
+### Example Output
+
+After running these prompts, you'll have a complete, documented feature implementation. The final explanation might look like:
+
+```
+The system uses a "three-layer architecture":
+
+1. UI Layer (Components): What the user sees and clicks
+   - TaskList: Shows your tasks in a list
+   - TaskForm: The form where you create new tasks
+
+2. State Layer (Zustand Store): Manages data in memory while app is running
+   - Holds current list of tasks, projects, and tags
+   - Updates when you add/complete tasks
+
+3. Storage Layer (JSON Files): Saves data permanently to disk
+   - Reads from data/app-data.json when app starts
+   - Writes to data/app-data.json when anything changes
+
+When you create a task:
+1. You fill out TaskForm and click "Create"
+2. TaskForm calls store.addTask()
+3. Store adds task to memory and calls storage.saveData()
+4. Storage writes the updated task list to JSON file
+5. TaskList re-renders to show your new task
+```
+
+This workflow ensures you build features systematically with complete documentation that both engineers and non-technical stakeholders can understand.
 
 ## PRD Building Blocks for SDD
 
@@ -565,7 +536,8 @@ If you're coming from a traditional PM background, you're familiar with Product 
 
 **Keep them scannable:**
 
-AI agents work best with structured, scannable documents. Use:
+AI agents work best with structured documents. Use:
+
 - Bullet points over paragraphs
 - Code blocks for technical details
 - Tables for comparisons
