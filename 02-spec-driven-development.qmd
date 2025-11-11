@@ -12,29 +12,33 @@ format: html
 
 The antidote for the "AI-slop" that may be generated from careless Vibe Coding is *Spec-Driven Development.*
 
-Spec-Driven Development (SDD) is exactly what it sounds like: you write specifications before code. It's a more structured and methodical approach than just typing or speaking a stream of conciousness, and then praying.
+Spec-Driven Development (SDD) is exactly what it sounds like: you write specifications before code. It's a more structured and methodical approach than just typing or speaking a stream of conciousness, and then hoping for the best.
 
-At its core, SDD means creating three types of documents which you can think of collectively as an AI-native version of a Product Requirements Document (PRD):
+Specifications (specs) are documents for things like: 
 
 1. **Requirements** - What should the system do? (user stories and acceptance criteria)
 2. **Design** - How will the system work? (architecture and data models)
 3. **Tasks** - What are the discrete implementation steps? (actionable checklist)
 
-The primary audience for these docs is an AI agent rather than a colleague, although the documents retain the benefit of being human readable in form of markdown text (.md) files. 
+A traditional human written Product Requirements Document (PRD) is a type of spec whose audience was engineers and other colleagues. The purpose of the PRD was to achieve alignment between product, design, and engineering on what should be built. 
 
-Like a typical PRD this collection of documents serves as the blueprint and architectural drawings of the product.
+AI-native specs serve the same goal but the primary audience for these documents is an AI agent rather than a colleague. Fortunately, the documents retain the benefit of being human readable in the form of markdown text (.md) files. 
 
-Once you have high quality specs the AI agents can get to work building what you communicated in a high fidelity way.
+AI-native specs are written by AI with a human-in-the-loop. Your job is to prompt AI for an initial spec document and refine it through direct updates or further prompting.
 
-## Web/Mobile Application Building Blocks
+Like a traditional PRD, this collection of documents serves as the blueprint and architectural drawing of the product.
 
-Before we dive deeper into spec-driven development, we need a solid understanding of what we are actually specifying. When you write requirements and design documents for web or mobile applications, you'll be working with several fundamental building blocks: frontend, server, apis, and database.
+Once you have high-quality specs, AI agents can begin building what you’ve described, translating your intent into a high-fidelity implementation.
+
+Before we dive deeper into creating specs, we need a solid understanding of product architecture so we know what we are actually specifying. When you write requirements and design documents for web or mobile applications, you'll be working with several fundamental frontend and backend building blocks: client, server, apis, and database.
 
 ![](/images/eng-landscape.png)
 
-### Frontend (The User Interface)
+## Frontend (The User Interface)
 
-The **frontend** is everything users see and interact with - whether in a browser or on a smartphone. It's the buttons, forms, text, images, and animations. When you click "Add to Cart" on a shopping site, that button and the visual feedback you get, that's frontend.
+The **frontend** is everything users see and interact with, whether in a browser or on a smartphone. It's the buttons, forms, text, images, and animations. When you click "Add to Cart" on a shopping site, that button and the visual feedback you get, that's frontend.
+
+The frontend (web browser or mobile app) is sometimes called the "client". Hoever "client" can also mean any consumer of an API, for example a server-side job, a third-party service, or another backend that calls your API. When we say "client-side" or refer explicitly to the frontend, we mean code executing in the user's browser or device; when we discuss API interactions, "client" may refer to any caller of the API.
 
 **Technologies you'll encounter:**
 
@@ -48,18 +52,9 @@ The **frontend** is everything users see and interact with - whether in a browse
 - **Native** - Swift (iOS), Kotlin (Android) for platform-specific apps
 - **Cross-platform** - React Native, Flutter (one codebase for both iOS and Android)
 
-**Example of how to specify a frontend feature:**
+## Backend (The Business Logic)
 
-```markdown
-WHEN user taps "Add Task" button
-THEN system SHALL display the new task at top of list
-AND clear the input field
-AND show a success animation (fade-in on web, slide-in on mobile)
-```
-
-### Backend (The Business Logic)
-
-The **backend** is the server-side code that runs behind the scenes. It handles the "business logic" which are the rules and operations that make your app work. When you submit a login form, the backend checks if your password is correct. When you add a to-do item, the backend validates it and saves it.
+The **backend** consists of everything the user does not directly see. It handles the "business logic" which are the rules and operations that make your app work. When you submit a login form, the backend checks if your password is correct. When you add a to-do item, the backend validates it and saves it.
 
 **Technologies you'll encounter:**
 
@@ -67,14 +62,6 @@ The **backend** is the server-side code that runs behind the scenes. It handles 
 - **APIs** - The connection points between frontend and backend (more on this below)
 - **Backend Services** - Firebase, Supabase, AWS Amplify (backend-as-a-service for mobile apps)
 - **Authentication** - Login systems, user sessions, permissions
-
-**Example of specifying a backend feature:**
-```markdown
-WHEN user submits registration form with email "user@example.com"
-THEN system SHALL check if email already exists in database
-AND if exists, return error "Email already registered"
-AND if not exists, create new user account and send confirmation email
-```
 
 ### Database (The Memory)
 
@@ -94,71 +81,16 @@ For example, in a to-do list app, items are stored in a SQL database table that 
 | 1   | 42      | "Buy groceries"  | false     | 2025-01-15 10:30:00 |
 | 2   | 42      | "Call dentist"   | true      | 2025-01-15 11:45:00 |
 
-**Example or specifying the database design**
-
-```markdown
-## Data Model
-
-User table:
-- id (primary key)
-- email (unique, required)
-- password_hash (required)
-- display_name (required, 2-50 characters)
-- created_at (timestamp)
-
-Task table:
-- id (primary key)
-- user_id (foreign key to User)
-- task_text (required, max 500 characters)
-- completed (boolean, default false)
-- created_at (timestamp)
-```
-
 ### API (The Messenger)
 
-**API** stands for Application Programming Interface which is unfortuate because it doesn't describe very well what an API does. An API is the messenger system carries information between the frontend and backend. If you need to display data onscreen (your frontend) then an API provides the rails to retreive this data from the database.
+**API** stands for Application Programming Interface which is unfortuate because it doesn't describe very clearly what an API does. An API is the messenger system carries information between the frontend and backend. If you need to display data onscreen (your frontend) then an API provides the rails to retreive this data from the database.
 
-**Common API patterns:**
-- **REST** - The most common style, uses HTTP methods (GET, POST, PUT, DELETE)
-- **GraphQL** - Lets frontend request exactly the data it needs
-- **WebSocket** - Real-time, two-way communication (chat apps, live updates)
-- **Mobile-specific** - Native SDKs (Firebase SDK, AWS SDK) that wrap API calls in mobile-friendly code
-
-**Real example:** When you add a to-do item:
+**Examples** When you add a to-do item:
 
 1. **Frontend** sends a POST request to `/api/tasks` with the task text
 2. **Backend** receives the request, validates the data, saves to database
 3. **Backend** sends response back: `{ success: true, task: { id: 123, text: "Buy groceries" } }`
 4. **Frontend** receives response and updates the UI
-
-**When specifying APIs:**
-```markdown
-## API Endpoint: POST /api/tasks
-
-**Purpose:** Create a new task for the authenticated user
-
-**Request:**
-{
-  "task_text": "Buy groceries"
-}
-
-**Response (Success - 201):**
-{
-  "success": true,
-  "task": {
-    "id": 123,
-    "task_text": "Buy groceries",
-    "completed": false,
-    "created_at": "2025-01-15T10:30:00Z"
-  }
-}
-
-**Response (Error - 400):**
-{
-  "success": false,
-  "error": "Task text cannot be empty"
-}
-```
 
 ### How They Work Together: The Full Stack
 
@@ -183,14 +115,15 @@ sequenceDiagram
     Frontend->>User: Display new task in list
 ```
 
-**This is called the "full stack"** - frontend (web/mobile), backend, database, and the APIs connecting them. When you become a **Full-Stack Product Builder**, you're able to specify requirements and design across all these layers for both web and mobile platforms.
+**This is called the "full stack"**: frontend (web/mobile), backend, database, and the APIs connecting them. When you become a **Full-Stack Product Builder**, you're able to specify requirements and design across all these layers for both web and mobile platforms.
 
 ### Why This Matters for Writing Specs
 
 When you write specifications, you'll need to think about all these layers:
 
 **Bad spec (vague):**
-```
+
+```markdown
 The app should let users create accounts
 ```
 
@@ -230,18 +163,18 @@ See the difference? The good spec thinks through the entire stack for both web a
 
 ### Don't Panic
 
-This might feel like a lot if you're new to technical concepts. The good news: **you don't need to be an expert**. You just need enough understanding to write clear specifications.
+This might feel like a lot if you're new to technical concepts. The good news: **you can learn super fast**. You just need enough understanding to start knowing what questions to ask.
 
-As you work through this workshop, these concepts will become second nature. You'll start naturally thinking: "This feature needs a frontend form, an API endpoint to submit it, backend validation, and a database table to store the results."
+The core You'll start naturally thinking: "This feature needs a frontend form, an API endpoint to submit it, backend validation, and a database table to store the results."
 
 And here's the best part: **Claude Code can help you learn**. When you're unsure about how something should work technically, you can ask:
 
-```
+```markdown
 I want to add user authentication to my app. Can you explain what
 database tables I'll need and what the API endpoints should look like?
 ```
 
-The AI will explain the architecture and help you write the specs. You're not expected to know everything - you're expected to ask good questions and guide the implementation.
+The AI will explain the architecture and help you write the specs. You're not expected to know everything, you're expected to ask good questions and guide the implementation.
 
 ## The SDD Workflow
 
@@ -328,21 +261,11 @@ Each task is small enough to implement and test independently.
 
 Kiro's philosophy is that these three documents become your "bridge between product vision and technical execution." When product and engineering are speaking from the same specifications, miscommunication drops dramatically.
 
-### GitHub Copilot Spec Kit
+### GitHub Copilot Spec-Kit
 
-GitHub released [Spec Kit](https://developer.microsoft.com/blog/spec-driven-development-spec-kit) as an open-source toolkit in early 2025. Their tagline: "version control for your thinking."
+GitHub recently released [Spec Kit](https://developer.microsoft.com/blog/spec-driven-development-spec-kit) as an open-source toolkit for SDD.
 
-It's not about exhaustive documentation. It's about making technical decisions explicit and reviewable before implementation.
-
-**The Specify CLI** bootstraps new projects:
-
-```bash
-uvx --from git+https://github.com/github/spec-kit.git specify init my-project
-```
-
-This creates a `.specify/` folder with templates and scripts.
-
-**Three slash commands** guide development:
+GitHub's Spec-Kit uses three main slash commands to guide development:
 
 - `/specify` - Define what the feature should do (no technical decisions yet)
 - `/plan` - Choose technical approach (frameworks, architecture, database design)

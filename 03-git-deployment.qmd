@@ -12,18 +12,11 @@ Although the terms Git and GitHub are often used interchangeably, they are two d
 
 We will be using git to version control your projects throughout this course. Take a moment to to make sure you have Git installed on your computer by running the following from the command line:
 
-```{python eval=false}
-
-# Check if you have Git installed on your computer
+```markdown
 git --version
-
-# Install git on Windows if needed
-winget install --id Git.Git -e --source winget
-
-# Install git on Mac if needed
-brew install git
-
 ```
+
+If you don't have git installed ask Claude Code to guide you through installation.
 
 **GitHub** is a cloud-based platform, owned by Microsoft, that allows you to store your Git repositories online, making it easy to collaborate with others over the internet. You can think of GitHub as the Google Drive or Dropbox of your code files, but with additional tools for teamwork and project management that extend the use of Git from individuals to entire teams. Developers use Git on their local machines and push their files and subsequent changes to GitHub when they’re ready to share or back them up online. Product Managers and other collaborators can then review, comment on, and track progress through the GitHub web interface.
 

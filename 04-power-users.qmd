@@ -20,35 +20,9 @@ These techniques are what separate occasional Claude users from power users who 
 
 ### The Context Window Challenge
 
-Every conversation with Claude has a context window—a limit on how much information can be active at once. For simple tasks, this isn't an issue. But when you're building complex features across multiple sessions, context management becomes critical.
+Every conversation with Claude has a context window which is a limit on how much information can be active at once. For simple tasks, this isn't an issue. But when you're building complex features across multiple sessions, context management becomes critical.
 
 The problem: as agents accumulate tool results, conversation history, and file reads, they eventually exhaust their effective context. You're forced to either truncate important information or accept degraded performance.
-
-### Two Complementary Solutions
-
-**Context Editing (Automatic)**
-
-Claude Code automatically removes stale tool calls and results as you approach token limits. Instead of losing information chaotically, it intelligently prunes outdated content while preserving conversation flow.
-
-In Anthropic's testing, context editing alone delivered:
-- 29% performance improvement
-- 84% reduction in token consumption
-- Maintained conversation coherence across 100+ turns
-
-**The Memory Tool (Manual)**
-
-For information that needs to persist across sessions, use the memory tool. Claude can store and retrieve knowledge outside the context window through a file-based system.
-
-```bash
-# Claude automatically manages memory, but you can review it
-cat ~/.claude/memory/project-name.json
-```
-
-Memory is perfect for:
-- Architectural decisions that inform future work
-- Research findings from previous sessions
-- Code patterns and conventions you've established
-- Bug fixes and their root causes
 
 ### Best Practices
 
@@ -94,8 +68,6 @@ For extremely long-running projects (multi-week feature development), consider:
 1. **Session summaries**: Ask Claude to summarize progress at end of each session
 2. **Spec-driven development**: Use the `/add-feature` workflow to document requirements, design, and tasks in persistent files
 3. **Git commits as memory**: Commit frequently with detailed messages that Claude can read later
-
-The combination of automatic context editing + manual memory + persistent documentation handles projects of any size.
 
 ## Claude Skills
 
@@ -355,12 +327,14 @@ Within a single Claude session, use the Task tool to spawn specialized subagents
 Claude will spawn three independent agents, each with specialized capabilities, and return their findings simultaneously.
 
 **When to use subagents**:
+
 - Quick research tasks
 - Code exploration
 - Parallel analysis
 - Fact-gathering before implementation
 
 **When to use separate terminals**:
+
 - Long-running feature development
 - Independent work streams
 - Code review of active development
@@ -408,6 +382,7 @@ Set milestones where work merges:
 ### Real-World Example: Building a Feature in 3 Parallel Streams
 
 **Terminal 1 - Backend**:
+
 ```bash
 claude
 > "Implement the payment processing endpoints from specs/payments/tasks.md.
@@ -415,6 +390,7 @@ Focus on tasks 1-5 (API routes and database layer)."
 ```
 
 **Terminal 2 - Frontend**:
+
 ```bash
 cd frontend/
 claude
@@ -423,6 +399,7 @@ Integrate with the API endpoints being built in parallel."
 ```
 
 **Terminal 3 - Testing**:
+
 ```bash
 claude
 > "Write integration tests for the payment flow.
@@ -545,6 +522,7 @@ Use realistic test data. Capture screenshots at each step."
 ```
 
 Claude will:
+
 1. Launch a browser via Playwright MCP
 2. Navigate through the flow programmatically
 3. Use accessibility snapshots to understand page structure
@@ -553,6 +531,7 @@ Claude will:
 6. Save screenshots for review
 
 **Benefits**:
+
 - No vision model needed (uses accessibility tree)
 - Fast and deterministic
 - Works in CI/CD environments
@@ -579,102 +558,18 @@ but haven't completed onboarding. Export as CSV."
 ```
 
 Claude will:
+
 1. Connect to database via MCP
 2. Write and execute SQL query
 3. Format results as CSV
 4. Save to file
 
 **Use cases**:
+
 - Ad-hoc data analysis
 - Report generation
 - Database migrations
 - Schema exploration
-
-### Creating Custom MCP Servers
-
-For company-specific tools, build your own MCP server:
-
-**Simple Node.js MCP Server**:
-
-```javascript
-// mcp-server-crm.js
-import { MCPServer } from '@modelcontextprotocol/sdk';
-
-const server = new MCPServer({
-  name: 'company-crm',
-  version: '1.0.0'
-});
-
-server.tool('get_customer', {
-  description: 'Fetch customer details by email',
-  parameters: {
-    email: { type: 'string', description: 'Customer email' }
-  }
-}, async ({ email }) => {
-  // Call your internal CRM API
-  const customer = await fetch(`https://crm.company.com/api/customers?email=${email}`);
-  return await customer.json();
-});
-
-server.listen();
-```
-
-**Install your custom server**:
-
-```bash
-claude mcp add company-crm node mcp-server-crm.js
-```
-
-**Use it**:
-
-```bash
-claude
-> "Look up customer john@example.com in our CRM and send them a personalized email about the new feature launch."
-```
-
-### MCP Configuration Management
-
-**Project-specific MCP servers**:
-
-Create `.mcp.json` in your project root:
-
-```json
-{
-  "mcpServers": {
-    "playwright": {
-      "command": "npx",
-      "args": ["@playwright/mcp@latest"]
-    },
-    "figma": {
-      "transport": "http",
-      "url": "https://mcp.figma.com/mcp"
-    }
-  }
-}
-```
-
-Commit this file so your team uses the same MCP configuration.
-
-**Global MCP servers**:
-
-Configured in `~/.claude/mcp-settings.json` for tools you use across all projects.
-
-### Security Considerations
-
-**MCP servers have broad access**. Before installing:
-
-1. **Review the source code** for unfamiliar servers
-2. **Use official servers** from Anthropic, Microsoft, Figma when possible
-3. **Understand permissions**: MCP servers can execute code, access files, make network requests
-4. **Sandbox testing**: Test new MCP servers in isolated projects first
-5. **Version pinning**: Use specific versions (`@playwright/mcp@1.2.3`) instead of `@latest` in production
-
-**Authentication best practices**:
-
-- Use environment variables for API keys
-- Never commit credentials to `.mcp.json`
-- Use separate dev/prod credentials
-- Rotate keys regularly
 
 ## Putting It All Together
 
@@ -689,7 +584,6 @@ You now have four power-user techniques:
 
 Here's how these techniques combine in practice:
 
-**Week 1 - Project Setup**:
 ```bash
 # Set up persistent context
 echo "# Project Conventions" > CLAUDE.md

@@ -24,9 +24,9 @@ There's a new kind of coding I call "vibe coding", where you fully give in to th
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 ```
 
-The term went viral and has quickly become common parlance to describe using AI chatbots and agents to write code for you, often done using voice dictation which is faster than typing. Vibe coding essentially treats [English as a new coding language](https://x.com/karpathy/status/1617979122625712128?lang=en). 
+The term went viral and has quickly become common parlance to describe using AI chatbots and agents to write code for you, often done using voice dictation which is faster than typing. On Novemmber 5, 2025, Collins Dictionary name vibe coding the Word of the Year. Vibe coding essentially treats [English as a new coding language](https://x.com/karpathy/status/1617979122625712128?lang=en). 
 
-Vibe coding has been controversial and polarizing. 
+Despite, or perhaps because of it's rapid impact, Vibe coding hasn't been without controversy. 
 
 Skeptics argue that vibe coding encourages a shallow relationship with code where developers don't fully understand the systems they’re building. They warn that overreliance on AI-generated code could erode problem-solving skills, introduce bugs, and obscure accountability when things go wrong. For them, coding is as much about thinking as typing; it’s a craft built on precision, discipline, and debugging, not vibes.
 
@@ -158,7 +158,9 @@ Let's create our first prototype using both Lovable and Claude Code.
 
 1. Open a new terminal in VS Code and type `claude` to start up claude code. Paste in the following prompt and hit enter and answer Claude's questions as it goes:
 
-> build me a to do list app
+```bash
+build me a to do list app
+```
 
 2. While waiting for Claude, open [Lovable](https://lovable.dev/) in a web browser and paste in the same prompt and hit enter.
 
@@ -168,7 +170,7 @@ However, we can do a lot better than this and soon will.
 
 ## Terminology
 
-I don't like the term "vibe coding" because it sounds unserious, and frankly, much of the time it is which explains why we see an explosion of engineers branding themselves as "Vibe Code Cleanup Specialists." These people are hired to clean-up so called [AI slop](https://en.wikipedia.org/wiki/AI_slop) which is AI generated code or content generated carlessly. 
+Despite its popularity, I really don't like the term "vibe coding" because it sounds unserious, and frankly, much of the time it is which explains why we see an explosion of engineers branding themselves as "Vibe Code Cleanup Specialists." These people are hired to clean-up so called [AI slop](https://en.wikipedia.org/wiki/AI_slop) which is AI generated code or content generated carlessly. 
 
 ![](/images/vibe-clean-up.png)
 
