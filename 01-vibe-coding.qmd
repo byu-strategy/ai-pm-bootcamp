@@ -159,7 +159,7 @@ Let's create our first prototype using both Lovable and Claude Code.
 1. Open a new terminal in VS Code and type `claude` to start up claude code. Paste in the following prompt and hit enter and answer Claude's questions as it goes:
 
 ```bash
-build me a to do list app
+build me a simple to do list app with json data storage that I can deploy locally. 
 ```
 
 2. While waiting for Claude, open [Lovable](https://lovable.dev/) in a web browser and paste in the same prompt and hit enter.

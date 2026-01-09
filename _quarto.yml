@@ -3,10 +3,10 @@ project:
   output-dir: _book
     
 book:
-  title: "BYU AI PM Bootcamp (2025)"
+  title: "AI PM Bootcamp"
   favicon: images/prototyping-favicon.png
   author: "Scott Murff"
-  date: "11/11/2025"
+  date: "1/1/2026"
   chapters:
     - part: Overview
       chapters:
