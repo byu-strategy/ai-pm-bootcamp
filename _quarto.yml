@@ -4,7 +4,7 @@ project:
     
 book:
   title: "AI PM Bootcamp"
-  favicon: images/prototyping-favicon.png
+  favicon: favicon.svg
   author: "Scott Murff"
   date: "1/1/2026"
   chapters:
