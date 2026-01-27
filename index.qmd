@@ -1,7 +1,7 @@
 ---
 title: "Welcome"
 author: "Scott Murff"
-date: "11/11/2025"
+date: "1/1/2026"
 format:
   html: default
   pdf: default
@@ -56,18 +56,6 @@ You'll learn to:
 - Use Claude Code for rapid product development using spec-driven development principles (must sign up for your own $20/month subscription)
 - Build and connect a full-stack app with a Supabase backend (Postgres relational database)
 - Deploy your app live on Vercel, with GitHub for version control
-
-## Schedule
-
-
-| Time                 | Event                                                                                           | Details                                                                                                      |
-|--------------------------------------|-------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------|
-| 12:45–1:15 pm        | Check-In                                                                                        | —                                                                                                            |
-| 1:15–5:15 pm         | Workshop                                                                                        | —                                                                                                            |
-| 3:00–3:15 pm         | Break                                                                                           | Refreshments provided                                                                                        |
-| 5:30 pm              | Dinner                                                                                          | Buffet style dinner served                                                                                   |
-| 6:00–7:00 pm         | Keynote & Panel Discussion                                                                      | **Keynote:** Dan Olsen – *Product Management in the Age of AI*<br>**Panel:** Dan Olsen, Ai-ling Chang (Weave), Tanner Rhodes (Meta); moderated by Scott Murff |
-| 7:00–9:00 pm         | After Events                                                                                    | Dessert, networking, and BYU basketball game watch party<br>Speed interviewing for BYU PM Internship Program |
 
 
 ## Instrutor Bio

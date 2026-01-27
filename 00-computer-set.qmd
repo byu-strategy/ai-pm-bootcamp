@@ -60,6 +60,10 @@ Now you’ll install the **Claude Code CLI (command-line interface)**,  this too
 
 Run **one** of the following commands inside the VS Code terminal, depending on your operating system:
 
+::: {.callout-tip}
+**Troubleshooting tip:** If at any point you get stuck or something is not working as expected, take a screenshot or copy/paste the error message and surrounding context into ChatGPT, Claude, or Gemini and ask for help troubleshooting. Follow the troubleshooting instructions and within 1 or 2 loops you should be unblocked.
+:::
+
 - [ ] Copy and paste this command into the terminal, then press **Enter**:
 
 **On Windows**

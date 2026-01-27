@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Quarto book project for the BYU AI PM Bootcamp 2025, a workshop teaching Product Managers how to build full-stack applications using AI-assisted development tools like Claude Code. The book is published as a static website via GitHub Pages.
+This is a Quarto book project for the BYU AI PM Bootcamp, a workshop teaching Product Managers how to build full-stack applications using AI-assisted development tools like Claude Code. The book is published as a static website via GitHub Pages.
 
 **Project Type**: Quarto Book
 **Output Format**: HTML website
