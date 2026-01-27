@@ -2,7 +2,7 @@
 title: "Computer Set-up"
 ---
 
-*Plan for about 20 minutes to install the necessary software for the workshop. This can be completed on your own before the workshop or during check-in from 12:45-1:15 in person at the event* 
+*Plan for about 20 minutes to install the necessary software for the workshop. This should be completed on your own before the workshop* 
 
 **Laptop Requirement:** You must bring your own Windows or MacOS laptop with at least 4GB of RAM. Also bring a charging cord and a mouse if you like using one.
 
