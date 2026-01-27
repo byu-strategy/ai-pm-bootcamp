@@ -10,6 +10,8 @@ title: "Computer Set-up"
 
 ## 1. Sign-up for Claude Pro
 
+*Skip if you have already have a paid Claude account available. *
+
 - [ ] Go to [claude.com/pricing](https://www.claude.com/pricing)  
 - [ ] Sign up for **Claude Pro** ($20/month or $17 if paying annually)  
 
