@@ -72,3 +72,8 @@ $RECYCLE.BIN/
 # Symlinks into OneDrive (student data, heavy materials) - never in git
 _private
 _materials
+
+# Secrets - never in git (all these repos are public)
+.env
+.env.local
+_secrets
