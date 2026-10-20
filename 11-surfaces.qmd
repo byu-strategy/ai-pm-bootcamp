@@ -2,7 +2,7 @@
 title: "One Engine, Many Surfaces"
 ---
 
-This segment uses the [three rings](10-the-harness.qmd#three-rings) to compare the places you can run Claude Code: the terminal, the VS Code extension, the desktop app, and a cloud session at claude.ai/code. The model and the built-in harness are the same on all four. What changes is the window, a few features, and how much of your harness each surface can reach. It ends with other coding agents and Claude in Chrome.
+This segment uses the [three layers](10-the-harness.qmd#three-layers) to compare the places you can run Claude Code: the terminal, the VS Code extension, the desktop app, and a cloud session at claude.ai/code. The model and the built-in harness are the same on all four. What changes is the window, a few features, and how much of your harness each surface can reach. It ends with other coding agents and Claude in Chrome.
 
 ::: {.callout-note}
 ## Sources and dates
@@ -35,7 +35,7 @@ Predict, then check: you add a line to your project's `CLAUDE.md` while working 
 
 **The model:** both setups run the same model and the same harness. VS Code is better when you work on the code yourself; the desktop app is better when you direct and review the agent.
 
-Most people end up choosing between two setups: the **Claude Code CLI in VS Code's terminal** and the **Claude desktop app's Code tab**. Both run the same inner rings and read the same harness files, so the choice is about the window.
+Most people end up choosing between two setups: the **Claude Code CLI in VS Code's terminal** and the **Claude desktop app's Code tab**. Both run the same inner two layers and read the same harness files, so the choice is about the window.
 
 | What you need to do | Claude Code CLI in VS Code | Claude desktop app (Code tab) |
 |---|---|---|
@@ -116,7 +116,7 @@ From the [troubleshooting](https://code.claude.com/docs/en/desktop#troubleshooti
 
 **The model:** Codex, Copilot CLI, and Antigravity CLI run the same agent loop with a different model inside a different built-in harness. The ideas transfer completely; of your harness files, the markdown ones transfer best and settings transfer least.
 
-Some of you use Codex or GitHub Copilot at work. Three other coding agents run in the terminal on the same agent loop ([How Agents Work](01-how-agents-work.qmd)): OpenAI's **Codex**, GitHub's **Copilot CLI**, and Google's **Antigravity CLI** (which replaced Gemini CLI for individual users). In ring terms, each is a different model inside a different built-in harness. Your harness files partly transfer: the ideas all do, and some of the files do.
+Some of you use Codex or GitHub Copilot at work. Three other coding agents run in the terminal on the same agent loop ([How Agents Work](01-how-agents-work.qmd)): OpenAI's **Codex**, GitHub's **Copilot CLI**, and Google's **Antigravity CLI** (which replaced Gemini CLI for individual users). In terms of the three layers, each is a different model inside a different built-in harness. Your harness files partly transfer: the ideas all do, and some of the files do.
 
 Every cell below was checked against the vendors' documentation on October 10, 2026: [Claude Code](https://code.claude.com/docs/en/cli-reference), [Codex](https://learn.chatgpt.com/docs/developer-commands?surface=cli), [Copilot CLI](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference), and [Antigravity CLI](https://antigravity.google/docs/cli/reference). "Not listed" means the reference does not mention it. Every command, tool, and key is in the [Claude Code and Other Coding Agents appendix](https://byu-strategy.github.io/product-management/A2-coding-agents-compared.html).
 
@@ -131,11 +131,11 @@ The ideas from [Directing the Agent](02-directing-the-agent.qmd) and [The Harnes
 | Can it use Claude models? | Yes | No | Yes, on paid plans | Yes, on Google AI Pro, Ultra, and Enterprise ([models](https://antigravity.google/docs/models)) |
 | Company billing | Claude Team or Enterprise, or [Google Cloud or Microsoft Foundry](https://code.claude.com/docs/en/third-party-integrations) | ChatGPT Business or Enterprise | GitHub Copilot Business or Enterprise | Gemini Enterprise |
 
-If your company licenses Copilot Business or Enterprise, Copilot CLI is the closest substitute for Claude Code: it reads your `CLAUDE.md` and `.claude/skills/` without changes. A Claude model inside another tool is still not Claude Code: you get the center ring inside that tool's built-in harness.
+If your company licenses Copilot Business or Enterprise, Copilot CLI is the closest substitute for Claude Code: it reads your `CLAUDE.md` and `.claude/skills/` without changes. A Claude model inside another tool is still not Claude Code: you get the center layer inside that tool's built-in harness.
 
 ### How much built-in harness does each one have?
 
-This score compares the built-in harnesses, the middle ring: what each vendor ships, before you add anything. Scott scored each against a checklist of 35 capabilities, grouped by the jobs the built-in harness does ([How Agents Work](01-how-agents-work.qmd)). Each item is a yes or no from the vendors' documentation.
+This score compares the built-in harnesses, the middle layer: what each vendor ships, before you add anything. Scott scored each against a checklist of 35 capabilities, grouped by the jobs the built-in harness does ([How Agents Work](01-how-agents-work.qmd)). Each item is a yes or no from the vendors' documentation.
 
 | Built-in harness job | Items | Claude Code | Codex | Copilot CLI | Antigravity CLI |
 |---|---|---|---|---|---|

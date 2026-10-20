@@ -2,7 +2,7 @@
 title: "The Agent Team Kit"
 ---
 
-The Agent Team Kit is a working setup for building real software with Claude Code agents: one person or a small team directing many agents, from the first mockup to a release and the bug reports that come back. It started as a fix for parallel agents colliding with each other, and it now covers most of the loop around the code. Every part is built from the harness pieces on [Understanding the Harness](10-the-harness.qmd), and [The kit on the three rings](#kit-on-the-rings) places each one. You will install it in the [Lab](14-lab.qmd). Everything named here is in the public repo at [github.com/ai-foundry-byu/agent-team-kit](https://github.com/ai-foundry-byu/agent-team-kit), and the [Kit Reference](90-kit-reference.qmd) lists every file.
+The Agent Team Kit is a working setup for building real software with Claude Code agents: one person or a small team directing many agents, from the first mockup to a release and the bug reports that come back. It started as a fix for parallel agents colliding with each other, and it now covers most of the loop around the code. Every part is built from the harness pieces on [Understanding the Harness](10-the-harness.qmd), and [The kit on the three layers](#kit-on-the-layers) places each one. You will install it in the [Lab](14-lab.qmd). Everything named here is in the public repo at [github.com/ai-foundry-byu/agent-team-kit](https://github.com/ai-foundry-byu/agent-team-kit), and the [Kit Reference](90-kit-reference.qmd) lists every file.
 
 ## What the kit gives you {#highlights}
 
@@ -20,9 +20,11 @@ It also covers spec-driven builds and a release pipeline ([From Spec to Release]
 
 **Code where it fits everywhere, specs where it has to fit your app.** The hooks, skills, and launchers are code you install. The bug inbox, the browser test passes, the mockup freezer, and "view as" depend on your stack, so the kit ships them as **build specs**: stack-agnostic documents detailed enough that you hand one to a coding agent and it builds the feature in your app.
 
-## The kit on the three rings {#kit-on-the-rings}
+[]{#kit-on-the-rings}
 
-**The model:** the kit is a set of additions to your harness, plus a few git hooks and shell commands outside it. Placed on the [three rings](10-the-harness.qmd#three-rings), each part shows what it can and cannot guarantee.
+## The kit on the three layers {#kit-on-the-layers}
+
+**The model:** the kit is a set of additions to your harness, plus a few git hooks and shell commands outside it. Placed on the [three layers](10-the-harness.qmd#three-layers), each part shows what it can and cannot guarantee.
 
 | Where it sits | Kit part | What it does |
 |---|---|---|
@@ -34,7 +36,7 @@ It also covers spec-driven builds and a release pipeline ([From Spec to Release]
 | | `bash-guard.sh` and `bash-guard.mjs` (PreToolUse on Bash) | Blocks blanket staging, `git stash`, `reset --hard`, and schema changes while another session holds the lock ([what it checks](#what-bash-guard-checks)) |
 | | `file-size-nudge.mjs` (PostToolUse on Edit and Write) | Flags a file that grows past its size budget or a new import that crosses a boundary |
 | | `session-release.mjs` (SessionEnd) | Frees the session's port and, if it holds it, the schema lock |
-| **Outside the rings** | Git hooks: `pre-commit`, `pre-push`, `post-merge` | Run by git, for any commit or push, whether an agent or a person makes it |
+| **Outside the layers** | Git hooks: `pre-commit`, `pre-push`, `post-merge` | Run by git, for any commit or push, whether an agent or a person makes it |
 | | Launchers: `cs`, `wt`, `cockpit` | Shell commands that start named Claude Code sessions, in the shared tree or in a worktree |
 
 Each working agreement appears twice. The CLAUDE.md section tells the agent to stage files by name, and `bash-guard` blocks `git add -A` when the agent does not. The advice prevents most mistakes cheaply; the hook catches the rest. That pairing is the design of the whole kit.
@@ -189,7 +191,7 @@ The snapshots come from your running app at desktop width, or at phone width for
 
 **The model:** each working agreement appears twice: as advice in CLAUDE.md, which prevents most mistakes cheaply, and as a hook, which catches the rest every time.
 
-The working agreements are advice; the hooks run every time ([Advice Versus Enforcement](10-the-harness.qmd#advice-versus-enforcement)). [The kit on the three rings](#kit-on-the-rings) lists the five Claude Code hooks. This section covers what the table leaves out: what `bash-guard` checks, the architecture guards, and the git hooks, which act on the repository whoever runs git.
+The working agreements are advice; the hooks run every time ([Advice Versus Enforcement](10-the-harness.qmd#advice-versus-enforcement)). [The kit on the three layers](#kit-on-the-layers) lists the five Claude Code hooks. This section covers what the table leaves out: what `bash-guard` checks, the architecture guards, and the git hooks, which act on the repository whoever runs git.
 
 ### What `bash-guard` checks {#what-bash-guard-checks}
 

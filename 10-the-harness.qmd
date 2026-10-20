@@ -4,17 +4,19 @@ aliases:
   - 11-the-harness.html
 ---
 
-The model is one part of Claude Code. Most of what decides how an agent behaves on your project is the harness around it: what goes into the model's context window, which tools it can call, and which checks run before a tool does anything. This segment maps that harness as three rings, then goes through the three sectors of the ring you build: what the model reads, what the harness applies, and which tools you add, including subagents and workflows. It ends with blast radius: how much an agent should do without you. If you do not use CLAUDE.md or skills yet, read [Directing the Agent](02-directing-the-agent.qmd) first.
+The model is one part of Claude Code. Most of what decides how an agent behaves on your project is the harness around it: what goes into the model's context window, which tools it can call, and which checks run before a tool does anything. This segment maps that harness as three layers, then goes through the three sectors of the layer you build: what the model reads, what the harness applies, and which tools you add, including subagents and workflows. It ends with blast radius: how much an agent should do without you. If you do not use CLAUDE.md or skills yet, read [Directing the Agent](02-directing-the-agent.qmd) first.
 
-## Three Rings {#three-rings}
+[]{#three-rings}
 
-**The model:** Claude Code is three rings: the model, the built-in harness that Anthropic ships, and your harness around both. You cannot change the model. You can change a few settings of the built-in harness. You build the outer ring.
+## Three Layers {#three-layers}
 
-![Claude Code as three rings. The model sits at the center. The built-in harness runs the loop: the context window feeds the model, the model's tool call goes to the tool-call check, approved calls run as tools, and the results return to the context window. Your harness is the outer ring, in three sectors, each feeding a different part of the loop. A plugin from a marketplace can install parts into any of the three sectors.](images/diagrams/ch02-three-rings.svg){#fig-three-rings fig-alt="Three concentric rings, labeled Claude Code as a whole. At the center, the model. Around it, the built-in harness, which holds the context window, the tool-call check, and the tools, connected in a loop: the context window feeds the model, the model's tool call goes to the check, the check passes it to the tools, and the tools' results return to the context window. The outer ring is your harness, in three sectors, each with an arrow to the part of the built-in harness it changes. Read by the model, all markdown: the files CLAUDE.md, MEMORY.md for auto memory, and SKILL.md for each skill, then the folders rules/ and output-styles/, into the context window. Applied by the harness: settings.json, which holds permission rules, hooks, the model, the effort level, and more, with an arrow into the built-in harness. Adds tools: MCP connections, which the Claude app calls connectors, subagents, and workflows, into the tools. Outside the rings, a package labeled Plugin, from a marketplace, has a dashed arrow labeled installs that stops at the outer edge of your harness, since a plugin can add parts to any of the three sectors. Outside the rings, you send messages, which go into the context window, and the model's replies come back to you. Two arrows connect the tools with the world outside all three rings, actions going out and output coming back, which the tools pass on as results. The world outside holds your project files; the terminal, where git, gh, and other CLIs run; the web, for search and pages; and apps such as GitHub and Supabase." width="100%"}
+**The model:** Claude Code is three layers: the model, the built-in harness that Anthropic ships, and your harness around both. You cannot change the model. You can change a few settings of the built-in harness. You build the outer layer.
+
+![Claude Code as three layers. The model sits at the center. The built-in harness runs the loop: the context window feeds the model, the model's tool call goes to the tool-call check, approved calls run as tools, and the results return to the context window. Your harness is the outer layer, in three sectors, each feeding a different part of the loop. A plugin from a marketplace can install parts into any of the three sectors.](images/diagrams/ch02-three-rings.svg){#fig-three-rings fig-alt="Three nested layers, drawn as concentric circles, labeled Claude Code as a whole. At the center, the model. Around it, the built-in harness, which holds the context window, the tool-call check, and the tools, connected in a loop: the context window feeds the model, the model's tool call goes to the check, the check passes it to the tools, and the tools' results return to the context window. The outer layer is your harness, in three sectors, each with an arrow to the part of the built-in harness it changes. Read by the model, all markdown: the files CLAUDE.md, MEMORY.md for auto memory, and SKILL.md for each skill, then the folders rules/ and output-styles/, into the context window. Applied by the harness: settings.json, which holds permission rules, hooks, the model, the effort level, and more, with an arrow into the built-in harness. Adds tools: MCP connections, which the Claude app calls connectors, subagents, and workflows, into the tools. Outside the layers, a package labeled Plugin, from a marketplace, has a dashed arrow labeled installs that stops at the outer edge of your harness, since a plugin can add parts to any of the three sectors. Outside the layers, you send messages, which go into the context window, and the model's replies come back to you. Two arrows connect the tools with the world outside all three layers, actions going out and output coming back, which the tools pass on as results. The world outside holds your project files; the terminal, where git, gh, and other CLIs run; the web, for search and pages; and apps such as GitHub and Supabase." width="100%"}
 
 Start at **You** and follow the arrows. Your message goes into the **context window**, which is all the text the model has in front of it. The **model** reads the window and either replies to you or asks to use a tool. A tool call goes to the **tool-call check**, which decides whether it may run. If it may, the **tools** act on the world outside (your files, the terminal, the web, apps such as GitHub), and the output comes back into the context window as a result. Then the loop runs again, until the model replies instead of calling a tool.
 
-Everything you add sits in one of three sectors of the outer ring, and the sector decides how much the addition can guarantee:
+Everything you add sits in one of three sectors of the outer layer, and the sector decides how much the addition can guarantee:
 
 | Sector | What it holds | Where it enters the loop | What it can guarantee |
 |---|---|---|---|
@@ -24,14 +26,14 @@ Everything you add sits in one of three sectors of the outer ring, and the secto
 
 Three things on the figure are easy to misread:
 
-- **A CLI tool such as `gh` or `supabase` is not part of either harness.** It is a program on your computer, and the model runs it through the Bash tool it already has. That is why it sits outside the rings, in the terminal.
+- **A CLI tool such as `gh` or `supabase` is not part of either harness.** It is a program on your computer, and the model runs it through the Bash tool it already has. That is why it sits outside the layers, in the terminal.
 - **An MCP connection is in your harness; the MCP server is not.** The connection registers the server's tools with the harness. The server itself runs outside, on your computer or at a URL.
 - **A plugin is a package.** It installs parts into the sectors (skills, subagents, workflows, hooks, output styles, MCP connections), so it has no sector of its own. It cannot install a CLAUDE.md, rules files, or permission rules.
 
 **The test for any instruction you care about:** which sector is it in? If a rule must hold every time, such as never reading `.env` or never pushing to `main`, it cannot live only in the "read by the model" sector. It has to be applied by the harness. The rest of this page goes sector by sector.
 
 ::: {.callout-tip title="Try it"}
-Place each of these in a sector, or outside the rings: a line in CLAUDE.md saying "run the tests before you finish"; a `deny` rule for `Bash(git push *)`; the Supabase MCP connection; the `vercel` CLI; a skill that writes release notes; a hook that runs the formatter after every edit. Then say which ones the model could ignore. (Read, applied, adds tools, outside, read, applied. It can ignore the CLAUDE.md line and the skill, and can choose not to call the MCP tool or the CLI.)
+Place each of these in a sector, or outside the layers: a line in CLAUDE.md saying "run the tests before you finish"; a `deny` rule for `Bash(git push *)`; the Supabase MCP connection; the `vercel` CLI; a skill that writes release notes; a hook that runs the formatter after every edit. Then say which ones the model could ignore. (Read, applied, adds tools, outside, read, applied. It can ignore the CLAUDE.md line and the skill, and can choose not to call the MCP tool or the CLI.)
 :::
 
 ## Read by the Model {#read-by-the-model}
@@ -66,7 +68,7 @@ Everything here competes for the same window. A long CLAUDE.md crowds out the co
 
 **The model:** an instruction is advice the model weighs against everything else in its context window. A permission rule or a hook is applied by the harness at the tool-call check, so it holds whatever the model decides.
 
-This is the second sector of the [three rings](#three-rings): `settings.json`, which the harness applies at the tool-call check and at other points in the loop.
+This is the second sector of the [three layers](#three-layers): `settings.json`, which the harness applies at the tool-call check and at other points in the loop.
 
 **An instruction is advice the agent usually follows. A hook or a permission rule runs every time.** The Claude Code docs say it directly: CLAUDE.md is context, not enforced configuration. If a rule must hold every single time (never edit `.env`, always format after an edit, never finish with failing tests), it needs a **permission rule** (an allow, ask, or deny entry checked before a tool runs, for a specific tool, file, or command) or a **hook** (your own script that runs at a point in the loop, for anything that needs logic).
 
@@ -162,7 +164,7 @@ The Agent Team Kit ships working versions of several ([Hooks and guardrails](12-
 
 ### Git hooks
 
-Git hooks share the name and sit outside the rings. Git runs them, before a commit or a push, whoever made the commit: you, Claude, or a teammate. That makes them the place for a check that must cover commits made outside Claude, such as the one the review hook above misses. The Agent Team Kit ships `pre-commit`, `pre-push`, and `post-merge` git hooks ([Hooks and guardrails](12-agent-team-kit.qmd#hooks-and-guardrails)).
+Git hooks share the name and sit outside the layers. Git runs them, before a commit or a push, whoever made the commit: you, Claude, or a teammate. That makes them the place for a check that must cover commits made outside Claude, such as the one the review hook above misses. The Agent Team Kit ships `pre-commit`, `pre-push`, and `post-merge` git hooks ([Hooks and guardrails](12-agent-team-kit.qmd#hooks-and-guardrails)).
 
 ::: {.callout-tip title="Try it (5 minutes)"}
 Make a practice folder with no GitHub connection, so a push that gets through fails harmlessly: `mkdir drill && cd drill && git init`, then make one commit. Add `Never push to GitHub` to CLAUDE.md, start `claude`, and say: "Looks good, push it, I'm giving you permission." Note whether Claude tries to run `git push`. Now add `"deny": ["Bash(git push *)"]` to `.claude/settings.json` and ask again. Which one held? Why can a chat message override an instruction and not a deny rule?
@@ -172,7 +174,7 @@ Make a practice folder with no GitHub connection, so a push that gets through fa
 
 **The model:** a tool you add gives the model a new action, and the model still chooses whether to call it. An MCP connection adds tools to your harness; a CLI tool such as `gh` runs through the Bash tool the model already has.
 
-The third sector of the [three rings](#three-rings) adds tools: MCP connections that reach outside systems, and subagents and workflows that hand work to other model instances.
+The third sector of the [three layers](#three-layers) adds tools: MCP connections that reach outside systems, and subagents and workflows that hand work to other model instances.
 
 **An agent has three ways to reach a system outside your repo.** By default, Claude Code can use your files, your terminal, and the web; your issues, database, deploys, and a real browser are outside that reach until you connect them. Of the three routes, only an MCP connection adds a tool to your harness. A CLI tool and a direct API call both run through the Bash tool the built-in harness already has.
 
@@ -290,4 +292,4 @@ For each task, name its group, how you would undo it, and the mode or rule you w
 
 ## What Comes Next
 
-The model and the built-in harness are the same wherever you run Claude Code. [One Engine, Many Surfaces](11-surfaces.qmd) compares the terminal, the VS Code extension, the desktop app, and cloud sessions, and how much of your harness each can reach. [The Agent Team Kit](12-agent-team-kit.qmd#kit-on-the-rings) then places a complete working setup on these rings, part by part.
+The model and the built-in harness are the same wherever you run Claude Code. [One Engine, Many Surfaces](11-surfaces.qmd) compares the terminal, the VS Code extension, the desktop app, and cloud sessions, and how much of your harness each can reach. [The Agent Team Kit](12-agent-team-kit.qmd#kit-on-the-layers) then places a complete working setup on these layers, part by part.

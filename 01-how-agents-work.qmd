@@ -71,7 +71,7 @@ Ask Claude Code to make a small change in a project, then watch the transcript i
 
 ### The harness
 
-The program around the model, which builds each request and runs the tool calls, is called the **harness**. Part of it is built in: the context window, the tool-call check, and the tools. The rest is your harness, which you shape yourself with files such as CLAUDE.md and settings. The workshop maps both on [Understanding the Harness](10-the-harness.qmd#three-rings).
+The program around the model, which builds each request and runs the tool calls, is called the **harness**. Part of it is built in: the context window, the tool-call check, and the tools. The rest is your harness, which you shape yourself with files such as CLAUDE.md and settings. The workshop maps both on [Understanding the Harness](10-the-harness.qmd#three-layers).
 
 ## The Command Line
 

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 980" role="img" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">
   <title>Claude Code: the model, the built-in harness, and your harness</title>
-  <desc>Three concentric rings, labeled Claude Code as a whole. At the center, the model. Around it, the built-in harness, which holds the context window, the tool-call check, and the tools, connected in a loop: the context window feeds the model, the model's tool call goes to the check, the check passes it to the tools, and the tools' results return to the context window. The outer ring is your harness, in three sectors, each with an arrow to the part of the built-in harness it changes. Read by the model, all markdown: the files CLAUDE.md, MEMORY.md for auto memory, and SKILL.md for each skill, then the folders rules/ and output-styles/, into the context window. Applied by the harness: settings.json, which holds permission rules, hooks, the model, the effort level, and more, with an arrow into the built-in harness. Adds tools: MCP connections, which the Claude app calls connectors, subagents, and workflows, into the tools. Outside the rings, a package labeled Plugin, from a marketplace, has a dashed arrow labeled installs that stops at the outer edge of your harness, since a plugin can add parts to any of the three sectors. Outside the rings, you send messages, which go into the context window, and the model's replies come back to you. Two arrows connect the tools with the world outside all three rings, actions going out and output coming back, which the tools pass on as results. The world outside holds your project files; the terminal, where git, gh, and other CLIs run; the web, for search and pages; and apps such as GitHub and Supabase.</desc>
+  <desc>Three nested layers, drawn as concentric circles, labeled Claude Code as a whole. At the center, the model. Around it, the built-in harness, which holds the context window, the tool-call check, and the tools, connected in a loop: the context window feeds the model, the model's tool call goes to the check, the check passes it to the tools, and the tools' results return to the context window. The outer layer is your harness, in three sectors, each with an arrow to the part of the built-in harness it changes. Read by the model, all markdown: the files CLAUDE.md, MEMORY.md for auto memory, and SKILL.md for each skill, then the folders rules/ and output-styles/, into the context window. Applied by the harness: settings.json, which holds permission rules, hooks, the model, the effort level, and more, with an arrow into the built-in harness. Adds tools: MCP connections, which the Claude app calls connectors, subagents, and workflows, into the tools. Outside the layers, a package labeled Plugin, from a marketplace, has a dashed arrow labeled installs that stops at the outer edge of your harness, since a plugin can add parts to any of the three sectors. Outside the layers, you send messages, which go into the context window, and the model's replies come back to you. Two arrows connect the tools with the world outside all three layers, actions going out and output coming back, which the tools pass on as results. The world outside holds your project files; the terminal, where git, gh, and other CLIs run; the web, for search and pages; and apps such as GitHub and Supabase.</desc>
   <defs>
     <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#0057B8"/></marker>
     <marker id="an" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#002E5D"/></marker>
@@ -11,18 +11,18 @@
   </defs>
   <rect width="1000" height="980" rx="8" fill="#FAFBFC"/>
 
-  <!-- Claude Code: all three rings -->
+  <!-- Claude Code: all three layers -->
   <text x="500" y="56" text-anchor="middle" font-size="20" font-weight="700" letter-spacing="1.4" fill="#002E5D">CLAUDE CODE</text>
   <line x1="500" y1="66" x2="500" y2="88" stroke="#002E5D" stroke-width="1.5"/>
 
-  <!-- Outer ring: what you add, three sectors -->
+  <!-- Outer layer: what you add, three sectors -->
   <circle cx="500" cy="470" r="380" fill="#F1F3F5" stroke="#D9DEE4" stroke-width="2"/>
   <line x1="385" y1="271" x2="310" y2="141" stroke="#8A939C" stroke-width="1.5" stroke-dasharray="5 5"/>
   <line x1="730" y1="470" x2="880" y2="470" stroke="#8A939C" stroke-width="1.5" stroke-dasharray="5 5"/>
   <line x1="385" y1="669" x2="310" y2="799" stroke="#8A939C" stroke-width="1.5" stroke-dasharray="5 5"/>
 
 
-  <!-- Harness ring -->
+  <!-- Harness layer -->
   <circle cx="500" cy="470" r="230" fill="url(#gHarness)" stroke="#B9D0EA" stroke-width="2"/>
   <text x="500" y="262" text-anchor="middle" font-size="16" font-weight="700" letter-spacing="1.2" fill="#002E5D">BUILT-IN</text>
   <text x="500" y="284" text-anchor="middle" font-size="16" font-weight="700" letter-spacing="1.2" fill="#002E5D">HARNESS</text>
@@ -77,12 +77,12 @@
   <text x="795" y="626" text-anchor="middle" font-size="17" font-weight="600" fill="#2C3E50">Workflows</text>
   <path d="M722 572 C690 584 666 596 634 598" stroke="#0057B8" stroke-width="2.5" fill="none" marker-end="url(#ar)"/>
 
-  <!-- Outer ring label -->
+  <!-- Outer layer label -->
   <text x="92" y="812" text-anchor="middle" font-size="18" font-weight="700" letter-spacing="1.4" fill="#002E5D">YOUR</text>
   <text x="92" y="836" text-anchor="middle" font-size="18" font-weight="700" letter-spacing="1.4" fill="#002E5D">HARNESS</text>
   <line x1="124" y1="792" x2="226" y2="710" stroke="#002E5D" stroke-width="1.5"/>
 
-  <!-- You, outside the rings -->
+  <!-- You, outside the layers -->
   <circle cx="70" cy="128" r="30" fill="#E6EEF7"/>
   <g transform="translate(55,113) scale(1.25)" fill="none" stroke="#002E5D" stroke-width="1.76" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></g>
   <text x="70" y="186" text-anchor="middle" font-size="19" font-weight="700" fill="#002E5D">You</text>

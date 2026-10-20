@@ -29,14 +29,14 @@ Figures from the same piece: use of Codex in non-engineering departments at Open
 
 ## You are running a small version of this factory
 
-Each part of the factory has a counterpart in the [Agent Team Kit](12-agent-team-kit.qmd). Placing each on the [three rings](10-the-harness.qmd#three-rings) shows how much it can guarantee.
+Each part of the factory has a counterpart in the [Agent Team Kit](12-agent-team-kit.qmd). Placing each on the [three layers](10-the-harness.qmd#three-layers) shows how much it can guarantee.
 
 | Factory | Agent Team Kit | Where it sits |
 |---|---|---|
 | **Software builder** defines the outcome | You, writing a spec with acceptance criteria and approving it before any code exists ([`/spec`](13-spec-to-release.qmd#spec-skill)) | A person |
 | **Context layer**: what Codex pulls from the repo, Slack, and Notion | `CLAUDE.md` and team memory for rules and lessons; MCP servers for the tools your context lives in | Read by the model; adds tools |
 | **Reusable agent procedures** | Skills: `/spec`, `/build-spec`, `/stage`, `/promote`, `/push` | Read by the model |
-| **CI gates** | The `bash-guard` and file-size hooks and your permission rules, which hold whatever the model decides. The `pre-commit` and `pre-push` git hooks run the checks again before work leaves your laptop. CI on every push is the part you write yourself | Applied by the harness; git hooks outside the rings |
+| **CI gates** | The `bash-guard` and file-size hooks and your permission rules, which hold whatever the model decides. The `pre-commit` and `pre-push` git hooks run the checks again before work leaves your laptop. CI on every push is the part you write yourself | Applied by the harness; git hooks outside the layers |
 | **Agentic review** | The definition-of-done section in `CLAUDE.md`, `/build-spec`'s check sheet, `/regression-check`, and the [agents that test your app](12-agent-team-kit.qmd#agents-that-test) | Read by the model |
 | **Risk classification** | The release decision in the spec: `/push` straight to production, or `/stage` then `/promote` ([decide the release at spec time](13-spec-to-release.qmd#decide-the-release-at-spec-time)) | A person |
 | **Perf Factory and Sevbot** watching production | The closest counterpart is the [bug feedback loop](12-agent-team-kit.qmd#bug-feedback-loops): in-app reports and tester findings land in one inbox and hand off to `/fix-bug` | A build spec in your app, plus a skill |

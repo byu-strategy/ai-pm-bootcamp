@@ -50,7 +50,7 @@ Three hours in all.
 | Minutes | Segment | Page |
 |---|---|---|
 | 10 | Welcome and the builder model | This page |
-| 40 | Understanding the harness: the three rings, what the model reads, what the harness applies, the tools you add, blast radius | [The Harness](10-the-harness.qmd) |
+| 40 | Understanding the harness: the three layers, what the model reads, what the harness applies, the tools you add, blast radius | [The Harness](10-the-harness.qmd) |
 | 20 | One engine, many surfaces, and other coding agents | [Surfaces](11-surfaces.qmd) |
 | 10 | Break | |
 | 35 | The Agent Team Kit: concurrent agents, design loops, guardrails, memory, testing | [Agent Team Kit](12-agent-team-kit.qmd) |
