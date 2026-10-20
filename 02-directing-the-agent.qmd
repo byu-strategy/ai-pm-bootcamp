@@ -2,34 +2,7 @@
 title: "Directing the Agent: The Basics"
 ---
 
-This page covers the everyday controls for directing Claude Code: how to talk to it, what it can and cannot see, CLAUDE.md, slash commands, skills, and permission modes. Read it if you have run Claude Code a few times but have not yet written a CLAUDE.md or a skill. Skip it if you already use CLAUDE.md and skills daily.
-
-## Why This Matters
-
-Directing an agent comes down to three questions you answer for every task:
-
-1. **What can it see?** The agent knows only what is in its context window: all the text the model has in front of it at one moment.
-2. **What may it do?** Instructions advise; hooks and permission rules enforce; modes and sandboxes limit the damage. This page covers modes. [The Harness](11-the-harness.qmd) covers the rest.
-3. **How will you know it worked?** Its own report is a claim. Your check is the evidence. [From Spec to Release](13-spec-to-release.qmd) covers how to make that check part of the build.
-
-All three get easier when you have written down what you want before anyone builds it. That written description is a spec, and [Spec to Release](13-spec-to-release.qmd) covers it.
-
-## Conversational Coding
-
-Agentic coding works best when you think out loud. Instead of trying to write a perfect prompt, have a conversation:
-
-**Less effective:**
-> Build me a problem tracker app with all features
-
-**More effective:**
-> I want to track problems I notice throughout the day. Let's start simple, just a way to add a new problem with a title and description. We can add evaluation features later.
-
-Then iterate:
-> That looks good. Can we add a timestamp so I know when I captured each problem?
-
-> Now I want to rate each problem on frequency (daily, weekly, monthly, rarely). Add a dropdown for that.
-
-Each small request is one short cycle of the [agent loop](01-how-agents-work.qmd#the-agent-loop-gather-context-act-check), and you check the result before the next one. Conversation is how you explore. Once you know what you want to keep, write it down (in CLAUDE.md or a spec), so the next session, or the next agent, does not have to rediscover it from a chat log.
+This page covers what the workshop assumes you know: what the agent can see, how to write a CLAUDE.md and a skill, the handful of commands that manage a session, and permission modes. Read it if you have run Claude Code a few times but have not yet written a CLAUDE.md or a skill. Skip it if you already use both daily.
 
 ## It Knows Only What It Can See
 
@@ -47,43 +20,13 @@ Each small request is one short cycle of the [agent loop](01-how-agents-work.qmd
 
 The window is finite. As it fills, Claude Code clears old tool output and then summarizes the conversation automatically, and instructions from early in the conversation can get lost in the summary. That is the practical reason for CLAUDE.md: **anything that must survive goes in a file the agent re-reads, not in a chat message.**
 
-#### The controls
-
-| Command or file | What it does to the window |
-|---|---|
-| `CLAUDE.md` | Puts standing facts and rules in every session |
-| `/context` | Shows what is filling the window right now |
-| `/compact` | Summarizes the conversation so far to free space, and keeps going on the same task. `/compact focus on the API changes` tells it what to keep |
-| `/clear` | Starts a new, empty conversation. CLAUDE.md still loads; everything you said does not |
-| Skills | Keep procedures out of the window until they are needed |
-| Subagents | Do noisy work (long logs, big searches) in a separate window and return only a summary |
-
 ![CLAUDE.md loads again after both commands. `/compact` keeps a summary and the task; `/clear` keeps nothing you said.](images/diagrams/ch02-context-window.svg){#fig-context-window fig-alt="Three tall bars, each a context window filled from the bottom, starting with system instructions and CLAUDE.md. Mid-session, skill descriptions sit above them and the bar is full: conversation and a large block of tool results sit on top. An arrow labeled /compact leads to a second bar where the conversation and tool results are replaced by a small summary, with free space above, and the skill descriptions are replaced by only the skills you used. An arrow labeled /clear leads to a third bar with the skill descriptions back and an empty conversation. CLAUDE.md is highlighted in all three." width="100%"}
 
-**Worked example.** On Monday you tell Claude, "Never use a database for this project; JSON files only." On Wednesday you start a new session and ask for a search feature. Claude adds SQLite (a small database). It did not disobey you: Monday's sentence was in Monday's window, and Wednesday's window never contained it. Put the rule in CLAUDE.md and every session starts with it.
+**Worked example.** One day you tell Claude, "Never use a database for this project; JSON files only." The next day you start a new session and ask for a search feature. Claude adds SQLite (a small database). It did not disobey you: that sentence was in the first session's window, and the second session's window never contained it. Put the rule in CLAUDE.md and every session starts with it.
 
 #### CLAUDE.md: your project's memory
 
-`CLAUDE.md` is a Markdown file that Claude Code reads automatically at the start of every session. It is where you write down what you would otherwise re-explain: what you are building, the tech stack, conventions, and commands. Ask Claude to write one:
-
-> Create a CLAUDE.md file that describes a problem tracking application I'm building to help me identify startup ideas
-
-Claude will create something like:
-
-```markdown
-# Problem Tracker
-
-## Project Overview
-A personal tool for capturing and evaluating problems that could become product opportunities.
-
-## Tech Stack
-- Python with Streamlit for the frontend
-- JSON file for data persistence
-
-## Development Notes
-- Keep the UI simple since this is for personal use
-- Focus on fast capture over elaborate analysis
-```
+`CLAUDE.md` is a Markdown file that Claude Code reads automatically at the start of every session. It is where you write down what you would otherwise re-explain.
 
 `/init` generates a starter CLAUDE.md by reading your codebase, and `/memory` opens your CLAUDE.md files. Keep it short: the docs suggest under 200 lines, because every line costs context on every turn and long files are followed less reliably.
 
@@ -127,45 +70,20 @@ Check what Claude has saved with `/memory`. A rule you depend on belongs in CLAU
 Run `/context` in a session and find your CLAUDE.md in the list. Then: (1) tell Claude a project rule in chat, run `/clear`, and ask it what the rule is. (If Claude remembers it anyway, check `/memory`: it may have saved the rule to auto memory.) (2) Put the rule in CLAUDE.md, run `/clear`, and ask again. Explain the difference in one sentence.
 :::
 
-## Slash Commands
+## The Commands That Manage a Session
 
-A slash command is recognized at the start of a message; anything after it is its argument. Type `/` to see every command available to you. These are the ones to know by name:
+Type `/` to see every command. These are the ones the workshop uses:
 
 | Command | What it does |
-|---------|--------------|
-| **Managing the conversation** | |
+|---|---|
 | `/context` | Show what is filling the context window |
-| `/compact` | Summarize the conversation so far to free up context, and keep going on the same task |
-| `/clear` | Start a new conversation with empty context (CLAUDE.md still loads) |
-| `/rewind` | Roll back Claude's file edits and/or the conversation to an earlier point |
-| `/resume` | Reopen an earlier conversation, by name or from a list |
-| `/rename` | Give this session a name, so you can find it in `/resume` later |
-| `/btw` | Ask a side question without adding it to the conversation |
-| `/exit` | Leave Claude Code |
-| **Setting up** | |
-| `/init` | Write a starter CLAUDE.md for this project |
-| `/memory` | Open your CLAUDE.md files, turn auto memory on or off, and browse what Claude has saved |
-| `/config` | Open settings (theme, model, and other preferences) |
-| `/model` | Switch the model, and save it as your default |
-| `/effort` | Set how much the model reasons before it answers. Higher takes longer |
-| `/usage` | Show what the session has cost and how much of your plan's usage limit you have used |
-| `/add-dir` | Give Claude access to another folder for this session |
-| **Controlling what Claude can do** | |
-| `/plan` | Switch into plan mode (read-only planning) |
-| `/permissions` | Manage allow, ask, and deny rules |
-| `/hooks` | Show every hook that is set up and where it came from |
-| **Extending Claude** | |
-| `/skills` | List the skills available to you |
-| `/mcp` | Manage connections to outside tools (MCP servers), including sign-in |
-| `/plugin` | Install and manage plugins |
-| **Working away from the keyboard** | |
-| `/remote-control` (or `/rc`) | Make this session reachable from the Claude mobile app or claude.ai/code, so you can follow it and reply from your phone while it keeps running on your computer |
-| `/voice` | Speak your prompts instead of typing them |
-| **Checking work** | |
+| `/compact` | Summarize the conversation to free space and keep going on the same task. `/compact focus on the API changes` says what to keep |
+| `/clear` | Start a new, empty conversation. CLAUDE.md still loads; everything you said does not |
+| `/rewind` | Roll back Claude's file edits, the conversation, or both, to an earlier prompt |
+| `/rename`, `/resume` | Name a session, and reopen it later by that name. Name every session you run in parallel |
+| `/init`, `/memory` | Write a starter CLAUDE.md; open your CLAUDE.md files and auto memory |
+| `/skills`, `/mcp`, `/hooks`, `/permissions` | See what is installed in your harness ([Understanding the Harness](11-the-harness.qmd)) |
 | `/diff` | Review the changes in your files, including Claude's edits |
-| `/help` | Show available commands |
-
-With [Remote Control](https://code.claude.com/docs/en/remote-control) on, the Claude app on your phone shows the same session: you can read its progress, answer its questions, and send photos or files, while the code and your files stay on your computer. [Voice dictation](https://code.claude.com/docs/en/voice-dictation) works in the terminal and the VS Code extension; hold `Space` and talk.
 
 ## Skills
 
@@ -197,13 +115,13 @@ $ARGUMENTS
 
 Now use it: `/test-synthesis [paste your notes here]`. Text you type after the command replaces `$ARGUMENTS`.
 
-Older Claude Code projects keep saved prompts as files in `.claude/commands/` (for example `.claude/commands/interview.md` creates `/interview`). Those still work, but use a skill for anything new, because a skill is a folder and can carry reference docs and scripts with it. To use a skill in every project, put its folder in `~/.claude/skills/`. A **plugin** is a package that bundles skills, hooks, subagents, and MCP servers so others can install them with `/plugin`.
+To use a skill in every project, put its folder in `~/.claude/skills/`. Older projects keep saved prompts in `.claude/commands/`; those still work, but a skill can also carry reference files and scripts.
 
 #### CLAUDE.md or a skill?
 
 CLAUDE.md is read on every turn, so every line costs context all the time. A skill's full instructions load only when it is used. The rule of thumb: **standing facts go in CLAUDE.md; a procedure you need sometimes goes in a skill.**
 
-Two tests for when a procedure should become a skill, from the Agent Team Kit's [skills guide](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/SKILLS.md): if you have explained the same careful procedure to an agent twice, write it down once as a skill. If an action is expensive to get wrong (a release, a database migration), write a skill that fixes the safe order of steps, so the agent does not improvise it. The workshop's [Agent Team Kit](12-agent-team-kit.qmd) page walks through the kit's own skills.
+Two tests for when a procedure should become a skill, from the Agent Team Kit's [skills guide](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/SKILLS.md): if you have explained the same careful procedure to an agent twice, write it down once as a skill. If an action is expensive to get wrong (a release, a database migration), write a skill that fixes the safe order of steps, so the agent does not improvise it. The [Agent Team Kit](12-agent-team-kit.qmd) ships 13 skills built on those two tests.
 
 Skills worth creating as a PM: `feedback-synthesis` (synthesize several interviews or test sessions), `persona` (a persona from interview data), `jtbd` (a problem restated as a job to be done), `prd-review` (check a PRD against your team's template).
 
