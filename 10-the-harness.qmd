@@ -1,5 +1,7 @@
 ---
 title: "Understanding the Harness"
+aliases:
+  - 11-the-harness.html
 ---
 
 The model is one part of Claude Code. Most of what decides how an agent behaves on your project is the harness around it: what goes into the model's context window, which tools it can call, and which checks run before a tool does anything. This segment maps that harness as three rings, then goes through the three sectors of the ring you build: what the model reads, what the harness applies, and which tools you add, including subagents and workflows. It ends with blast radius: how much an agent should do without you. If you do not use CLAUDE.md or skills yet, read [Directing the Agent](02-directing-the-agent.qmd) first.
