@@ -5,7 +5,7 @@ author: "Scott Murff"
 
 ## What this workshop is
 
-This workshop assumes you already build with Claude Code, or with Codex or Copilot at work. It covers what most people who use these tools every day have not set up yet: choosing the right surface for the job, rules and hooks the agent cannot ignore, running several agents at once without them breaking each other's work, and taking a feature from a written spec to a controlled release.
+This workshop assumes you already build with Claude Code, or with Codex or Copilot at work. It covers what most people who use these tools every day have not set up yet: choosing the right surface for the job, how the harness around the model works and which parts of it you control, rules and hooks the agent cannot ignore, running several agents at once without them breaking each other's work, and taking a feature from a written spec to a controlled release.
 
 Most of the workshop is built around the **Agent Team Kit**, an open-source set of hooks, skills, and working agreements for a small team (or one person) running many Claude Code agents in parallel. It is public at [github.com/ai-foundry-byu/agent-team-kit](https://github.com/ai-foundry-byu/agent-team-kit), and you will install it on your own repo in the lab.
 
@@ -42,12 +42,12 @@ Three hours in all.
 | Minutes | Segment | Page |
 |---|---|---|
 | 10 | Welcome and the builder model | This page |
-| 25 | One engine, many surfaces | [Surfaces](10-surfaces.qmd) |
-| 30 | The harness: rules, hooks, blast radius, MCP, subagents | [The Harness](11-the-harness.qmd) |
+| 20 | One engine, many surfaces | [Surfaces](10-surfaces.qmd) |
+| 40 | Understanding the harness: the three rings, rules, hooks, tools, subagents, blast radius | [The Harness](11-the-harness.qmd) |
 | 10 | Break | |
 | 35 | The Agent Team Kit: parallel agents without collisions | [Agent Team Kit](12-agent-team-kit.qmd) |
 | 25 | From spec to release | [Spec to Release](13-spec-to-release.qmd) |
-| 35 | Lab: install the kit and run it | [Lab](14-lab.qmd) |
+| 30 | Lab: install the kit and run it | [Lab](14-lab.qmd) |
 | 10 | What this looks like at full scale, and questions | [Full Scale](15-software-factory.qmd) |
 
 ## What to bring

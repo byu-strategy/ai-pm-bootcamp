@@ -1,10 +1,68 @@
 ---
-title: "The Harness You're Not Using Yet"
+title: "Understanding the Harness"
 ---
 
-This segment covers the parts of Claude Code that most daily users have not set up: permission rules and hooks that enforce a rule every time, the controls that decide how much an agent may do without you, subagents and parallel sessions, and the three routes an agent uses to reach systems outside your repo. It assumes you already use CLAUDE.md and skills; if not, read [Directing the Agent](02-directing-the-agent.qmd) first.
+The model is one part of Claude Code. Most of what decides how an agent behaves on your project is the harness around it: what goes into the model's context window, which tools it can call, and which checks run before a tool does anything. This segment maps that harness, then goes through the parts you control: what the model reads, what the harness applies, which tools you add, how far an action can reach, and how to split work across agents. The [Agent Team Kit](12-agent-team-kit.qmd) is built out of these parts, so it is easier to follow once the map is clear. If you do not use CLAUDE.md or skills yet, read [Directing the Agent](02-directing-the-agent.qmd) first.
 
-## Advice Versus Enforcement
+## Three Rings {#three-rings}
+
+**Claude Code is three rings: the model, the built-in harness that Anthropic ships, and your harness around both.** You cannot change the model. You can change a few settings of the built-in harness. You build the outer ring.
+
+![Claude Code as three rings. The model sits at the center. The built-in harness runs the loop: the context window feeds the model, the model's tool call goes to the tool-call check, approved calls run as tools, and the results return to the context window. Your harness is the outer ring, in three sectors, each feeding a different part of the loop. A plugin from a marketplace can install parts into any of the three sectors.](images/diagrams/ch02-three-rings.svg){#fig-three-rings fig-alt="Three concentric rings, labeled Claude Code as a whole. At the center, the model. Around it, the built-in harness, which holds the context window, the tool-call check, and the tools, connected in a loop: the context window feeds the model, the model's tool call goes to the check, the check passes it to the tools, and the tools' results return to the context window. The outer ring is your harness, in three sectors, each with an arrow to the part of the built-in harness it changes. Read by the model, all markdown: the files CLAUDE.md, MEMORY.md for auto memory, and SKILL.md for each skill, then the folders rules/ and output-styles/, into the context window. Applied by the harness: settings.json, which holds permission rules, hooks, the model, the effort level, and more, with an arrow into the built-in harness. Adds tools: MCP connections, which the Claude app calls connectors, subagents, and workflows, into the tools. Outside the rings, a package labeled Plugin, from a marketplace, has a dashed arrow labeled installs that stops at the outer edge of your harness, since a plugin can add parts to any of the three sectors. Outside the rings, you send messages, which go into the context window, and the model's replies come back to you. Two arrows connect the tools with the world outside all three rings, actions going out and output coming back, which the tools pass on as results. The world outside holds your project files; the terminal, where git, gh, and other CLIs run; the web, for search and pages; and apps such as GitHub and Supabase." width="100%"}
+
+Start at **You** and follow the arrows. Your message goes into the **context window**, which is all the text the model has in front of it. The **model** reads the window and either replies to you or asks to use a tool. A tool call goes to the **tool-call check**, which decides whether it may run. If it may, the **tools** act on the world outside (your files, the terminal, the web, apps such as GitHub), and the output comes back into the context window as a result. Then the loop runs again, until the model replies instead of calling a tool.
+
+Everything you add sits in one of three sectors of the outer ring, and the sector decides how much the addition can guarantee:
+
+| Sector | What it holds | Where it enters the loop | What it can guarantee |
+|---|---|---|---|
+| **Read by the model** | `CLAUDE.md`, `MEMORY.md` (auto memory), each skill's `SKILL.md`, rules files in `.claude/rules/`, output styles | The context window | Nothing. The model weighs it against everything else in the window and can decide otherwise |
+| **Applied by the harness** | `settings.json`: permission rules, hooks, the model, the effort level, the sandbox | The tool-call check, and other points in the loop | That it happens, whatever the model decides |
+| **Adds tools** | MCP connections (the Claude app calls them connectors), subagents, workflows | The tools | That the tool exists. The model still chooses whether to call it |
+
+Three things on the figure are easy to misread:
+
+- **A CLI tool such as `gh` or `supabase` is not part of either harness.** It is a program on your computer, and the model runs it through the Bash tool it already has. That is why it sits outside the rings, in the terminal.
+- **An MCP connection is in your harness; the MCP server is not.** The connection registers the server's tools with the harness. The server itself runs outside, on your computer or at a URL.
+- **A plugin is a package.** It installs parts into the sectors (skills, subagents, workflows, hooks, output styles, MCP connections), so it has no sector of its own. It cannot install a CLAUDE.md, rules files, or permission rules.
+
+**The test for any instruction you care about:** which sector is it in? If a rule must hold every time, such as never reading `.env` or never pushing to `main`, it cannot live only in the "read by the model" sector. It has to be applied by the harness. The rest of this page goes sector by sector.
+
+::: {.callout-tip title="Try it"}
+Place each of these in a sector, or outside the rings: a line in CLAUDE.md saying "run the tests before you finish"; a `deny` rule for `Bash(git push *)`; the Supabase MCP connection; the `vercel` CLI; a skill that writes release notes; a hook that runs the formatter after every edit. Then say which ones the model could ignore. (Read, applied, adds tools, outside, read, applied. It can ignore the CLAUDE.md line and the skill, and can choose not to call the MCP tool or the CLI.)
+:::
+
+## Read by the Model {#read-by-the-model}
+
+**Everything in this sector is markdown that ends up in the context window.** It shapes what the model does and guarantees nothing.
+
+| Item | What it is | When it loads |
+|---|---|---|
+| `CLAUDE.md` | Standing instructions for the project (`./CLAUDE.md`) or for you (`~/.claude/CLAUDE.md`) | Every session, at the start |
+| `MEMORY.md` | The index of auto memory, notes Claude writes for itself under `~/.claude/projects/<project>/memory/` | Every session, at the start. It stays on the computer where it was written |
+| `SKILL.md` | A procedure you repeat, in `.claude/skills/<name>/` | Its name and description load every session; the full text loads when the skill runs |
+| `.claude/rules/*.md` | CLAUDE.md split into topic files | Every session, or only when Claude touches matching files if the file lists `paths` |
+| `.claude/output-styles/` | How Claude responds for a whole session: tone, length, format, or role | When you switch with `/output-style` |
+
+A rules file with `paths` keeps instructions out of the window until they matter:
+
+```markdown
+---
+paths:
+  - "src/api/**/*.ts"
+---
+
+- Every API endpoint validates its input
+- Errors use the standard error response format
+```
+
+A **rules file** is different from a **permission rule**. A rules file is advice the model reads. A permission rule is a line in `settings.json` that the harness checks before every tool call. The names are similar; the sectors are not.
+
+Because everything here competes for the same window, more is not better. A long CLAUDE.md pushes out the code the model needs to see, and an instruction buried in it is easier to overlook. Keep this sector short, and move anything that must hold every time into the next one.
+
+## Applied by the Harness: Advice Versus Enforcement {#advice-versus-enforcement}
+
+This is the second sector of the [three rings](#three-rings): `settings.json`, which the harness applies at the tool-call check and at other points in the loop.
 
 **An instruction is advice the agent usually follows. A hook or a permission rule runs every time.** The Claude Code docs say it directly: CLAUDE.md is context, not enforced configuration. If a rule must hold every single time (never edit `.env`, always format after an edit, never finish with failing tests), it cannot live only in CLAUDE.md. It needs one of two enforcement mechanisms:
 
@@ -171,68 +229,55 @@ Any non-zero exit blocks the commit. The Agent Team Kit ships its own [`pre-comm
 Make a practice folder with no GitHub connection, so a push that gets through fails harmlessly: `mkdir drill && cd drill && git init`, then make one commit. Add `Never push to GitHub` to CLAUDE.md, start `claude`, and say: "Looks good, push it, I'm giving you permission." Note whether Claude tries to run `git push`. Now add `"deny": ["Bash(git push *)"]` to `.claude/settings.json` and ask again. Which one held? Why can a chat message override an instruction and not a deny rule?
 :::
 
-## Blast Radius
+## Adds Tools: Reaching Beyond the Repo {#reach-beyond-the-repo-mcp}
 
-**An action's blast radius is everything it can change if it goes wrong. Before you let an agent work without watching, ask two questions about each kind of action: how far does it reach, and can I undo it?** The farther an action reaches, the fewer ways you have to undo it, and the less you should let the agent do it without you.
+The third sector of the [three rings](#three-rings) adds tools. Of the three routes below, only an MCP connection adds a tool to your harness. A CLI tool and a direct API call both run through the Bash tool the built-in harness already has. Subagents and workflows also add tools; they are covered under [Delegation](#delegation-and-parallel-work).
 
-Claude Code saves a **checkpoint** of your files before each prompt you send. `/rewind` (or `Esc` twice on an empty prompt) restores the code, the conversation, or both to an earlier prompt. A checkpoint records only changes Claude makes with its own file-editing tool. It does not record what a shell command does, and it cannot reach anything outside your laptop. So every action falls into one of three groups:
+**An agent has three ways to reach a system outside your repo.** By default, Claude Code can use your files, your terminal, and the web. Your GitHub issues, your database, your deploys, your tickets, and a real browser are outside that reach until you connect them.
 
-1. **Claude edits a file with its edit tool.** `/rewind` puts it back. Let these run.
-2. **Claude runs a shell command that changes files on your laptop**, such as `rm -rf drafts/` or `mv`. `/rewind` does not track these. Git can bring back any file as it was in your last commit; a file you never committed is gone. Edits made by a subagent usually belong here too. Commit before you start.
-3. **The action leaves your laptop**: a `git push`, a deploy, a write to the production database, an email sent. Neither `/rewind` nor your local git history can recall it. You can make a new change afterward, but by then a teammate may have pulled the code, users may have seen the page, and the email is in someone's inbox. Approve each of these yourself, or run them yourself.
+| Route | What it is | Example | Good for | Cost |
+|---|---|---|---|---|
+| **CLI tool** | A command-line program the agent runs in the terminal | `gh issue list`, `supabase db push`, `vercel logs` | Services with a command-line tool. Claude already knows the common ones, and they use the login you already have | Each tool is installed and signed in once |
+| **MCP server** | A program or URL that wraps one system and adds its actions to the agent as new tools | A browser server, a Supabase server, a ticket tracker | Systems with no command-line tool, or actions you want named and structured | Each server's tool list takes some context |
+| **Direct API call** | A request the agent writes itself, such as `curl` or a short script, sent with your key | `curl` to a REST API | A one-off pull from a service with neither of the above | You manage the key, and the agent writes the request each time |
 
-![How far an action reaches decides how you undo it. `/rewind` restores Claude's file edits, git restores files you committed, and nothing recalls an action that has left your laptop.](images/diagrams/ch02-blast-radius.svg){#fig-blast-radius fig-alt="A grid of three columns and three rows. The columns are three kinds of action. Two stay on your laptop: Claude edits a file with its edit tool; a command deletes a folder, such as rm -rf drafts/. One reaches other people, highlighted: it leaves your laptop, as a push, a deploy, a write to the live database, or an email. Row how to undo it: /rewind; git, only if you committed; no undo, only a new fix later. Row so you: let it run without asking; commit before it runs; approve it yourself." width="100%"}
+Try them in that order. If the service has a CLI, the agent can usually use it at once. If it has an MCP server, connect it. A direct API call works for almost anything, at the cost of handling a key.
 
-The Agent Team Kit turns the three groups into one standing rule for its agents ([commit freely, never push](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/commit-freely-never-push.md)): commit after each finished piece of work without asking, because a commit stays on your laptop and can be undone, and push only when you say so, because a push leaves your laptop. Put both halves in your CLAUDE.md.
+### MCP servers and connectors
 
-### The controls, from tightest to loosest
+The **Model Context Protocol (MCP)** is an open standard for connecting an agent to outside tools and data, which Anthropic [introduced in November 2024](https://www.anthropic.com/news/model-context-protocol).
 
-Each control limits something different. Combine them so the first group runs freely, the second runs only after a commit, and the third waits for you.
-
-| Control | What it limits |
+| Building block | What it is |
 |---|---|
-| **Plan mode** | Changes to your files. Claude reads, explores, and writes a plan; it does not edit your source until you approve |
-| **Permission mode** | What runs without asking (table below) |
-| **Permission rules** | Specific tools, files, or commands always allowed, asked about, or denied |
-| **Sandbox** | An operating-system boundary around shell commands: which folders they may write and which network hosts they may reach. Off by default; turn it on with `/sandbox` (macOS, Linux, WSL2) |
-| **Worktree** | A separate copy of the files on its own branch, so a session's edits cannot collide with yours |
+| **MCP server** | A small program (on your machine) or a URL (hosted) that wraps one system: GitHub, Supabase, Linear, a browser |
+| **Tools** | The actions the server offers, which appear to Claude as tools named `mcp__<server>__<tool>` |
+| **Scope** | Where the connection is saved: just you, or the project's `.mcp.json`, which you commit to share with your team |
+| **`/mcp`** | Lists your servers and their status, and handles sign-in |
+| **Connector** | The Claude app's name for an MCP server you add in its settings (Gmail, Google Drive, Slack, GitHub). Connectors added in the app can also appear in Claude Code when you sign in with the same account, as tools named `mcp__claude_ai_<name>__<tool>` |
 
-Permission modes, cycled with `Shift+Tab` (the status bar shows the current one):
+A connector and an MCP server are the same thing under two names.
 
-| Mode | Runs without asking | Use it when |
-|---|---|---|
-| **Manual** (config value `default`) | Reads only | Sensitive work; you want to review every action |
-| **Accept edits** | Reads, file edits, and common file commands (`mkdir`, `touch`, `mv`, `cp`, `rm`, `sed`) inside your project | Iterating on code and reviewing as you go |
-| **Plan** | Reads, plus exploring commands (no edits to your source) | Exploring before changing anything |
-| **Auto** | Most actions, after a second model reviews each one and blocks risky ones | Long tasks where approving every prompt would be tedious |
-| **Don't ask** (config value `dontAsk`) | Reads and the tools you pre-approved; anything else is refused, not asked | Scripts and automated runs (`claude -p`) with an exact list of allowed tools |
-| **Bypass permissions** (`--dangerously-skip-permissions`) | Everything, with no prompts and no safety checks | Only inside an isolated container or virtual machine |
+A good signal that you need one: you keep copying data into the chat from another tool. Connect the tool, and Claude reads it directly.
 
-Recent versions of Claude Code start new sessions in Auto; check the status bar. Accept edits and Auto both let Claude run `rm` and `mv` without asking, which are group 2 actions: commit first.
+**Worked example.** Claude says the signup form works, but you cannot see it without clicking through yourself. Connect the Playwright server, which gives Claude a browser it can drive:
 
-**How auto mode decides.** In Auto, a second model, the classifier, reviews each action before it runs, in place of you. It blocks actions that go beyond what you asked for, reach systems it does not recognize, or look driven by instructions in content Claude read, such as a web page or a ticket. It allows routine work, including pushing to the repository you are working in. If it blocks the same kind of action repeatedly, Claude Code goes back to asking you. A boundary you state in chat ("don't deploy until I say so") counts, but it lives only in the conversation, and compaction can summarize it away. For a boundary that must hold, write an ask or deny rule ([Choose a permission mode](https://code.claude.com/docs/en/permission-modes), accessed October 14, 2026).
-
-**Bypass permissions.** `--dangerously-skip-permissions` turns off every permission prompt and every safety check, including the classifier. Deny rules still block, hooks still run, and the few actions no mode approves on its own still ask. In an interactive session started this way, plan mode's "no edits while planning" is not enforced. Run it only in a container or virtual machine with nothing else on it, never on your own laptop (same source).
-
-For group 3, add **ask rules** for the commands that reach other people. An ask rule makes Claude Code stop and ask every time, even in Auto. In `.claude/settings.json`:
-
-```json
-{
-  "permissions": {
-    "ask": ["Bash(git push *)", "Bash(vercel *)", "Bash(supabase db push *)"]
-  }
-}
+```bash
+claude mcp add playwright -- npx -y @playwright/mcp@latest
 ```
 
-A rule matches the command as Claude writes it. It catches `git push origin main`, but not a script such as `node scripts/send-email.js` that sends an email from inside. For those, read the script before you approve it.
+Now ask: "Open localhost:3000, sign up with a test email, and screenshot the dashboard." Claude checks the running app instead of guessing. Supabase publishes an MCP server too; give it read-only access unless you mean otherwise, because what it does there cannot be rewound.
 
-**Worked example.** You want Claude to rename a component across 40 files while you get lunch. Reach: files in this repo, on your laptop. Undo: `/rewind` covers the edit-tool changes, but a rename usually also needs `mv`, which only git covers. So commit, start a branch, and let it run in Accept edits or Auto. Now you want it to run a migration against the production database. Reach: every user's data. Undo: neither `/rewind` nor git. That one waits for you: have Claude plan it in plan mode, read the migration, then run it yourself or approve it when asked.
+Two costs. Each server's tool list takes some context. And a server that fetches outside content (web pages, tickets other people wrote) can carry instructions that try to steer the model, which is called prompt injection. Connect only servers you trust.
 
-::: {.callout-tip title="Try it (2 minutes, with your neighbor)"}
-For each task, name its group, how you would undo it, and the mode or rule you would use: (a) restyle every page with Tailwind; (b) delete old files in `scripts/` with `rm`; (c) `git push` to main; (d) explore an unfamiliar codebase and explain it.
+### Plugins: a package, not a route
+
+A **plugin** bundles skills, slash commands, subagents, hooks, and MCP servers so someone can install the set at once with `/plugin`, from a marketplace (a repository that lists plugins). It is a way to share building blocks. If a plugin reaches an outside system, it does so through an MCP server, a CLI tool, or an API call inside it. Skills from a plugin carry its name, as in `plugin-name:skill-name`. An enabled plugin's skill and agent descriptions sit in Claude's context in every session, even when nothing from it runs, so turn off plugins you no longer use ([Plugins overview](https://code.claude.com/docs/en/plugins), accessed October 14, 2026).
+
+::: {.callout-tip title="Try it (5 minutes)"}
+Add the Playwright server, run `/mcp` to confirm it connected, and ask Claude to open an app you are working on and report one thing that looks broken. Did it find something your own reading of the code missed?
 :::
 
-## Delegation and Parallel Work
+## Delegation and Parallel Work {#delegation-and-parallel-work}
 
 **A subagent starts with an empty context window and returns a summary. Parallel sessions need separate copies of the files. Both cost tokens and your attention.**
 
@@ -251,6 +296,10 @@ What a subagent gets:
 3. **None of your conversation.** If the task depends on something you said, Claude has to put it in the task description.
 
 Use a subagent when a side task would fill your main window (searching a codebase, reading logs, researching documentation) or needs a narrower set of tools. Stay in the main conversation for back-and-forth work where each step depends on the last.
+
+### Workflows
+
+A **workflow** is a script that runs many subagents for you: one per file in a 500-file migration, or a set of reviewers that check each other's findings before anything is reported. Ask for one in your own words ("use a workflow to audit every route under `src/routes/` for missing auth checks") and Claude writes the script. It runs in the background, and `/workflows` shows its progress. The difference from subagents is who holds the plan. With subagents, Claude decides turn by turn what to start next, and every result lands in its context window. In a workflow, the script decides, and only the final answer comes back. A run you want to repeat can be saved to `.claude/workflows/` and run again as `/name`. A workflow can use far more tokens than the same task done in conversation, so try it on a small slice first.
 
 ### Parallel sessions need separate copies of the files
 
@@ -311,48 +360,83 @@ Claude does these in order in one session. Splitting them across parallel agents
 Find the mistake: "I'll ask Claude to spin up three subagents: one builds the login page, one writes the database schema, one builds the dashboard UI, all at the same time in my repo." Name two things that go wrong, and say what you would do instead.
 :::
 
-## Reach Beyond the Repo: CLI Tools, MCP, and APIs {#reach-beyond-the-repo-mcp}
+## Blast Radius {#blast-radius}
 
-**An agent has three ways to reach a system outside your repo.** By default, Claude Code can use your files, your terminal, and the web. Your GitHub issues, your database, your deploys, your tickets, and a real browser are outside that reach until you connect them.
+**An action's blast radius is everything it can change if it goes wrong. Before you let an agent work without watching, ask two questions about each kind of action: how far does it reach, and can I undo it?** The farther an action reaches, the fewer ways you have to undo it, and the less you should let the agent do it without you.
 
-| Route | What it is | Example | Good for | Cost |
-|---|---|---|---|---|
-| **CLI tool** | A command-line program the agent runs in the terminal | `gh issue list`, `supabase db push`, `vercel logs` | Services with a command-line tool. Claude already knows the common ones, and they use the login you already have | Each tool is installed and signed in once |
-| **MCP server** | A program or URL that wraps one system and adds its actions to the agent as new tools | A browser server, a Supabase server, a ticket tracker | Systems with no command-line tool, or actions you want named and structured | Each server's tool list takes some context |
-| **Direct API call** | A request the agent writes itself, such as `curl` or a short script, sent with your key | `curl` to a REST API | A one-off pull from a service with neither of the above | You manage the key, and the agent writes the request each time |
+Claude Code saves a **checkpoint** of your files before each prompt you send. `/rewind` (or `Esc` twice on an empty prompt) restores the code, the conversation, or both to an earlier prompt. A checkpoint records only changes Claude makes with its own file-editing tool. It does not record what a shell command does, and it cannot reach anything outside your laptop. So every action falls into one of three groups:
 
-Try them in that order. If the service has a CLI, the agent can usually use it at once. If it has an MCP server, connect it. A direct API call works for almost anything, at the cost of handling a key.
+1. **Claude edits a file with its edit tool.** `/rewind` puts it back. Let these run.
+2. **Claude runs a shell command that changes files on your laptop**, such as `rm -rf drafts/` or `mv`. `/rewind` does not track these. Git can bring back any file as it was in your last commit; a file you never committed is gone. Edits made by a subagent usually belong here too. Commit before you start.
+3. **The action leaves your laptop**: a `git push`, a deploy, a write to the production database, an email sent. Neither `/rewind` nor your local git history can recall it. You can make a new change afterward, but by then a teammate may have pulled the code, users may have seen the page, and the email is in someone's inbox. Approve each of these yourself, or run them yourself.
 
-### MCP servers and connectors
+![How far an action reaches decides how you undo it. `/rewind` restores Claude's file edits, git restores files you committed, and nothing recalls an action that has left your laptop.](images/diagrams/ch02-blast-radius.svg){#fig-blast-radius fig-alt="A grid of three columns and three rows. The columns are three kinds of action. Two stay on your laptop: Claude edits a file with its edit tool; a command deletes a folder, such as rm -rf drafts/. One reaches other people, highlighted: it leaves your laptop, as a push, a deploy, a write to the live database, or an email. Row how to undo it: /rewind; git, only if you committed; no undo, only a new fix later. Row so you: let it run without asking; commit before it runs; approve it yourself." width="100%"}
 
-The **Model Context Protocol (MCP)** is an open standard for connecting an agent to outside tools and data, which Anthropic [introduced in November 2024](https://www.anthropic.com/news/model-context-protocol).
+The Agent Team Kit turns the three groups into one standing rule for its agents ([commit freely, never push](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/commit-freely-never-push.md)): commit after each finished piece of work without asking, because a commit stays on your laptop and can be undone, and push only when you say so, because a push leaves your laptop. Put both halves in your CLAUDE.md.
 
-| Building block | What it is |
+### The controls, from tightest to loosest
+
+Each control limits something different. Combine them so the first group runs freely, the second runs only after a commit, and the third waits for you.
+
+| Control | What it limits |
 |---|---|
-| **MCP server** | A small program (on your machine) or a URL (hosted) that wraps one system: GitHub, Supabase, Linear, a browser |
-| **Tools** | The actions the server offers, which appear to Claude as tools named `mcp__<server>__<tool>` |
-| **Scope** | Where the connection is saved: just you, or the project's `.mcp.json`, which you commit to share with your team |
-| **`/mcp`** | Lists your servers and their status, and handles sign-in |
-| **Connector** | The Claude app's name for an MCP server you add in its settings (Gmail, Google Drive, Slack, GitHub). Connectors added in the app can also appear in Claude Code when you sign in with the same account, as tools named `mcp__claude_ai_<name>__<tool>` |
+| **Plan mode** | Changes to your files. Claude reads, explores, and writes a plan; it does not edit your source until you approve |
+| **Permission mode** | What runs without asking (table below) |
+| **Permission rules** | Specific tools, files, or commands always allowed, asked about, or denied |
+| **Sandbox** | An operating-system boundary around shell commands: which folders they may write and which network hosts they may reach. Off by default; turn it on with `/sandbox` (macOS, Linux, WSL2) |
+| **Worktree** | A separate copy of the files on its own branch, so a session's edits cannot collide with yours |
 
-A connector and an MCP server are the same thing under two names.
+Permission modes, cycled with `Shift+Tab` (the status bar shows the current one):
 
-A good signal that you need one: you keep copying data into the chat from another tool. Connect the tool, and Claude reads it directly.
+| Mode | Runs without asking | Use it when |
+|---|---|---|
+| **Manual** (config value `default`) | Reads only | Sensitive work; you want to review every action |
+| **Accept edits** | Reads, file edits, and common file commands (`mkdir`, `touch`, `mv`, `cp`, `rm`, `sed`) inside your project | Iterating on code and reviewing as you go |
+| **Plan** | Reads, plus exploring commands (no edits to your source) | Exploring before changing anything |
+| **Auto** | Most actions, after a second model reviews each one and blocks risky ones | Long tasks where approving every prompt would be tedious |
+| **Don't ask** (config value `dontAsk`) | Reads and the tools you pre-approved; anything else is refused, not asked | Scripts and automated runs (`claude -p`) with an exact list of allowed tools |
+| **Bypass permissions** (`--dangerously-skip-permissions`) | Everything, with no prompts and no safety checks | Only inside an isolated container or virtual machine |
 
-**Worked example.** Claude says the signup form works, but you cannot see it without clicking through yourself. Connect the Playwright server, which gives Claude a browser it can drive:
+Recent versions of Claude Code start new sessions in Auto; check the status bar. Accept edits and Auto both let Claude run `rm` and `mv` without asking, which are group 2 actions: commit first.
 
-```bash
-claude mcp add playwright -- npx -y @playwright/mcp@latest
+**How auto mode decides.** In Auto, a second model, the classifier, reviews each action before it runs, in place of you. It blocks actions that go beyond what you asked for, reach systems it does not recognize, or look driven by instructions in content Claude read, such as a web page or a ticket. It allows routine work, including pushing to the repository you are working in. If it blocks the same kind of action repeatedly, Claude Code goes back to asking you. A boundary you state in chat ("don't deploy until I say so") counts, but it lives only in the conversation, and compaction can summarize it away. For a boundary that must hold, write an ask or deny rule ([Choose a permission mode](https://code.claude.com/docs/en/permission-modes), accessed October 14, 2026).
+
+**Bypass permissions.** `--dangerously-skip-permissions` turns off every permission prompt and every safety check, including the classifier. Deny rules still block, hooks still run, and the few actions no mode approves on its own still ask. In an interactive session started this way, plan mode's "no edits while planning" is not enforced. Run it only in a container or virtual machine with nothing else on it, never on your own laptop (same source).
+
+For group 3, add **ask rules** for the commands that reach other people. An ask rule makes Claude Code stop and ask every time, even in Auto. In `.claude/settings.json`:
+
+```json
+{
+  "permissions": {
+    "ask": ["Bash(git push *)", "Bash(vercel *)", "Bash(supabase db push *)"]
+  }
+}
 ```
 
-Now ask: "Open localhost:3000, sign up with a test email, and screenshot the dashboard." Claude checks the running app instead of guessing. Supabase publishes an MCP server too; give it read-only access unless you mean otherwise, because what it does there cannot be rewound.
+A rule matches the command as Claude writes it. It catches `git push origin main`, but not a script such as `node scripts/send-email.js` that sends an email from inside. For those, read the script before you approve it.
 
-Two costs. Each server's tool list takes some context. And a server that fetches outside content (web pages, tickets other people wrote) can carry instructions that try to steer the model, which is called prompt injection. Connect only servers you trust.
+**Worked example.** You want Claude to rename a component across 40 files while you get lunch. Reach: files in this repo, on your laptop. Undo: `/rewind` covers the edit-tool changes, but a rename usually also needs `mv`, which only git covers. So commit, start a branch, and let it run in Accept edits or Auto. Now you want it to run a migration against the production database. Reach: every user's data. Undo: neither `/rewind` nor git. That one waits for you: have Claude plan it in plan mode, read the migration, then run it yourself or approve it when asked.
 
-### Plugins: a package, not a route
-
-A **plugin** bundles skills, slash commands, subagents, hooks, and MCP servers so someone can install the set at once with `/plugin`, from a marketplace (a repository that lists plugins). It is a way to share building blocks. If a plugin reaches an outside system, it does so through an MCP server, a CLI tool, or an API call inside it. Skills from a plugin carry its name, as in `plugin-name:skill-name`. An enabled plugin's skill and agent descriptions sit in Claude's context in every session, even when nothing from it runs, so turn off plugins you no longer use ([Plugins overview](https://code.claude.com/docs/en/plugins), accessed October 14, 2026).
-
-::: {.callout-tip title="Try it (5 minutes)"}
-Add the Playwright server, run `/mcp` to confirm it connected, and ask Claude to open an app you are working on and report one thing that looks broken. Did it find something your own reading of the code missed?
+::: {.callout-tip title="Try it (2 minutes, with your neighbor)"}
+For each task, name its group, how you would undo it, and the mode or rule you would use: (a) restyle every page with Tailwind; (b) delete old files in `scripts/` with `rm`; (c) `git push` to main; (d) explore an unfamiliar codebase and explain it.
 :::
+
+## Where the Agent Team Kit Fits {#where-the-kit-fits}
+
+**The Agent Team Kit is a set of additions to your harness, plus a few git hooks outside it.** Placed on the three rings, it is easier to see what each part can and cannot guarantee.
+
+| Where it sits | Kit part | What it does |
+|---|---|---|
+| **Read by the model** | Three sections the installer appends to `CLAUDE.md` (concurrent agents on main, working discipline, mockups) | Tell every agent the working agreements: stage explicit paths, run your own dev server, what "done" means |
+| | `.claude/team-memory/` | Lessons the team has learned, loaded as memory at session start (the loading is a hook) |
+| | 13 skills, such as `/spec`, `/build-spec`, `/push`, `/stage`, `/promote`, `/merge-worktree` | Procedures the model follows when you run them |
+| **Applied by the harness** | `dev-port.mjs` (SessionStart) | Gives each session its own dev-server port |
+| | `team-memory.mjs` (SessionStart) | Loads the tracked team memory into the session |
+| | `bash-guard` (PreToolUse on Bash) | Blocks blanket staging, `git stash`, `reset --hard`, and schema changes while another session holds the lock |
+| | `file-size-nudge.mjs` (PostToolUse on Edit and Write) | Flags a file that grows past its size budget or a new import that crosses a boundary |
+| | `session-release.mjs` (SessionEnd) | Frees the session's port and lock |
+| **Outside the rings** | Git hooks: `pre-commit`, `pre-push`, `post-merge` | Run by git, for any commit or push, whether an agent or a person makes it |
+| | Launchers: `cs`, `wt`, `cockpit` | Shell commands that start named Claude Code sessions, in the shared tree or in a worktree |
+
+The pattern to notice: each working agreement appears twice. The CLAUDE.md section tells the agent to stage files by name, and the `bash-guard` hook blocks `git add -A` when the agent does not. The advice prevents most mistakes cheaply; the hook catches the rest. That pairing is the design of the whole kit, and it is the next segment.
+

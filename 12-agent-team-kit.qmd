@@ -2,7 +2,7 @@
 title: "The Agent Team Kit"
 ---
 
-This segment covers the Agent Team Kit: what it is, why several Claude Code agents working in one repo collide, the two ways the kit keeps them apart, the hooks that enforce its rules, the working agreements that go with them, and how lessons reach every session through shared memory. You will install it in the [Lab](14-lab.qmd); this page is the map you will need there. Every file named here is in the public repo at [github.com/ai-foundry-byu/agent-team-kit](https://github.com/ai-foundry-byu/agent-team-kit), and the [Kit Reference](90-kit-reference.qmd) lists them all.
+The kit is built from the harness parts on [Understanding the Harness](11-the-harness.qmd); [Where the Agent Team Kit Fits](11-the-harness.qmd#where-the-kit-fits) places each part on the three rings. This segment covers the Agent Team Kit: what it is, why several Claude Code agents working in one repo collide, the two ways the kit keeps them apart, the hooks that enforce its rules, the working agreements that go with them, and how lessons reach every session through shared memory. You will install it in the [Lab](14-lab.qmd); this page is the map you will need there. Every file named here is in the public repo at [github.com/ai-foundry-byu/agent-team-kit](https://github.com/ai-foundry-byu/agent-team-kit), and the [Kit Reference](90-kit-reference.qmd) lists them all.
 
 ## What it is and who it is for
 

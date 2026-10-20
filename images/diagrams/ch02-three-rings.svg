@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 980" role="img" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+  <title>Claude Code: the model, the built-in harness, and your harness</title>
+  <desc>Three concentric rings, labeled Claude Code as a whole. At the center, the model. Around it, the built-in harness, which holds the context window, the tool-call check, and the tools, connected in a loop: the context window feeds the model, the model's tool call goes to the check, the check passes it to the tools, and the tools' results return to the context window. The outer ring is your harness, in three sectors, each with an arrow to the part of the built-in harness it changes. Read by the model, all markdown: the files CLAUDE.md, MEMORY.md for auto memory, and SKILL.md for each skill, then the folders rules/ and output-styles/, into the context window. Applied by the harness: settings.json, which holds permission rules, hooks, the model, the effort level, and more, with an arrow into the built-in harness. Adds tools: MCP connections, which the Claude app calls connectors, subagents, and workflows, into the tools. Outside the rings, a package labeled Plugin, from a marketplace, has a dashed arrow labeled installs that stops at the outer edge of your harness, since a plugin can add parts to any of the three sectors. Outside the rings, you send messages, which go into the context window, and the model's replies come back to you. Two arrows connect the tools with the world outside all three rings, actions going out and output coming back, which the tools pass on as results. The world outside holds your project files; the terminal, where git, gh, and other CLIs run; the web, for search and pages; and apps such as GitHub and Supabase.</desc>
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#0057B8"/></marker>
+    <marker id="an" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#002E5D"/></marker>
+    <marker id="ag" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8A939C"/></marker>
+    <linearGradient id="gModel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0B3D6E"/><stop offset="1" stop-color="#002E5D"/></linearGradient>
+    <linearGradient id="gHarness" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EDF3FA"/><stop offset="1" stop-color="#DCE7F3"/></linearGradient>
+    <filter id="sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="3" stdDeviation="5" flood-opacity="0.13"/></filter>
+  </defs>
+  <rect width="1000" height="980" rx="8" fill="#FAFBFC"/>
+
+  <!-- Claude Code: all three rings -->
+  <text x="500" y="56" text-anchor="middle" font-size="20" font-weight="700" letter-spacing="1.4" fill="#002E5D">CLAUDE CODE</text>
+  <line x1="500" y1="66" x2="500" y2="88" stroke="#002E5D" stroke-width="1.5"/>
+
+  <!-- Outer ring: what you add, three sectors -->
+  <circle cx="500" cy="470" r="380" fill="#F1F3F5" stroke="#D9DEE4" stroke-width="2"/>
+  <line x1="385" y1="271" x2="310" y2="141" stroke="#8A939C" stroke-width="1.5" stroke-dasharray="5 5"/>
+  <line x1="730" y1="470" x2="880" y2="470" stroke="#8A939C" stroke-width="1.5" stroke-dasharray="5 5"/>
+  <line x1="385" y1="669" x2="310" y2="799" stroke="#8A939C" stroke-width="1.5" stroke-dasharray="5 5"/>
+
+
+  <!-- Harness ring -->
+  <circle cx="500" cy="470" r="230" fill="url(#gHarness)" stroke="#B9D0EA" stroke-width="2"/>
+  <text x="500" y="262" text-anchor="middle" font-size="16" font-weight="700" letter-spacing="1.2" fill="#002E5D">BUILT-IN</text>
+  <text x="500" y="284" text-anchor="middle" font-size="16" font-weight="700" letter-spacing="1.2" fill="#002E5D">HARNESS</text>
+
+  <!-- Model -->
+  <circle cx="500" cy="470" r="70" fill="url(#gModel)" filter="url(#sh)"/>
+  <g transform="translate(485,430) scale(1.25)" fill="none" stroke="#FFFFFF" stroke-width="1.76" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></g>
+  <text x="500" y="493" text-anchor="middle" font-size="22" font-weight="700" fill="#FFFFFF">Model</text>
+
+  <!-- Harness parts, in a loop around the model -->
+  <rect x="298" y="436" width="104" height="68" rx="8" fill="#FFFFFF" stroke="#0057B8" stroke-width="2" filter="url(#sh)"/>
+  <text x="350" y="465" text-anchor="middle" font-size="17" font-weight="600" fill="#002E5D">Context</text>
+  <text x="350" y="487" text-anchor="middle" font-size="17" font-weight="600" fill="#002E5D">window</text>
+  <path d="M402 470 H424" stroke="#002E5D" stroke-width="2" fill="none" marker-end="url(#an)"/>
+
+  <rect x="523" y="306" width="104" height="68" rx="8" fill="#FFFFFF" stroke="#B9D0EA" stroke-width="1.5"/>
+  <text x="575" y="335" text-anchor="middle" font-size="17" font-weight="600" fill="#002E5D">Tool-call</text>
+  <text x="575" y="357" text-anchor="middle" font-size="17" font-weight="600" fill="#002E5D">check</text>
+  <path d="M536 410 L554 381" stroke="#002E5D" stroke-width="2" fill="none" marker-end="url(#an)"/>
+
+  <rect x="523" y="566" width="104" height="60" rx="8" fill="#FFFFFF" stroke="#B9D0EA" stroke-width="1.5"/>
+  <text x="575" y="602" text-anchor="middle" font-size="17" font-weight="600" fill="#002E5D">Tools</text>
+  <path d="M596 374 V560" stroke="#002E5D" stroke-width="2" fill="none" marker-end="url(#an)"/>
+  <path d="M523 600 C440 610 360 580 350 512" stroke="#8A939C" stroke-width="1.75" fill="none" marker-end="url(#ag)"/>
+  <rect x="374" y="572" width="70" height="26" rx="13" fill="#FFFFFF" stroke="#D9DEE4" stroke-width="1.25"/>
+  <text x="409" y="590" text-anchor="middle" font-size="15" fill="#5A6672">results</text>
+
+  <!-- Sector: read by the model -->
+  <text x="196" y="356" text-anchor="middle" font-size="15" font-weight="600" letter-spacing="1.2" fill="#5A6672">READ BY</text>
+  <text x="196" y="376" text-anchor="middle" font-size="15" font-weight="600" letter-spacing="1.2" fill="#5A6672">THE MODEL</text>
+  <text x="189" y="420" text-anchor="middle" font-size="16" font-family="Menlo, Consolas, monospace" fill="#2C3E50">CLAUDE.md</text>
+  <text x="189" y="516" text-anchor="middle" font-size="16" font-family="Menlo, Consolas, monospace" fill="#2C3E50">rules/</text>
+  <text x="189" y="548" text-anchor="middle" font-size="16" font-family="Menlo, Consolas, monospace" fill="#2C3E50">output-styles/</text>
+  <text x="189" y="452" text-anchor="middle" font-size="16" font-family="Menlo, Consolas, monospace" fill="#2C3E50">MEMORY.md</text>
+  <text x="189" y="484" text-anchor="middle" font-size="16" font-family="Menlo, Consolas, monospace" fill="#2C3E50">SKILL.md</text>
+  <path d="M266 402 V556" stroke="#0057B8" stroke-width="2" fill="none"/>
+  <path d="M266 470 H293" stroke="#0057B8" stroke-width="2.5" fill="none" marker-end="url(#ar)"/>
+
+  <!-- Sector: applied by the harness -->
+  <text x="645" y="146" text-anchor="middle" font-size="15" font-weight="600" letter-spacing="1.2" fill="#5A6672">APPLIED BY</text>
+  <text x="645" y="166" text-anchor="middle" font-size="15" font-weight="600" letter-spacing="1.2" fill="#5A6672">THE HARNESS</text>
+  <text x="664" y="214" text-anchor="middle" font-size="16" font-family="Menlo, Consolas, monospace" fill="#2C3E50">settings.json</text>
+  <text x="664" y="236" text-anchor="middle" font-size="15" fill="#5A6672">permission rules, hooks,</text>
+  <text x="664" y="255" text-anchor="middle" font-size="15" fill="#5A6672">model, effort, and more</text>
+  <path d="M676 266 L662 300" stroke="#0057B8" stroke-width="2.5" fill="none" marker-end="url(#ar)"/>
+
+  <!-- Sector: adds tools -->
+  <text x="795" y="506" text-anchor="middle" font-size="15" font-weight="600" letter-spacing="1.2" fill="#5A6672">ADDS TOOLS</text>
+  <text x="795" y="542" text-anchor="middle" font-size="17" font-weight="600" fill="#2C3E50">MCP connections</text>
+  <text x="795" y="561" text-anchor="middle" font-size="15" fill="#5A6672">or connectors</text>
+  <text x="795" y="594" text-anchor="middle" font-size="17" font-weight="600" fill="#2C3E50">Subagents</text>
+  <text x="795" y="626" text-anchor="middle" font-size="17" font-weight="600" fill="#2C3E50">Workflows</text>
+  <path d="M722 572 C690 584 666 596 634 598" stroke="#0057B8" stroke-width="2.5" fill="none" marker-end="url(#ar)"/>
+
+  <!-- Outer ring label -->
+  <text x="92" y="812" text-anchor="middle" font-size="18" font-weight="700" letter-spacing="1.4" fill="#002E5D">YOUR</text>
+  <text x="92" y="836" text-anchor="middle" font-size="18" font-weight="700" letter-spacing="1.4" fill="#002E5D">HARNESS</text>
+  <line x1="124" y1="792" x2="226" y2="710" stroke="#002E5D" stroke-width="1.5"/>
+
+  <!-- You, outside the rings -->
+  <circle cx="70" cy="128" r="30" fill="#E6EEF7"/>
+  <g transform="translate(55,113) scale(1.25)" fill="none" stroke="#002E5D" stroke-width="1.76" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></g>
+  <text x="70" y="186" text-anchor="middle" font-size="19" font-weight="700" fill="#002E5D">You</text>
+  <path d="M104 146 C220 180 320 290 340 430" stroke="#002E5D" stroke-width="2" fill="none" marker-end="url(#an)"/>
+  <path d="M452 419 C400 300 250 120 108 110" stroke="#002E5D" stroke-width="2" fill="none" marker-end="url(#an)"/>
+  <rect x="258" y="300" width="88" height="26" rx="13" fill="#FFFFFF" stroke="#D9DEE4" stroke-width="1.25"/>
+  <text x="302" y="318" text-anchor="middle" font-size="15" fill="#5A6672">messages</text>
+  <rect x="240" y="176" width="70" height="26" rx="13" fill="#FFFFFF" stroke="#D9DEE4" stroke-width="1.25"/>
+  <text x="275" y="194" text-anchor="middle" font-size="15" fill="#5A6672">replies</text>
+
+  <!-- Plugin: a package from outside that installs parts of your harness -->
+  <path d="M870 776 C846 760 808 748 773 741" stroke="#002E5D" stroke-width="2" stroke-dasharray="6 5" fill="none" marker-end="url(#an)"/>
+  <rect x="785" y="742" width="70" height="26" rx="13" fill="#FFFFFF" stroke="#D9DEE4" stroke-width="1.25"/>
+  <text x="820" y="760" text-anchor="middle" font-size="15" fill="#5A6672">installs</text>
+  <circle cx="900" cy="782" r="30" fill="#E6EEF7"/>
+  <g transform="translate(883,765) scale(1.417)" fill="none" stroke="#002E5D" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"/><path d="m7.5 4.27 9 5.15"/></g>
+  <text x="900" y="836" text-anchor="middle" font-size="18" font-weight="700" fill="#002E5D">Plugin</text>
+  <text x="900" y="858" text-anchor="middle" font-size="15" fill="#5A6672">from a marketplace</text>
+
+  <!-- Out to the world -->
+  <path d="M540 626 V884" stroke="#002E5D" stroke-width="2.5" fill="none" marker-end="url(#an)"/>
+  <path d="M582 888 V632" stroke="#002E5D" stroke-width="2.5" fill="none" marker-end="url(#an)"/>
+  <rect x="503" y="731" width="74" height="26" rx="13" fill="#FFFFFF" stroke="#D9DEE4" stroke-width="1.25"/>
+  <text x="540" y="749" text-anchor="middle" font-size="15" fill="#5A6672">actions</text>
+  <rect x="547" y="799" width="70" height="26" rx="13" fill="#FFFFFF" stroke="#D9DEE4" stroke-width="1.25"/>
+  <text x="582" y="817" text-anchor="middle" font-size="15" fill="#5A6672">output</text>
+  <rect x="120" y="890" width="760" height="72" rx="10" fill="#FFFFFF" stroke="#D9DEE4" stroke-width="1.5"/>
+  <g transform="translate(146,906) scale(1.083)" fill="none" stroke="#002E5D" stroke-width="2.03" stroke-linecap="round" stroke-linejoin="round"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></g>
+  <text x="184" y="920" font-size="18" font-weight="600" fill="#2C3E50">Files</text>
+  <text x="184" y="943" font-size="15" fill="#5A6672">your project</text>
+  <g transform="translate(320,906) scale(1.083)" fill="none" stroke="#002E5D" stroke-width="2.03" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></g>
+  <text x="358" y="920" font-size="18" font-weight="600" fill="#2C3E50">Terminal</text>
+  <text x="358" y="943" font-size="15" fill="#5A6672">git, gh, other CLIs</text>
+  <g transform="translate(530,906) scale(1.083)" fill="none" stroke="#002E5D" stroke-width="2.03" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></g>
+  <text x="568" y="920" font-size="18" font-weight="600" fill="#2C3E50">Web</text>
+  <text x="568" y="943" font-size="15" fill="#5A6672">search, pages</text>
+  <g transform="translate(690,906) scale(1.083)" fill="none" stroke="#002E5D" stroke-width="2.03" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></g>
+  <text x="728" y="920" font-size="18" font-weight="600" fill="#2C3E50">Apps</text>
+  <text x="728" y="943" font-size="15" fill="#5A6672">GitHub, Supabase</text>
+</svg>
