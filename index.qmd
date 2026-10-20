@@ -20,9 +20,13 @@ If you can already start Claude Code in a repo, explain what `CLAUDE.md` does, a
 
 ## The full-stack product builder
 
-The premise behind this workshop is that with AI coding agents, one person can take a product from an idea to live software that customers use. We call that person a **full-stack product builder**. The model has six skills:
+The premise behind this workshop is that with AI coding agents, one person can take a product from an idea to live software that customers use. Product management, UX design, and engineering used to be three jobs held by three people. AI lets one person work across all three, and we call that person a **full-stack product builder**. We describe what that person can do with six skills, each drawn from one or more of the three jobs:
 
-![](images/diagrams/builder-axes.svg){fig-alt="A hexagon with one builder axis at each corner, clockwise from the upper left: Agentic Workflow, Discovery, Design, Launch and Learn, AI Systems, and Application Architecture, each with an icon. Faint rings inside mark levels from the center to the edge." fig-align="center" width="70%"}
+::: {.column-page layout="[[45,55]]" layout-valign="center"}
+![From three jobs to one builder.](images/diagrams/full-stack-venn.svg){fig-alt="Hand-drawn diagram. On the left, labeled From, three overlapping circles: Product Management (green) on top, UX Design (blue) and Engineering (yellow) below, overlapping only at the edges. An arrow through a pink diamond labeled AI points right to To: the same three circles stacked almost entirely on top of each other, labeled Full-Stack Product Builders."}
+
+![The six skills, colored by the job each comes from, with one example builder's profile.](images/diagrams/builder-profile.svg){fig-alt="Hand-drawn hexagon with a skill at each corner: Agentic Workflow at the upper left, then clockwise Discovery, Design, Launch and Learn, AI Systems, and Application Architecture. Each corner has a colored dot for the job it comes from: Discovery and Launch and Learn green for product management, Design blue for UX design, Application Architecture and AI Systems yellow for engineering, and Agentic Workflow all three overlapping. Inside the hexagon, a semi-transparent purple shape marks one example builder's profile, reaching furthest toward Discovery and Agentic Workflow and least toward Launch and Learn."}
+:::
 
 | Skill | The question it answers |
 |---|---|
@@ -45,7 +49,7 @@ Three hours in all.
 | 20 | One engine, many surfaces | [Surfaces](10-surfaces.qmd) |
 | 40 | Understanding the harness: the three rings, rules, hooks, tools, subagents, blast radius | [The Harness](11-the-harness.qmd) |
 | 10 | Break | |
-| 35 | The Agent Team Kit: parallel agents without collisions | [Agent Team Kit](12-agent-team-kit.qmd) |
+| 35 | The Agent Team Kit: concurrent agents, design loops, guardrails, memory, testing | [Agent Team Kit](12-agent-team-kit.qmd) |
 | 25 | From spec to release | [Spec to Release](13-spec-to-release.qmd) |
 | 30 | Lab: install the kit and run it | [Lab](14-lab.qmd) |
 | 10 | What this looks like at full scale, and questions | [Full Scale](15-software-factory.qmd) |
