@@ -47,7 +47,7 @@ Then ask Claude to install anything else you are missing:
 
 > Help me install the following or confirm they are already installed: git, Node.js (LTS), and pnpm.
 
-The first time you run `claude` in VS Code's terminal, it installs the Claude Code extension, which opens Claude's changes in VS Code's diff viewer. If you prefer the Claude desktop app, install it too; [One Engine, Many Surfaces](10-surfaces.qmd) compares them.
+The first time you run `claude` in VS Code's terminal, it installs the Claude Code extension, which opens Claude's changes in VS Code's diff viewer. If you prefer the Claude desktop app, install it too; [One Engine, Many Surfaces](11-surfaces.qmd) compares them.
 
 ## 5. Optional: Supabase and Vercel
 
@@ -55,7 +55,7 @@ Two parts of the workshop (the schema lock and the release pipeline) make more s
 
 ## 6. Optional: other coding agents
 
-If your team uses another agent, install it too; [One Engine, Many Surfaces](10-surfaces.qmd) maps Claude Code's concepts to each.
+If your team uses another agent, install it too; [One Engine, Many Surfaces](11-surfaces.qmd) maps Claude Code's concepts to each.
 
 | Agent | Install (macOS) | Start |
 |---|---|---|

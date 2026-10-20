@@ -2,7 +2,7 @@
 title: "The Agent Team Kit"
 ---
 
-The Agent Team Kit is a working setup for building real software with Claude Code agents: one person or a small team directing many agents, from the first mockup to a release and the bug reports that come back. It started as a fix for parallel agents colliding with each other, and it now covers most of the loop around the code. Every part of it is built from the harness pieces on [Understanding the Harness](11-the-harness.qmd), and [Where the Agent Team Kit Fits](11-the-harness.qmd#where-the-kit-fits) places each one on the three rings. You will install it in the [Lab](14-lab.qmd). Everything named here is in the public repo at [github.com/ai-foundry-byu/agent-team-kit](https://github.com/ai-foundry-byu/agent-team-kit), and the [Kit Reference](90-kit-reference.qmd) lists every file.
+The Agent Team Kit is a working setup for building real software with Claude Code agents: one person or a small team directing many agents, from the first mockup to a release and the bug reports that come back. It started as a fix for parallel agents colliding with each other, and it now covers most of the loop around the code. Every part is built from the harness pieces on [Understanding the Harness](10-the-harness.qmd), and [The kit on the three rings](#kit-on-the-rings) places each one. You will install it in the [Lab](14-lab.qmd). Everything named here is in the public repo at [github.com/ai-foundry-byu/agent-team-kit](https://github.com/ai-foundry-byu/agent-team-kit), and the [Kit Reference](90-kit-reference.qmd) lists every file.
 
 ## What the kit gives you {#highlights}
 
@@ -20,13 +20,32 @@ It also covers spec-driven builds and a release pipeline ([From Spec to Release]
 
 **Code where it fits everywhere, specs where it has to fit your app.** The hooks, skills, and launchers are code you install. The bug inbox, the browser test passes, the mockup freezer, and "view as" depend on your stack, so the kit ships them as **build specs**: stack-agnostic documents detailed enough that you hand one to a coding agent and it builds the feature in your app.
 
+## The kit on the three rings {#kit-on-the-rings}
+
+**The kit is a set of additions to your harness, plus a few git hooks and shell commands outside it.** Placed on the [three rings](10-the-harness.qmd#three-rings), each part shows what it can and cannot guarantee.
+
+| Where it sits | Kit part | What it does |
+|---|---|---|
+| **Read by the model** | Three sections the installer appends to `CLAUDE.md` (concurrent agents on main, working discipline, mockups) | Tell every agent the working agreements: stage explicit paths, run your own dev server, what "done" means |
+| | `.claude/team-memory/` | Lessons the team has learned, loaded as memory at session start (the loading is a hook) |
+| | 13 skills, such as `/spec`, `/build-spec`, `/push`, `/stage`, `/promote`, `/merge-worktree` | Procedures the model follows when you run them |
+| **Applied by the harness** | `dev-port.mjs` (SessionStart) | Gives each session its own dev-server port from a pool (5180 to 5199 by default), skipping the human's port (5173) |
+| | `team-memory.mjs` (SessionStart) | Loads the tracked team memory into the session ([Memory](#memory)) |
+| | `bash-guard.sh` and `bash-guard.mjs` (PreToolUse on Bash) | Blocks blanket staging, `git stash`, `reset --hard`, and schema changes while another session holds the lock ([what it checks](#what-bash-guard-checks)) |
+| | `file-size-nudge.mjs` (PostToolUse on Edit and Write) | Flags a file that grows past its size budget or a new import that crosses a boundary |
+| | `session-release.mjs` (SessionEnd) | Frees the session's port and, if it holds it, the schema lock |
+| **Outside the rings** | Git hooks: `pre-commit`, `pre-push`, `post-merge` | Run by git, for any commit or push, whether an agent or a person makes it |
+| | Launchers: `cs`, `wt`, `cockpit` | Shell commands that start named Claude Code sessions, in the shared tree or in a worktree |
+
+Each working agreement appears twice. The CLAUDE.md section tells the agent to stage files by name, and `bash-guard` blocks `git add -A` when the agent does not. The advice prevents most mistakes cheaply; the hook catches the rest. That pairing is the design of the whole kit.
+
 ## Concurrent agents {#concurrent-agents}
 
-The problem the kit started with. It is written for one person running several agents at once, or a small team (usually two people) where each person runs several against the same `main`. Most of it pays off with no collaborator at all: the port assignment and the git and schema guards protect you from your own parallel agents.
+The problem the kit started with: one person running several agents at once, or a small team (usually two people) each running several against the same `main`. Most of it pays off with no collaborator at all, because the port assignment and the git and schema guards protect you from your own parallel agents.
 
 ### Why parallel agents collide
 
-When two agents work in one repo, most of the trouble has nothing to do with the code they write. They share three things the code depends on: the ports their dev servers listen on, the database, and the git working tree (including git's staging area, the index).
+When two agents work in one repo, most of the trouble comes from three things they share that the code depends on: the ports their dev servers listen on, the database, and the git working tree (including git's staging area, the index).
 
 | What they share | What goes wrong | Does a git worktree fix it? | The kit's answer |
 |---|---|---|---|
@@ -35,13 +54,36 @@ When two agents work in one repo, most of the trouble has nothing to do with the
 | **Files in the working tree** | Two agents edit the same file and one overwrites the other | Yes | Give each agent a different area, or use worktree mode |
 | **The git index** | `git add -A` stages a sibling's half-finished files. `git stash` or `git reset --hard` destroys them. Even a plain `git commit` commits whatever a sibling staged a moment ago | Yes. Each worktree has its own index | The `bash-guard` hook blocks the blanket and destructive commands |
 
-The two rows a worktree does not fix are the ones that cause the most confusion day to day. A worktree isolates files. Ports and the database stay shared, which is why the kit handles them in both of its modes ([DESIGN-NOTES.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/DESIGN-NOTES.md)).
+The two rows a worktree does not fix cause the most confusion day to day: ports and the database stay shared, which is why the kit handles them in both of its modes ([DESIGN-NOTES.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/DESIGN-NOTES.md)).
 
-**The kit does not depend on agents talking to each other.** Each Claude Code session is a separate process with its own context, and a message from one session to another is plain text with no authority ([The Harness](11-the-harness.qmd)). So the kit routes all coordination through two things every session can see: lock files on disk, under `.git/.wg-agent/`, and git itself (tracked migrations, shared settings). The lock folder is found with `git rev-parse --git-common-dir`, which returns the same path from the main checkout and from every worktree, so a lock taken in one is seen by all of them.
+### Worktrees: separate copies of the files
+
+A **git worktree** is a second working folder with its own files, branch, and index, sharing the same repository history. Claude Code makes one for you:
+
+```bash
+claude --worktree fix-login     # a second, isolated session on branch worktree-fix-login
+```
+
+![A subagent ([Understanding the Harness](10-the-harness.qmd#reach-beyond-the-repo-mcp)) works inside one session and returns a summary. A worktree gives a second session its own folder and branch on the same history.](images/diagrams/ch02-subagent-vs-worktree.svg){#fig-subagent-vs-worktree fig-alt="Two panels. Subagent, a helper inside one session: Your session sends a task description down to a subagent window full of lines labeled 50 files read stay in here; a highlighted arrow labeled summary only returns one line to your session. Worktree, two sessions at once: Session A works in the my-app folder on branch main, Session B in a fix-login folder on its own branch; both folders sit on one shared repository history. A note: ignored files such as .env start out missing." width="100%"}
+
+This creates `.claude/worktrees/fix-login/`. Two things surprise people: a worktree is a fresh checkout, so gitignored files like `.env` are missing until you copy them in (a `.worktreeinclude` file can do it automatically), and it branches from your main branch on GitHub, so unpushed work on your laptop is not in it. The desktop app offers a worktree option when you start a session.
+
+### Messaging between sessions
+
+Parallel sessions can pass news to each other. Tell Claude in plain words what another session should know, and it finds the session and writes the message; type `@` to pick one from a list:
+
+```text
+Let @fix-login know the schema migration finished
+Tell me when the fix-login session finishes what it is working on
+```
+
+`/list-agents` (or `/peers`) shows which sessions Claude can reach, and sessions answer to the name you give them with `/rename`. A message is plain text: it never carries the sender's conversation or files, it arrives between steps, and it has no authority (it cannot approve a prompt, change settings, or run a slash command). You choose in `/config` whether a session accepts messages, holds each for your approval, or refuses them ([Message your other Claude Code sessions](https://code.claude.com/docs/en/cross-session-messaging), accessed October 14, 2026). Which surfaces can reach which sessions is on [One Engine, Many Surfaces](11-surfaces.qmd#what-the-app-adds-and-what-only-the-terminal-does).
+
+**The kit does not depend on messages.** Because a message has no authority and may arrive late, the kit routes all coordination through two things every session can see: lock files on disk, under `.git/.wg-agent/`, and git itself (tracked migrations, shared settings). The lock folder is found with `git rev-parse --git-common-dir`, which returns the same path from the main checkout and every worktree, so a lock taken in one is seen by all of them.
 
 ### Two ways to run it {#two-modes}
 
-The kit supports two modes. Almost everything is shared between them: the port assignment, the schema lock, the architecture guards, the skills, the specs, and the launchers. They differ in one thing, how agents are kept from colliding on files.
+Almost everything is shared between the two modes: the port assignment, the schema lock, the architecture guards, the skills, the specs, and the launchers. They differ in how agents are kept from colliding on files.
 
 - **Stay on main.** Every agent commits to one `main`. You keep them apart by giving each a different area of the codebase. There is no merge step. You are at the keyboard, watching.
 - **Worktree mode.** Each agent works in its own git worktree on its own branch. One session on `main`, the **cockpit**, merges each finished branch in. File collisions cannot happen, so you can start several agents and leave, at the cost of one merge per worker.
@@ -68,17 +110,11 @@ flowchart LR
 | **Two agents editing one file** | Possible, and rare if you divide the work well | Cannot happen |
 | **Integration step** | None. Commits interleave on `main` | One merge per worker, done by the cockpit |
 | **Setup per agent** | None | Each new worktree needs its own dependencies and `.env.local` |
-| **Best when** | You are at the keyboard supervising | You want to start agents and walk away |
-| **Overhead** | The lightest | A merge per worker plus the per-worktree setup |
 | **Ports, schema lock, guards, skills, specs, launchers** | Yes | Yes, identical |
 
-There is exactly one behavioral difference. The git guard that blocks blanket staging, `reset --hard`, and `stash` is needed on a shared tree, and it turns itself off inside a linked worktree, where the tree belongs to one agent. It detects this by comparing the worktree's own git directory with the shared one, so there is no mode setting.
+The one behavioral difference: the git guard that blocks blanket staging, `reset --hard`, and `stash` turns itself off inside a linked worktree, where the tree belongs to one agent. It detects this by comparing the worktree's git directory with the shared one, so there is no mode setting.
 
-**How to choose** ([README](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/README.md#which-should-you-use)):
-
-- **Start with stay on main** if you are usually at the keyboard and know the codebase well enough to give agents areas that do not overlap. This fits most solo builders and small supervised teams.
-- **Use worktree mode** when you want agents running unattended on work that might overlap. You pay a merge per worker and get guaranteed file isolation.
-- **You can mix them.** The setup is the same, so the choice is per terminal: `cs <name>` for a session in the shared tree, `wt <name>` for a worktree.
+**How to choose** ([README](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/README.md#which-should-you-use)): start with stay on main if you are usually at the keyboard and can give agents areas that do not overlap, which fits most solo builders and small supervised teams. Use worktree mode when agents run unattended on work that might overlap. You can mix them, because the choice is per terminal: `cs <name>` for the shared tree, `wt <name>` for a worktree.
 
 #### The launchers
 
@@ -95,8 +131,8 @@ Extra arguments pass through, so `wt fix-login --tmux` puts the worker in its ow
 
 Two things to know about the launchers:
 
-- **Skipping permission prompts widens the blast radius.** With prompts off, the agent runs every command without asking. The kit's hooks still run, because a hook fires whatever the permission mode. Decide whether that trade fits the repo you are in ([Blast Radius](11-the-harness.qmd#blast-radius)).
-- **Name every session.** The name appears in the `/resume` picker and the terminal title. With six terminals open, `footer-links` is findable; an unnamed session is a folder path that looks like every other one.
+- **Skipping permission prompts widens the blast radius.** The agent runs every command without asking; the kit's hooks still run. Decide whether that trade fits the repo you are in ([Blast Radius](10-the-harness.qmd#blast-radius)).
+- **Name every session.** The name appears in the `/resume` picker, the terminal title, and `@` mentions for messages. With six terminals open, an unnamed session is a folder path that looks like every other one.
 
 #### The worktree loop
 
@@ -110,18 +146,16 @@ Worktree mode also swaps one `CLAUDE.md` section. The installer appends the stay
 
 ### The collaboration model
 
-The hooks stop the mechanical collisions. These agreements, from the [README](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/README.md#collaboration-model-end-to-end), are the human part. They apply in both modes.
+The hooks stop the mechanical collisions. These agreements, from the [README](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/README.md#collaboration-model-end-to-end), are the human part, in both modes.
 
 | Agreement | What it means in practice |
 |---|---|
 | **Stay in your lanes** | Before a work block, each person says which area they are in. Two people's agents editing the same files at once is the one thing the hooks cannot sort out |
 | **Pull and rebase often** | No hook does it for you, on purpose: it needs a clean tree and human judgment on conflicts. Do it at the start of a session, before you push, and whenever your teammate says "pushed" |
 | **Commit small and often** | Small commits make pulls, rebases, and reviews cheap, and make `git revert` a precise undo. Stage explicit paths |
-| **One session is the cockpit** | One session in the main checkout does the acts that need a human: the pull and rebase, merges, and the push. Workers produce; the cockpit integrates on a clean tree |
 | **Announce migrations; agree who releases** | The schema lock cannot see your teammate, so a migration is a "pushing schema" message between people. Decide up front who cuts release tags; tagging is always a person's act, never an agent's |
 | **Review each other's output** | Agents produce plausible code fast. Read the diff of what the other person's agents committed, for example with `/code-review` on recent commits |
-| **Share knowledge through tracked files** | Personal Claude memory stays on one machine. Standing rules go in `CLAUDE.md`; lessons go in `.claude/team-memory/`, promoted with `/share-memory` |
-| **Name every session** | The launchers set `--name`, so the `/resume` picker and terminal titles show what each session is for |
+| **Share knowledge through tracked files** | Standing rules go in `CLAUDE.md`; lessons go in `.claude/team-memory/` ([Memory](#memory)) |
 
 The loop in one line: claim a lane, pull and rebase, work with your agents, integrate through the cockpit, review, and coordinate schema and releases by hand.
 
@@ -149,21 +183,11 @@ The snapshots come from your running app at desktop width, or at phone width for
 
 ## Hooks and guardrails {#hooks-and-guardrails}
 
-The working agreements are advice. The hooks are the parts that run every time, whatever the agent decides ([Advice Versus Enforcement](11-the-harness.qmd#advice-versus-enforcement)). The kit has two kinds: Claude Code hooks, wired in `.claude/settings.json`, which act on the agents; and git hooks, in `.githooks/`, which act on the repository whoever runs git.
+The working agreements are advice; the hooks run every time ([Advice Versus Enforcement](10-the-harness.qmd#advice-versus-enforcement)). [The kit on the three rings](#kit-on-the-rings) lists the five Claude Code hooks. This section covers what the table leaves out: what `bash-guard` checks, the architecture guards, and the git hooks, which act on the repository whoever runs git.
 
-### Claude Code hooks
+### What `bash-guard` checks {#what-bash-guard-checks}
 
-| Hook | When it runs | What it does |
-|---|---|---|
-| `dev-port.mjs` | Session start | Claims the first free port in a pool (default 5180 to 5199), skipping the human's port (default 5173), and tells the session: "Your dev-server port for THIS session is N", with the command to start the server on it |
-| `team-memory.mjs` | Session start | Loads the repo's tracked `.claude/team-memory/` folder into this session's memory (see [Memory](#memory)) |
-| `bash-guard.sh` and `bash-guard.mjs` | Before every Bash command | The shell script is a fast filter that passes harmless commands through without starting Node. Anything that might be blocked goes to `bash-guard.mjs`, which does the four jobs below |
-| `file-size-nudge.mjs` | After every Edit or Write | Warns the agent the moment an edit breaks an architecture guard, so it is fixed before commit |
-| `session-release.mjs` | Session end | Frees this session's port and, if it holds it, the schema lock |
-
-A hook blocks by exiting with code 2. Claude Code then cancels the command and passes the hook's message back to the agent as the reason, so the agent learns what to do instead.
-
-### What `bash-guard` checks
+`bash-guard.sh` is a fast filter that passes harmless commands through without starting Node; anything that might be blocked goes to `bash-guard.mjs`, which does four jobs:
 
 | Job | What it blocks | Why |
 |---|---|---|
@@ -176,7 +200,7 @@ The schema lock's list of commands (`SCHEMA_RE`) defaults to Supabase and pnpm. 
 
 ### The architecture guards
 
-Agents write a lot of code quickly, and without a limit some files grow to thousands of lines. Two guards push back:
+Without a limit, agent-written files grow to thousands of lines. Two guards push back:
 
 - **The file-size ratchet** (`file-size-budget.mjs`). New files may have up to 800 lines (`BUDGET`). Files already over the limit are listed in `FROZEN` at their current length and may only get shorter. A file that is long for a good reason goes in `EXEMPT` with that reason written next to it. By default it covers files under `src/` (`isGoverned`).
 - **Import boundaries** (`import-boundaries.mjs`). A dangerous import (the default example is a database client that bypasses row-level security) may appear only in files on an `ALLOWLIST`. A new file importing it fails until someone adds it to the list with a comment saying why.
@@ -195,13 +219,11 @@ On an existing repo, run `node scripts/hooks/arch-check.mjs` once after installi
 
 Git runs these only after `git config core.hooksPath .githooks`, a setting each clone makes once. The installer sets it for you; a teammate who clones the repo runs `./bootstrap.sh`, which sets it and checks that Node and the settings file are present.
 
-**One limit.** Every guard here runs only on machines that installed it, and anyone can get around a regex with a different tool. The kit's README says so plainly: treat local hooks as the fast reminder and CI on push as the real gate.
+**One limit.** Every guard here runs only on machines that installed it, and anyone can get around a regex with a different tool. The kit's README says to treat local hooks as the fast reminder and CI on push as the real gate.
 
 ## Memory {#memory}
 
-Claude Code memory is the one part of a setup that does not travel. It lives under `~/.claude/projects/<launch path>/memory/` on your machine. If your agents learn that the seed script wipes a table, your teammate's agents do not know it.
-
-The kit handles this in three parts:
+Claude Code memory stays on one machine, under `~/.claude/projects/<launch path>/memory/`. If your agents learn that the seed script wipes a table, your teammate's agents do not know it. The kit handles this in three parts:
 
 | Part | What it is |
 |---|---|
@@ -228,11 +250,11 @@ Two skills work with it:
 
 ## Agents that test your app {#agents-that-test}
 
-Agents can use your app the way a person does, and the kit gives them four ways to do it. All of them file what they find into the same bug inbox as human reports, so a finding hands off to `/fix-bug` with its screenshot attached.
+Agents can use your app the way a person does, in four ways. All of them file findings into the same bug inbox as human reports, so a finding hands off to `/fix-bug` with its screenshot attached.
 
 | Part | What it does |
 |---|---|
-| [`/ux-critique`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/ux-critique/SKILL.md) | Drives a flow in a real browser on the disposable environment, predicting at each step what should happen and recording where the app differs. Files findings into the same inbox as human reports |
+| [`/ux-critique`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/ux-critique/SKILL.md) | Drives a flow in a real browser on the disposable environment, predicting at each step what should happen and recording where the app differs |
 | [Walks and sweeps](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/WALKS-AND-SWEEPS-SPEC.md) (build spec) | A **walk** travels one journey end to end; a **sweep** stands on one screen and clicks every control on it. Both photograph every state and produce one navigable report |
 | [Crawlers](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/CRAWLERS-SPEC.md) (build spec) | A route crawler loads every page across a matrix of data states, an action crawler sends bad input to every form, and a browser monkey looks for client-side errors. Goal: no errors during a demo. They run only against a disposable copy of the app |
 | [`/userflow-map`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/userflow-map/SKILL.md) | A map of every screen, its ways in and out, and the actions on it, which gives the testers a list of flows to cover and gives findings an address ("create.actions.3") |
@@ -250,7 +272,7 @@ Agents can use your app the way a person does, and the kit gives them four ways 
 | **A recording** | The question is about a sequence: reproducing a bug, demoing a flow | Dry-run the flow once without recording to learn the steps, then record a clean take |
 | **Driving the app** | You want Claude to run a whole flow and report what happened | A UI layer (Playwright or Claude in Chrome clicking the real interface) plus a backend layer (project scripts that seed data and exercise flows over HTTP) |
 
-The doc ranks these by fidelity. Writing rows straight to the database is fastest and proves nothing about the app. Calling the server over HTTP proves the endpoint. Only driving the real interface in a browser runs the client code a user's browser runs. Use the lower layers to set up state quickly, then switch to the browser for the part you are checking.
+The doc ranks these by fidelity. Writing rows straight to the database proves nothing about the app; calling the server over HTTP proves the endpoint; only the real interface in a browser runs the client code a user runs. Set up state with the lower layers, then switch to the browser for the part you are checking.
 
 **Verify in proportion to risk** ([memory](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/verify-proportional-to-risk.md)):
 
@@ -267,9 +289,7 @@ The doc ranks these by fidelity. Writing rows straight to the database is fastes
 
 ### Hub and spokes
 
-The rest of the kit deals with agents inside one repo. [HUB-AND-SPOKES.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/HUB-AND-SPOKES.md) deals with a different question: a real project's files are spread across a git repo, a shared drive, and private folders, so where should you start Claude?
-
-Where you launch decides two things. Memory is keyed to the launch folder, so starting from a different folder gives you a different, empty memory. And Claude's file tools can reach only the launch folder plus any folder passed with `--add-dir`.
+[HUB-AND-SPOKES.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/HUB-AND-SPOKES.md) answers a question outside one repo: a project's files are spread across a git repo, a shared drive, and private folders, so where should you start Claude? Where you launch decides two things. Memory is keyed to the launch folder, so starting from a different folder gives you a different, empty memory. And Claude's file tools can reach only the launch folder plus any folder passed with `--add-dir`.
 
 The pattern: make one neutral folder per project the **hub**. It holds only a `CLAUDE.md` that says where things live and a `launch` script. Every content folder, code included, is a **spoke** mounted with `--add-dir`. You always launch from the hub, so there is one memory per project, and you never move the hub, because moving it orphans that memory.
 
@@ -298,7 +318,7 @@ The repo has four kinds of thing in it:
 | `docs/` | The reading: references, build specs, design notes | Read them, or hand a build spec to an agent |
 | `install.sh`, `bootstrap.sh`, `worktree-commands.sh` | The three scripts you run | Install once, set up a teammate, launch named sessions |
 
-The kit runs against your repo; it does not live inside it. You clone it to a scratch folder, run `install.sh` pointed at your project, and delete the clone. Nothing is nested and there is no submodule ([ADOPT.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/ADOPT.md)).
+You clone the kit to a scratch folder, run `install.sh` pointed at your project, and delete the clone. Nothing is nested and there is no submodule ([ADOPT.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/ADOPT.md)).
 
 ## What the kit does not solve
 

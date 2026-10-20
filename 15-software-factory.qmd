@@ -12,7 +12,7 @@ Figures from the same piece: use of Codex in non-engineering departments at Open
 
 ## Three things worth a PM's attention
 
-**The human's job is the outcome.** There is one oval at the top, and it is a definition of done. That is the job you practiced in [From Spec to Release](13-spec-to-release.qmd) when you wrote acceptance criteria before letting the agent build. The scarce skill in this picture is judgment about what should be built and what "good" means.
+**The human's job is the outcome.** There is one oval at the top, and it is a definition of done. That is the job you practiced in the [Lab](14-lab.qmd) when you wrote acceptance criteria with `/spec` before letting the agent build. The scarce skill in this picture is judgment about what should be built and what "good" means.
 
 **Verification is the bottleneck.** Most of the diagram is CI, review, risk classification, deploy monitoring, and incident response. When writing code gets cheap, everything that checks the code becomes the constraint.
 
@@ -25,33 +25,27 @@ Figures from the same piece: use of Codex in non-engineering departments at Open
 | Build | Turning source code into the files that run. It fails on errors such as a missing file or a type error |
 | Tests | Programs written ahead of time that run parts of the app and check the results. They catch only what someone wrote a test for |
 
-**Risk classification decides where the human goes.** The diamond in the middle is the design decision that makes the system work. Not every change needs a person, and sending every change to one moves the bottleneck to that person. Deciding which changes deserve your attention is the [blast-radius](11-the-harness.qmd#blast-radius) judgment: how far does it reach, and can it be undone?
+**Risk classification decides where the human goes.** The diamond in the middle is the design decision that makes the system work. Not every change needs a person, and sending every change to one moves the bottleneck to that person. Deciding which changes deserve your attention is the [blast-radius](10-the-harness.qmd#blast-radius) judgment: how far does it reach, and can it be undone?
 
 ## You are running a small version of this factory
 
-Each part of the factory has a counterpart in the [Agent Team Kit](12-agent-team-kit.qmd) covered in the workshop.
+Each part of the factory has a counterpart in the [Agent Team Kit](12-agent-team-kit.qmd). Placing each on the [three rings](10-the-harness.qmd#three-rings) shows how much it can guarantee.
 
-| Factory | Agent Team Kit |
-|---|---|
-| **CI gates**: checks every change must pass | Hooks and permission rules. `bash-guard` blocks commands that discard work or stage other sessions' files; the file-size check flags a file that has grown too large; the `pre-commit` and `pre-push` git hooks run the architecture check, typecheck, and tests before work leaves your laptop |
-| **Reusable agent procedures** | Skills. `/spec` writes a spec and stops for approval, `/build-spec` builds it against the acceptance criteria, `/stage` puts a build on staging, and `/promote` ships exactly the commit staging served. `/push` is the short road for small, safe changes |
-| **The context layer**: what Codex pulls from Slack and Notion | CLAUDE.md for standing rules, and team memory (`.claude/team-memory/`), which every teammate's session loads at start. `/share-memory` promotes a lesson from your personal memory into it. MCP servers connect the other tools your context lives in |
-| **Review** | The verification rules: the definition-of-done section the installer adds to CLAUDE.md, [verify proportional to risk](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/verify-proportional-to-risk.md), and [verify with the real build](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/verify-with-the-real-build.md). `/regression-check` tests the other features that share the code you changed, and `/ux-critique` drives the app in a browser and records where it does not do what a user would expect |
-| **Risk classification** | Your choice between the two roads: `/push` straight to production, or `/stage` then `/promote` for migrations, outward writes, and anything a pilot user should try first |
+| Factory | Agent Team Kit | Where it sits |
+|---|---|---|
+| **Software builder** defines the outcome | You, writing a spec with acceptance criteria and approving it before any code exists ([`/spec`](13-spec-to-release.qmd#spec-skill)) | A person |
+| **Context layer**: what Codex pulls from the repo, Slack, and Notion | `CLAUDE.md` and team memory for rules and lessons; MCP servers for the tools your context lives in | Read by the model; adds tools |
+| **Reusable agent procedures** | Skills: `/spec`, `/build-spec`, `/stage`, `/promote`, `/push` | Read by the model |
+| **CI gates** | The `bash-guard` and file-size hooks and your permission rules, which hold whatever the model decides. The `pre-commit` and `pre-push` git hooks run the checks again before work leaves your laptop. CI on every push is the part you write yourself | Applied by the harness; git hooks outside the rings |
+| **Agentic review** | The definition-of-done section in `CLAUDE.md`, `/build-spec`'s check sheet, `/regression-check`, and the [agents that test your app](12-agent-team-kit.qmd#agents-that-test) | Read by the model |
+| **Risk classification** | The release decision in the spec: `/push` straight to production, or `/stage` then `/promote` ([decide the release at spec time](13-spec-to-release.qmd#decide-the-release-at-spec-time)) | A person |
+| **Perf Factory and Sevbot** watching production | The closest counterpart is the [bug feedback loop](12-agent-team-kit.qmd#bug-feedback-loops): in-app reports and tester findings land in one inbox and hand off to `/fix-bug` | A build spec in your app, plus a skill |
 
-Only the scale differs.
+Two differences matter more than scale. In the factory, an agent classifies risk and routes the change; in the kit, you make that call when you write the spec. And the factory's review agents are a required gate, while most of the kit's review is read by the model, so it holds only as well as the model follows it. The kit's hooks and git hooks are the parts that hold every time.
 
 ## After the workshop
 
-1. **Install the kit in one real project.** Commit first, then from the project root:
-
-    ```bash
-    gh repo clone ai-foundry-byu/agent-team-kit /tmp/agent-team-kit
-    /tmp/agent-team-kit/install.sh "$PWD"
-    rm -rf /tmp/agent-team-kit
-    ```
-
-    Review the diff it makes. The [Kit Reference](90-kit-reference.qmd) lists every piece.
-2. **Add one deny rule and one ask rule** for the actions in your project that leave your laptop, and run the push drill from [The Harness](11-the-harness.qmd#advice-versus-enforcement) to see them hold.
+1. **Install the kit in one real project**, following the [Lab](14-lab.qmd) steps on a clean tree. The [Kit Reference](90-kit-reference.qmd) lists every piece.
+2. **Add one deny rule and one ask rule** for the actions that leave your laptop, and run the push drill from [Advice Versus Enforcement](10-the-harness.qmd#advice-versus-enforcement) to see them hold.
 3. **Write your next feature as a spec** with `/spec`, and build it with `/build-spec`.
-4. **Read further.** The kit repo, [github.com/ai-foundry-byu/agent-team-kit](https://github.com/ai-foundry-byu/agent-team-kit), has the design notes behind every hook and skill. Scott's [Product Management book](https://byu-strategy.github.io/product-management/) covers the full builder workflow, including [Directing the Agent](https://byu-strategy.github.io/product-management/02-directing-the-agent.html), which much of this material is drawn from.
+4. **Read further.** The [kit repo](https://github.com/ai-foundry-byu/agent-team-kit) has the design notes behind every hook and skill, and Scott's [Product Management book](https://byu-strategy.github.io/product-management/) covers the full builder workflow, including [Directing the Agent](https://byu-strategy.github.io/product-management/02-directing-the-agent.html).

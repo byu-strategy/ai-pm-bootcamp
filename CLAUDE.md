@@ -53,7 +53,7 @@ The book follows a three-part structure defined in `_quarto.yml`:
 - `_quarto.yml` - book structure: Start Here, Workshop, Resources
 - `index.qmd` - welcome, two tracks, the six-skill builder model, agenda, bio
 - Start Here (self-paced on-ramp): `00-setup.qmd`, `01-how-agents-work.qmd`, `02-directing-the-agent.qmd`, `03-git-deployment.qmd`, `04-first-build.qmd`
-- Workshop (taught live): `10-surfaces.qmd`, `11-the-harness.qmd`, `12-agent-team-kit.qmd`, `13-spec-to-release.qmd`, `14-lab.qmd`, `15-software-factory.qmd`
+- Workshop (taught live): `10-the-harness.qmd`, `11-surfaces.qmd`, `12-agent-team-kit.qmd`, `13-spec-to-release.qmd`, `14-lab.qmd`, `15-software-factory.qmd`
 - Resources: `90-kit-reference.qmd`, `97-thought-leaders.qmd`
 - `_header.html` / `_footer.html` - Custom HTML injected into all pages
 - `styles.css` - Custom CSS styling

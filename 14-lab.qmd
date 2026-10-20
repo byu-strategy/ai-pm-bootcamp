@@ -43,7 +43,7 @@ gh repo clone ai-foundry-byu/agent-team-kit /tmp/agent-team-kit
 rm -rf /tmp/agent-team-kit
 ```
 
-The installer prints one `[ok]` line per step, plus `[!]` lines where it left something for you to merge by hand (an existing `.claude/settings.json`, an existing `pre-commit` or `pre-push` hook, or a `.gitignore` that ignores all of `.claude/`). Read those lines before moving on.
+The installer prints one `[ok]` line per step, plus `[!]` lines where it left something for you to merge by hand (an existing `.claude/settings.json`, an existing `pre-commit` or `pre-push` hook, or a `.gitignore` that ignores all of `.claude/`). It ends with a numbered "Next" list: customize for your stack, commit, start a fresh session, and source the launchers. The rest of this lab walks through those steps.
 
 Now look at what it did:
 
@@ -84,7 +84,7 @@ const RESERVED_PORT = 3000;                                   // Next's default,
 const START_HINT = (port) => `npm run dev -- -p ${port}`;     // pnpm users: `pnpm dev -p ${port}`
 ```
 
-Leave the pool (`POOL_LOW` 5180 to `POOL_HIGH` 5199) as it is. Commit the change: `git commit -m "chore: dev-port for next + npm" -- scripts/hooks/dev-port.mjs`. The other knobs are in [Fitting the kit to other stacks](#knobs) below; you do not need them for the lab.
+Leave the pool (`POOL_LOW` 5180 to `POOL_HIGH` 5199) as it is, and commit: `git commit -m "chore: dev-port for next + npm" -- scripts/hooks/dev-port.mjs`. That is the only change the lab needs; the rest are in [Fitting the kit to other stacks](#knobs).
 
 **Load the launchers.** The installer copied `worktree-commands.sh` into your repo. Load it into this terminal, and into every new terminal you open for the lab:
 
@@ -93,9 +93,9 @@ source ./worktree-commands.sh
 type cs        # should print "cs is a shell function"
 ```
 
-To have the launchers in every new terminal, add a `source` line with the absolute path to your shell's startup file (the README's form is `echo 'source /path/to/agent-team-kit/worktree-commands.sh' >> ~/.zshrc`; point it at a copy that will stay put, such as this repo's).
+To have them in every terminal, add the line to your shell's startup file with an absolute path to a copy that will stay put, such as this repo's: `echo "source $PWD/worktree-commands.sh" >> ~/.zshrc`.
 
-Every launcher passes `--dangerously-skip-permissions`, so the agent will not ask before running commands. The kit's hooks still run. On a scratch app that is a reasonable trade; on your own repo, decide deliberately ([Blast Radius](11-the-harness.qmd#blast-radius)). The first time, Claude Code asks you to accept that mode.
+Every launcher passes `--dangerously-skip-permissions`, so the agent will not ask before running commands. The kit's hooks still run. On a scratch app that is a reasonable trade; on your own repo, decide deliberately ([Blast Radius](10-the-harness.qmd#blast-radius)). The first time, Claude Code asks you to accept that mode.
 
 ## Exercise 1: two named sessions, two ports
 
@@ -178,30 +178,25 @@ cockpit             # a session named after your repo, e.g. kit-lab-cockpit
 wt pricing-page
 ```
 
-Claude Code creates a new worktree (under `.claude/worktrees/`) and starts the session there. Two things to do in the worker:
+Claude Code creates a worktree at `.claude/worktrees/pricing-page` on a new branch, `worktree-pricing-page`, and starts a session named `pricing-page` there. Two things to do in the worker:
 
 1. **Set up the worktree.** It is a fresh checkout with no `node_modules` and no `.env.local`. Ask the worker to run `npm install` (and copy `.env.local` in, if your app has one).
 2. **Give it the task and let it commit:** *"Add a /pricing page with three plan cards. Then stage everything with git add -A and commit."* This time `git add -A` is allowed: the guard relaxes inside a worktree, because the tree belongs to this one agent.
 
-Exit the worker (`/exit`). If Claude Code asks whether to keep or remove the worktree, keep it; the cockpit cleans it up.
-
-In a spare terminal, `wtls` lists the worktrees and the branch each is on. Note the branch for `pricing-page` (Claude Code may name it `worktree-pricing-page`). Then, in the **cockpit**:
+Exit the worker (`/exit`). If Claude Code asks whether to keep or remove the worktree, keep it, so the branch is still there to merge. In a spare terminal, `wtls` shows the worktree and its branch. Then, in the **cockpit**:
 
 ```text
 integrate pricing-page
 ```
 
-If the skill cannot find that branch, give it the exact name `wtls` showed.
-
-The `merge-worktree` skill checks that it is on `main` in the main checkout with a clean tree, merges the branch, stops and shows you any conflict, removes the worktree, and reports that the work is on `main` locally. It does not push.
+The `merge-worktree` skill maps the bare name to the branch `worktree-pricing-page`. It checks that it is on `main` in the main checkout with a clean tree, merges, stops and shows you any conflict, prunes the worktree entry, deletes the merged branch, and reports that the work is on `main` locally. It does not push.
 
 ## Fitting the kit to other stacks {#knobs}
 
-The defaults assume Supabase and pnpm. These are the settings to change, all in files the installer copied into your repo ([SETUP-PROJECT.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/SETUP-PROJECT.md)):
+The defaults assume Vite, Supabase, and pnpm. Step 2 changed `dev-port.mjs`; if you run agents on two apps at once, also give each app its own `POOL_LOW` to `POOL_HIGH` range there. The other settings, all in files the installer copied ([SETUP-PROJECT.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/SETUP-PROJECT.md)):
 
 | File | Setting | What to set |
 |---|---|---|
-| `scripts/hooks/dev-port.mjs` | `POOL_LOW` / `POOL_HIGH`, `RESERVED_PORT`, `START_HINT` | The agents' port range, your own dev server's default port, and your stack's command to start a server on a given port. Give each app its own range if you run agents on two apps at once |
 | `scripts/hooks/bash-guard.mjs` | `SCHEMA_RE` | The commands that wait for the schema lock: your migration, type-generation, seed, and dependency commands (for npm, add `npm install`) |
 | `scripts/hooks/bash-guard.mjs` | `PSQL_DDL_RE` | The psql DDL block; remove it if you do not use `psql` |
 | `.githooks/post-merge` | the `supabase/migrations/` path | Your migrations folder |
@@ -216,19 +211,16 @@ On an existing codebase, run `node scripts/hooks/arch-check.mjs` once and paste 
 | What you see | What to do |
 |---|---|
 | `error: ... is not a git repo` from the installer | Run it from your repo root, or `git init` and commit first |
-| The hooks do nothing: no port reported, `git add -A` goes through | Start a **new** session; hooks and skills load at session start. Check that `.claude/settings.json` exists and `node --version` works. If Claude Code asked whether to trust the folder, accept |
-| `cs: command not found` | Run `source ./worktree-commands.sh` in that terminal (each new terminal needs it unless you added it to `~/.zshrc`) |
-| `unknown option` for `--name`, `--worktree`, or `--remote-control` | Update Claude Code: `claude update` |
-| An error about Remote Control | You need to be signed in with a Claude account. To continue without it, run `claude --name home-copy --dangerously-skip-permissions` directly |
-| No free port, or a port held by a session that is gone | Look in `.git/.wg-agent/ports/`; each folder's `owner` file names the session. A claim older than 12 hours is reclaimed automatically; for a dead session you can delete its folder |
-| "another session holds the schema lock" | Another session is running a migration, seed, or dependency install. Wait and retry; `.git/.wg-agent/schema.lock/owner` shows who. The lock is released at session end, or after 10 minutes of inactivity |
-| The agent will not run `git add -A` even when asked | The kit's `CLAUDE.md` section tells it not to. Say it is a test of the hook and that the hook will block it |
-| `git push` blocked by `pre-push` | Its default commands are `pnpm -s check` and `pnpm -s test`. Set `CHECK_CMD` and `TEST_CMD` to commands your project has |
-| The installer printed `[!] .claude/settings.json exists` | Copy the `hooks` block from the kit's [`hooks/settings.json`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/hooks/settings.json) into yours by hand |
-| The worker in a worktree cannot start the app | Run `npm install` in the worktree and copy `.env.local` in |
-| A worktree is missing your latest commits or the kit itself | A new worktree may start from your GitHub remote's `main` rather than your unpushed local commits. On your own repo, push the kit install before using `wt` |
-| `integrate` says the tree is not clean | Commit or discard the leftover changes in the main checkout, then ask again |
-| You want to undo the install | `git revert` the install commit (or reset to the commit before it, since you started clean), then `git config --unset core.hooksPath` |
+| The hooks do nothing: no port reported, `git add -A` goes through | Start a **new** session, since hooks and skills load at session start, and accept the folder-trust prompt. Check that `.claude/settings.json` exists and `node --version` works. If the installer printed `[!] .claude/settings.json exists`, copy the `hooks` block from the kit's [`hooks/settings.json`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/hooks/settings.json) into yours |
+| `cs: command not found` | `source ./worktree-commands.sh` in that terminal |
+| `unknown option` for `--name`, `--worktree`, or `--remote-control` | `claude update` |
+| An error about Remote Control | Sign in with a Claude account, or run `claude --name home-copy --dangerously-skip-permissions` directly |
+| No free port | Each folder in `.git/.wg-agent/ports/` has an `owner` file naming its session. Claims older than 12 hours are reclaimed; delete the folder of a session that is gone |
+| The agent will not run `git add -A` even when asked | Tell it this is a test of the hook and the hook will block it |
+| A worktree is missing your latest commits | A new worktree can start from your remote's `main`. On your own repo, push the kit install before using `wt` |
+| `integrate` says the tree is not clean | Commit or discard the leftover changes in the main checkout |
+| `integrate` cannot delete the branch | The worktree folder is still there. Ask the cockpit to run `git worktree remove .claude/worktrees/pricing-page`, then `git branch -d worktree-pricing-page` |
+| You want to undo the install | `git revert` the install commit, then `git config --unset core.hooksPath` |
 
 ## After the lab
 

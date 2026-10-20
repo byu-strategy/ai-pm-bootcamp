@@ -18,8 +18,8 @@ book:
         - 04-first-build.qmd
     - part: Workshop
       chapters:
-        - 10-surfaces.qmd
-        - 11-the-harness.qmd
+        - 10-the-harness.qmd
+        - 11-surfaces.qmd
         - 12-agent-team-kit.qmd
         - 13-spec-to-release.qmd
         - 14-lab.qmd

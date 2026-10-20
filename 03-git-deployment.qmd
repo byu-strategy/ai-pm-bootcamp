@@ -71,7 +71,7 @@ A few notes on each:
 
 `feature-login → commit B → commit D → commit E`
 
-`main` can keep moving on its own, and when the feature is ready you merge `feature-login` back into `main`. `HEAD` is a pointer to the branch (or commit) you currently have checked out; `git status` tells you where it is. [Spec to Release](13-spec-to-release.qmd) covers how branches and pull requests fit into shipping with agents.
+`main` can keep moving on its own, and when the feature is ready you merge `feature-login` back into `main`. `HEAD` is a pointer to the branch (or commit) you currently have checked out; `git status` tells you where it is. When several agents work in one repo, [The Agent Team Kit](12-agent-team-kit.qmd#two-modes) covers when to give each its own branch.
 
 **Repositories.** A repository (repo) holds all the project's files, commits, branches, and settings. It can live on your computer and on GitHub at the same time.
 

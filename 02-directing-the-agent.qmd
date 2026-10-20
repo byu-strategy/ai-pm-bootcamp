@@ -4,6 +4,8 @@ title: "Directing the Agent: The Basics"
 
 This page covers what the workshop assumes you know: what the agent can see, how to write a CLAUDE.md and a skill, the handful of commands that manage a session, and permission modes. Read it if you have run Claude Code a few times but have not yet written a CLAUDE.md or a skill. Skip it if you already use both daily.
 
+CLAUDE.md, auto memory, and skills all sit in the "read by the model" sector of your harness, mapped on [Understanding the Harness](10-the-harness.qmd#three-rings). That page covers where each one sits; this page covers how to write them.
+
 ## It Knows Only What It Can See
 
 **The agent can use only what is in its context window.** Whatever is not in it does not exist for the agent: not the conversation you had yesterday, not the decision you made in your head, not the file it never opened.
@@ -82,7 +84,7 @@ Type `/` to see every command. These are the ones the workshop uses:
 | `/rewind` | Roll back Claude's file edits, the conversation, or both, to an earlier prompt |
 | `/rename`, `/resume` | Name a session, and reopen it later by that name. Name every session you run in parallel |
 | `/init`, `/memory` | Write a starter CLAUDE.md; open your CLAUDE.md files and auto memory |
-| `/skills`, `/mcp`, `/hooks`, `/permissions` | See what is installed in your harness ([Understanding the Harness](11-the-harness.qmd)) |
+| `/skills`, `/mcp`, `/hooks`, `/permissions` | See what is installed in your harness ([Understanding the Harness](10-the-harness.qmd)) |
 | `/diff` | Review the changes in your files, including Claude's edits |
 
 ## Skills
@@ -119,20 +121,20 @@ To use a skill in every project, put its folder in `~/.claude/skills/`. Older pr
 
 #### CLAUDE.md or a skill?
 
-CLAUDE.md is read on every turn, so every line costs context all the time. A skill's full instructions load only when it is used. The rule of thumb: **standing facts go in CLAUDE.md; a procedure you need sometimes goes in a skill.**
+CLAUDE.md is in the context window on every turn, so every line costs context all the time. A skill's full instructions load only when it is used. The rule of thumb: **standing facts go in CLAUDE.md; a procedure you need sometimes goes in a skill.**
 
 Two tests for when a procedure should become a skill, from the Agent Team Kit's [skills guide](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/SKILLS.md): if you have explained the same careful procedure to an agent twice, write it down once as a skill. If an action is expensive to get wrong (a release, a database migration), write a skill that fixes the safe order of steps, so the agent does not improvise it. The [Agent Team Kit](12-agent-team-kit.qmd) ships 13 skills built on those two tests.
 
 Skills worth creating as a PM: `feedback-synthesis` (synthesize several interviews or test sessions), `persona` (a persona from interview data), `jtbd` (a problem restated as a job to be done), `prd-review` (check a PRD against your team's template).
 
 ::: {.callout-tip title="Try it"}
-You have three things to tell Claude: "We use Supabase for the database," "To publish a release: bump the version, write notes, tag, push," and "Never commit to main." Decide which goes in CLAUDE.md, which in a skill, and which belongs in neither. (The third must hold every time, so it needs enforcement: a hook or permission rule. [The Harness](11-the-harness.qmd) explains why.)
+You have three things to tell Claude: "We use Supabase for the database," "To publish a release: bump the version, write notes, tag, push," and "Never commit to main." Decide which goes in CLAUDE.md, which in a skill, and which belongs in neither. (The third must hold every time, so it belongs in the "applied by the harness" sector: see [Advice Versus Enforcement](10-the-harness.qmd#advice-versus-enforcement).)
 :::
 
 ## Permission Modes
 
 By default Claude Code asks before it edits a file or runs a command. Press `Shift+Tab` to cycle through its permission modes, which include the default (ask before edits and commands), accept edits (edit files without asking, still ask before commands), and plan mode (read and plan only, change nothing). The current mode shows below the prompt. Plan mode is a good start for any change you have not thought through: Claude reads the code and proposes a plan, and nothing changes until you approve it.
 
-Modes are one control among several. [The Harness](11-the-harness.qmd) covers the rest: why an instruction in CLAUDE.md is advice and a hook or permission rule is enforcement, how to limit the damage a wrong command can do, connecting outside tools with MCP, and handing work to subagents.
+Modes are one control among several; permission rules and hooks are covered in [Advice Versus Enforcement](10-the-harness.qmd#advice-versus-enforcement).
 
 For the full version of this material, see [Directing the Agent](https://byu-strategy.github.io/product-management/02-directing-the-agent.html) in the Product Management book.

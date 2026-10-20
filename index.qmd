@@ -5,7 +5,7 @@ author: "Scott Murff"
 
 ## What this workshop is
 
-This workshop assumes you already build with Claude Code, or with Codex or Copilot at work. It covers what most people who use these tools every day have not set up yet: choosing the right surface for the job, how the harness around the model works and which parts of it you control, rules and hooks the agent cannot ignore, running several agents at once without them breaking each other's work, and taking a feature from a written spec to a controlled release.
+This workshop assumes you already build with Claude Code, or with Codex or Copilot at work. It covers what most people who use these tools every day have not set up yet: how the harness around the model works and which parts of it you control, choosing the right surface for the job, rules and hooks the agent cannot ignore, running several agents at once without them breaking each other's work, and taking a feature from a written spec to a controlled release.
 
 Most of the workshop is built around the **Agent Team Kit**, an open-source working setup for building real software with Claude Code agents: running several at once without collisions, fast mockup and prototype rounds, tending agents from your phone, guardrails, memory that carries between sessions, one-click bug reports an agent can fix, and agents that test your app. It is public at [github.com/ai-foundry-byu/agent-team-kit](https://github.com/ai-foundry-byu/agent-team-kit), and you will install it on your own repo in the lab.
 
@@ -16,7 +16,7 @@ Most of the workshop is built around the **Agent Team Kit**, an open-source work
 | **Start Here** | Anyone who is not yet comfortable directing Claude Code: writing a `CLAUDE.md`, using skills, committing and deploying | Self-paced. Work through it before the workshop |
 | **Workshop** | Everyone | Taught live, with a hands-on lab |
 
-If you can already start Claude Code in a repo, explain what `CLAUDE.md` does, and push a change to GitHub, skip to [One Engine, Many Surfaces](10-surfaces.qmd).
+If you can already start Claude Code in a repo, explain what `CLAUDE.md` does, and push a change to GitHub, skip to [Understanding the Harness](10-the-harness.qmd).
 
 ## The full-stack product builder
 
@@ -46,8 +46,8 @@ Three hours in all.
 | Minutes | Segment | Page |
 |---|---|---|
 | 10 | Welcome and the builder model | This page |
-| 20 | One engine, many surfaces | [Surfaces](10-surfaces.qmd) |
-| 40 | Understanding the harness: the three rings, rules, hooks, tools, subagents, blast radius | [The Harness](11-the-harness.qmd) |
+| 40 | Understanding the harness: the three rings, what the model reads, what the harness applies, the tools you add, blast radius | [The Harness](10-the-harness.qmd) |
+| 20 | One engine, many surfaces, and other coding agents | [Surfaces](11-surfaces.qmd) |
 | 10 | Break | |
 | 35 | The Agent Team Kit: concurrent agents, design loops, guardrails, memory, testing | [Agent Team Kit](12-agent-team-kit.qmd) |
 | 25 | From spec to release | [Spec to Release](13-spec-to-release.qmd) |
