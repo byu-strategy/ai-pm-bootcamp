@@ -86,7 +86,7 @@ Now make one more change through Claude Code (for example, change the page title
 
 ## 8. Build a second app (optional, 15 minutes)
 
-Pick a small problem from your own work and build an app for it the same way. Ideas: a meeting-notes formatter, a feature-request tracker, a calculator for a pricing model you use. Start with a conversation, as in [Conversational Coding](02-directing-the-agent.qmd#conversational-coding), and add one feature at a time.
+Pick a small problem from your own work and build an app for it the same way. Ideas: a meeting-notes formatter, a feature-request tracker, a calculator for a pricing model you use. Start with the smallest useful version, then add one feature at a time and check each before the next.
 
 Before you add the second feature, ask Claude to write a CLAUDE.md for the project, then run `/clear` and confirm Claude still knows what the app is for.
 
