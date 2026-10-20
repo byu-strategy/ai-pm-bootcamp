@@ -2,7 +2,7 @@
 title: "From Spec to Release"
 ---
 
-This segment follows one feature from an idea to the people who use it, with the Agent Team Kit's skills at each step: a mockup built from the real page, a spec you approve before any code exists, a build that counts as done only when each acceptance criterion has evidence, and a release that is a separate, deliberate act from deploying. It ends with the feedback loop that brings problems back. The kit's skills are linked as they come up, and the [Kit Reference](90-kit-reference.qmd) lists them all.
+This segment follows one feature from an idea to the people who use it, with the Agent Team Kit's skills at each step: a mockup or clickable prototype frozen from the real app, a spec you approve before any code exists, a build that counts as done only when each acceptance criterion has evidence, and a release that is a separate, deliberate act from deploying. The feedback loop that brings problems back, and the agents that test your app, are on [The Agent Team Kit](12-agent-team-kit.qmd#bug-feedback-loops). The kit's skills are linked as they come up, and the [Kit Reference](90-kit-reference.qmd) lists them all.
 
 ## The feature loop: mockup, spec, build
 
@@ -10,22 +10,17 @@ Three skills carry a feature from idea to verified code, with one human gate in 
 
 | Skill | What it produces | Then |
 |---|---|---|
-| [`/mockup`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/mockup/SKILL.md) | A throwaway HTML page in `.mockups/` you can judge in a browser | You react and it iterates on the same file |
+| [`/mockup`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/mockup/SKILL.md) | A throwaway mockup or clickable prototype in `.mockups/`, frozen from the real app | You react and it iterates on the same file |
 | [`/spec`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/spec/SKILL.md) | `.specs/<slug>/spec.md` and `punchlist.md` | **It stops.** You read and edit the spec, then approve |
 | [`/build-spec`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/build-spec/SKILL.md) | Code, tests, one commit per punch-list item, and a check sheet | You drive the check sheet; it reports what is closed and what is open |
 
 Editing a spec by hand is the cheapest change in the whole loop, and it is available only before code exists. That gate is the reason `/spec` and `/build-spec` are two skills. Both `.mockups/` and `.specs/` are gitignored by the installer: they are working files, thrown away once the feature ships.
 
-### `/mockup`: start from the real page
+### `/mockup`: start from the real app
 
-A mockup that looks slightly unlike the app gets judged on the wrong things. The usual way of mocking a change to an existing page (redraw the whole page in HTML, then add the idea) produces hundreds of lines of approximate chrome before the idea appears.
+A mockup that looks slightly unlike the app gets judged on the wrong things, so the skill starts from a frozen snapshot of the real page whenever it can. For a change to one screen, it copies the snapshot and changes one region. For a design round across several screens, it builds a clickable prototype: every screen frozen and numbered, the app's links rewired between them, and a storyboard you mark up by number. With no freezer, or for a brand-new screen, it writes one self-contained page from the app's own stylesheet. [Fast design loops](12-agent-team-kit.qmd#fast-design-loops) describes the three modes.
 
-The skill has two paths:
-
-- **The shell path.** A **shell** is a frozen copy of a real rendered page from your app: its actual HTML, stylesheet, fonts, and copy in one editable file. A mockup is a copy of a shell with one region changed, so everything around the idea is the app. This needs a small freezer tool in your project, which the kit specifies for any stack in [MOCKUP-SHELLS-SPEC.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/MOCKUP-SHELLS-SPEC.md) (commands `mock:shell`, `mock:shell --check`, `mock:edit`, and `mock:check`). The kit ships only the spec; you hand it to an agent to build the tool for your stack.
-- **The fresh path.** With no freezer, or for a brand-new page, the skill writes one self-contained HTML file using the app's own stylesheet, tokens, icons, and copy voice.
-
-Rules the skill follows on both paths: realistic data, never lorem ipsum; real icons from the app's icon set, never emoji; render it and look at the screenshot before handing it over; hand back a clickable `file://` link; edit the same file each round. On the shell path it checks first whether the shell is stale (the page's source files changed since it was frozen), because a stale shell produces a confident mockup of a layout that no longer exists.
+What matters for the feature loop: every change you agree to during a mockup round goes on a running list, and that list is what `/spec` turns into stories and acceptance criteria. The mockup itself is thrown away once the feature ships.
 
 ### `/spec`: write down what was decided before it is lost {#spec-skill}
 
@@ -96,29 +91,6 @@ Expect:  Export is NOT in the list.
 `Go:` is a full clickable URL on the dev server the agent built against (its own port, from the kit's `dev-port` hook). At the end it leaves that server running and hands you the link, because in check-sheet mode you are the browser check.
 
 The skill's hard rules: never reword a criterion to make it pass, never drop a failing check, never claim a browser check it did not run. Its final report lists each criterion with the check that closed it, the ones still open and why, and what it assumed. A criterion that turned out to be uncheckable as written is reported plainly; the skill calls that the most useful thing it can hand back.
-
-## Driving the app to verify
-
-[DRIVING-THE-APP.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/DRIVING-THE-APP.md) covers how an agent sees what the running app actually does. Two rules underlie all of it:
-
-- **Run your own dev server on your assigned port.** Read the real port from the server's log, never assume the default, and stop only the process you started ([run your own dev server](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/run-your-own-dev-server.md)).
-- **Verify by reading state.** Confirm a flow worked by reading the URL, the page's DOM, and the network responses in each tool result. A screenshot shows that it looks right; the URL trail shows that it is right.
-
-| Tool | Use it when | How |
-|---|---|---|
-| **A screenshot** | The question is about one state: a layout, "did this land" | Playwright (`page.screenshot`) for repeatable captures; Claude in Chrome for a one-off in your own signed-in browser |
-| **A recording** | The question is about a sequence: reproducing a bug, demoing a flow | Dry-run the flow once without recording to learn the steps, then record a clean take |
-| **Driving the app** | You want Claude to run a whole flow and report what happened | A UI layer (Playwright or Claude in Chrome clicking the real interface) plus a backend layer (project scripts that seed data and exercise flows over HTTP) |
-
-The doc ranks these by fidelity. Writing rows straight to the database is fastest and proves nothing about the app. Calling the server over HTTP proves the endpoint. Only driving the real interface in a browser runs the client code a user's browser runs. Use the lower layers to set up state quickly, then switch to the browser for the part you are checking.
-
-**Verify in proportion to risk** ([memory](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/verify-proportional-to-risk.md)):
-
-| The change | Verification |
-|---|---|
-| Copy, a placeholder, a tooltip, a class name, an obvious one-liner: the effect is fully visible in the diff | Typecheck, then commit |
-| A new layout, a state change, an interaction, data loading: anything whose failure you cannot predict from the diff | Run it in the browser |
-| Anything that changes imports between server and client code | A real build as well, because a typecheck can pass while the build fails ([memory](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/verify-with-the-real-build.md)) |
 
 ## Deploying and releasing are separate acts
 
@@ -239,20 +211,6 @@ A flag controls who the code runs for. It does not control what the code does, a
 | A renamed module with no behavior change | Neither: tests only, there is nothing to release |
 
 Watch for the hidden case: a team member who is also a real customer makes "Team" an audience that reaches real people.
-
-## After release: the feedback loop
-
-[FEEDBACK-LOOP-SPEC.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/FEEDBACK-LOOP-SPEC.md) specifies the path back from users to code: a one-click widget that captures a report with its context (a screenshot, recent clicks, console and network errors, all scrubbed of secrets in the browser), an admin inbox, a `/fix-bug <id>` hand-off to a coding agent, and a `post-commit` git hook that closes the report and notifies the reporter when the fix is committed. Like the other build specs, it is detailed enough for an agent to build in your stack.
-
-Three skills work with it:
-
-| Skill | What it does |
-|---|---|
-| [`/fix-bug`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/fix-bug/SKILL.md) | Loads a bug report by id from the database, with its timeline and screenshot. Separates what the user saw from their theory of the cause, reproduces it, and reads the code path before changing anything. Only a reproduced bug gets a fix |
-| [`/ux-critique`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/ux-critique/SKILL.md) | Drives a flow in a real browser on the disposable environment, predicting at each step what should happen and recording where the app differs. Files findings into the same inbox as human reports |
-| [`/regression-check`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/regression-check/SKILL.md) | Before you finish a change to shared code, finds every caller of what you changed, judges whether each feature's behavior changed, and adds a test that locks in the intended behavior |
-
-`fix-bug` and `regression-check` are worked examples from a real project, so their table names and paths are placeholders to adapt ([SKILLS.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/SKILLS.md)).
 
 ::: {.callout-tip title="Try it"}
 Pick the next feature on your list and, before any code, answer the two questions above for it in one sentence each. Then ask Claude Code: *"Read https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/spec/TEMPLATE.md and draft only the Access and release section for this feature: [describe it]. Name the kind, the seam, whose flags apply, and the off path, and list anything you had to assume as an open question."* You will run the full `/spec` and `/build-spec` loop in the [Lab](14-lab.qmd).

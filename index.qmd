@@ -7,7 +7,7 @@ author: "Scott Murff"
 
 This workshop assumes you already build with Claude Code, or with Codex or Copilot at work. It covers what most people who use these tools every day have not set up yet: choosing the right surface for the job, how the harness around the model works and which parts of it you control, rules and hooks the agent cannot ignore, running several agents at once without them breaking each other's work, and taking a feature from a written spec to a controlled release.
 
-Most of the workshop is built around the **Agent Team Kit**, an open-source set of hooks, skills, and working agreements for a small team (or one person) running many Claude Code agents in parallel. It is public at [github.com/ai-foundry-byu/agent-team-kit](https://github.com/ai-foundry-byu/agent-team-kit), and you will install it on your own repo in the lab.
+Most of the workshop is built around the **Agent Team Kit**, an open-source working setup for building real software with Claude Code agents: running several at once without collisions, fast mockup and prototype rounds, tending agents from your phone, guardrails, memory that carries between sessions, one-click bug reports an agent can fix, and agents that test your app. It is public at [github.com/ai-foundry-byu/agent-team-kit](https://github.com/ai-foundry-byu/agent-team-kit), and you will install it on your own repo in the lab.
 
 ## Two tracks
 

@@ -3,26 +3,73 @@ title: "Thought Leaders"
 editor: visual
 ---
 
-The table below contains a listing of influential thought leaders in the field of product management. You can learn a lot from them through their various channels which are linked below:
+The people below are worth learning from. The first table is product management proper.
+The two after it are the accounts worth following while you build, and the ones worth
+following to understand where the field is heading.
+
+Follow fewer accounts than you think. A short feed you actually read is more useful than a long
+one you scroll past.
+
+One thing to know before you build a feed: **application architecture has almost no social
+media presence.** Nobody posts in depth about schema design, deploys, or CI. For that part
+of the work, feeds will not help you and the docs and books in [Builder
+Resources](https://byu-strategy.github.io/product-management/97-builder-resources.html) in the Product Management book are where to learn it.
+
+## Product management
 
 | Category | Name | Description | Links |
 |----------|------|-------------|-------|
-| **Foundations & Methodology** | **Marty Cagan** | Founder of SVPG, author of *INSPIRED*, *EMPOWERED*, and *TRANSFORMED* | [Website](https://www.svpg.com/) • [LinkedIn](https://www.linkedin.com/in/cagan/) |
-| | **Dan Olsen** | Author of *The Lean Product Playbook*, consultant helping companies build products customers love | [Website](https://dan-olsen.com/) • [LinkedIn](https://www.linkedin.com/in/danolsen98/) • [X](https://x.com/danolsen) |
+| **Foundations & Methodology** | **Marty Cagan** | Founder of SVPG, author of *INSPIRED*, *EMPOWERED*, and *TRANSFORMED*. How strong product teams operate | [Website](https://www.svpg.com/) • [LinkedIn](https://www.linkedin.com/in/cagan/) |
+| | **Dan Olsen** | Author of *The Lean Product Playbook*, consultant helping companies build products customers love. Lean product and product-market fit | [Website](https://dan-olsen.com/) • [LinkedIn](https://www.linkedin.com/in/danolsen98/) • [X](https://x.com/danolsen) |
 | | **Teresa Torres** | Product discovery coach, author of *Continuous Discovery Habits*, creator of the Opportunity Solution Tree framework | [Website](https://www.producttalk.org/) • [LinkedIn](https://www.linkedin.com/in/teresatorres/) • [X](https://twitter.com/ttorres) • [Substack](https://producttalkdaily.substack.com/) |
 | | **Melissa Perri** | CEO of Produx Labs, author of *Escaping the Build Trap*, product strategy expert | [X](https://x.com/lissijean) |
 | **Strategy** | **Gibson Biddle** | Former VP Product at Netflix, creator of the DHM model (Delight customers in Hard-to-copy, Margin-enhancing ways) | [Website](https://www.gibsonbiddle.com) • [LinkedIn](https://www.linkedin.com/in/gibsonbiddle/) • [X](https://x.com/gibsonbiddle) • [Medium](https://gibsonbiddle.medium.com/) |
 | | **Shreyas Doshi** | Former product leader at Stripe, Twitter, Google, and Yahoo. Known for frameworks like the LNO System | [Website](https://shreyasdoshi.com/) • [LinkedIn](https://www.linkedin.com/in/shreyasdoshi/) |
+| | **Paul Graham** | Co-founder of Y Combinator. The [essays](https://www.paulgraham.com/articles.html) more than the account. Written for founders building their own thing | [Essays](https://www.paulgraham.com/articles.html) • [X](https://x.com/paulg) |
 | **Growth & Scaling** | **Brian Balfour** | Founder/CEO of Reforge, former VP Growth at HubSpot, venture partner at Long Journey Ventures | [Website](https://brianbalfour.com/) • [LinkedIn](https://www.linkedin.com/in/bbalfour/) • [X](https://x.com/bbalfour) • [Reforge](https://www.reforge.com/) |
 | | **Casey Winters** | Growth advisor, former CPO at Eventbrite, led growth at Pinterest and Grubhub, partner at Reforge | [Blog](https://caseyaccidental.com/) • [LinkedIn](https://www.linkedin.com/in/caseywinters/) • [X](https://x.com/onecaseman) |
 | **Design & Leadership** | **Julie Zhuo** | Former VP Product Design at Facebook, author of *The Making of a Manager*, co-founder of Sundial | [Website](https://www.juliezhuo.com/) • [LinkedIn](https://www.linkedin.com/in/julie-zhuo/) • [X](https://x.com/joulee) • [Substack](https://lg.substack.com/) • [Medium](https://joulee.medium.com/) |
-| **Education & Community** | **Lenny Rachitsky** | Former Airbnb PM, author of Lenny's Newsletter, one of the most popular product management publications | [Substack](https://www.lennysnewsletter.com/) |
+| **Education & Community** | **Lenny Rachitsky** | Former Airbnb PM, author of Lenny's Newsletter, one of the most popular product management publications. Researched product, growth, and career advice | [Substack](https://www.lennysnewsletter.com/) • [X](https://x.com/lennysan) |
 | | **Aakash Gupta** | Product leader and educator sharing frameworks for product growth and strategy | [LinkedIn](https://www.linkedin.com/in/aagupta/) • [X](https://x.com/aakashg0) • [YouTube](https://www.youtube.com/@growproduct/videos) |
 | | **Paweł Huryn** | Product leader behind The Product Compass, sharing practical PM frameworks and insights | [LinkedIn](https://www.linkedin.com/in/pawel-huryn) |
 | | **Colin Matthews** | Product leader focused on AI product management and modern PM practices | [LinkedIn](https://www.linkedin.com/in/colinmatthews-pm/) |
-| **Tech & AI Visionaries** | **Marc Andreessen** | Co-founder of Andreessen Horowitz (a16z), creator of Netscape, influential voice on technology and startups | [X](https://x.com/pmarca) • [a16z Blog](https://a16z.com/author/marc-andreessen/) |
-| | **Aaron Levie** | Co-founder and CEO of Box, known for his insights on enterprise cloud and AI | [X](https://x.com/levie) • [LinkedIn](https://www.linkedin.com/in/boxaaron/) |
 
+## Who to follow while you build
 
+The most useful accounts for building products with AI agents.
 
+| Account | Why |
+|---|---|
+| [\@ClaudeDevs](https://x.com/ClaudeDevs) | Official Anthropic developer updates. Where Claude Code, API, and MCP changes get announced first |
+| [\@bcherny](https://x.com/bcherny) Boris Cherny | Head of Claude Code. Agents, tooling, engineering workflow |
+| [\@simonw](https://x.com/simonw) Simon Willison | Creator of Datasette, co-creator of Django. Near-daily practical posts. His [blog](https://simonwillison.net/) is the better resource, organized by tag |
+| [\@steipete](https://x.com/steipete) Peter Steinberger | Built and sold PSPDFKit, now works on agents full time. Posts about advanced multi-agent setups. Not a first read |
+| [\@emollick](https://x.com/emollick) Ethan Mollick | Wharton. Structured experiments on what AI is actually good and bad at. [One Useful Thing](https://www.oneusefulthing.org/) is the better subscription |
+| [Every](https://every.to/): [\@danshipper](https://x.com/danshipper), [\@kieranklaassen](https://x.com/kieranklaassen), [\@every](https://x.com/every) | They ship AI products in public, Cora and Spiral among them, then write up what happened. Kieran on compound engineering is the most specific writing anywhere on agentic workflow |
+| [\@HamelHusain](https://x.com/HamelHusain) Hamel Husain and [\@sh_reya](https://x.com/sh_reya) Shreya Shankar | The two people who turned evals into a teachable subject. Their free course is a good place to start on evals |
+| [\@chipro](https://x.com/chipro) Chip Huyen | Wrote AI Engineering. Production systems, cost and latency tradeoffs |
+| [\@swyx](https://x.com/swyx) | Links people and ideas across AI engineering, through Latent Space |
+| [\@amanrsanger](https://x.com/amanrsanger) Aman Sanger | Cursor founder. The one framework account that bears directly on this stack |
+| [\@alexalbert__](https://x.com/alexalbert__) Alex Albert | Anthropic, on prompting and agent behavior. The practice counterpart to \@ClaudeDevs announcements |
 
+## Where the field is going
+
+Useful for perspective, not for shipping this week.
+
+| Name | Handle | Who they are |
+|---|---|---|
+| Sam Altman | [\@sama](https://x.com/sama) | CEO, OpenAI |
+| Dario Amodei | [\@darioamodei](https://x.com/darioamodei) | CEO, Anthropic |
+| Demis Hassabis | [\@demishassabis](https://x.com/demishassabis) | CEO, Google DeepMind |
+| Greg Brockman | [\@gdb](https://x.com/gdb) | Co-founder, OpenAI |
+| Jensen Huang | [\@JensenHuang](https://x.com/JensenHuang) | CEO, NVIDIA. The compute side of AI |
+| Marc Andreessen | [\@pmarca](https://x.com/pmarca) | Co-founder of a16z, creator of Netscape. Investment and long-term views. Also writes at the [a16z blog](https://a16z.com/author/marc-andreessen/) |
+| Aaron Levie | [\@levie](https://x.com/levie) | Co-founder and CEO of Box. Enterprise cloud and AI. Also on [LinkedIn](https://www.linkedin.com/in/boxaaron/) |
+| Andrej Karpathy | [\@karpathy](https://x.com/karpathy) | Researcher and educator. The clearest explainer of how LLMs work |
+| Andrew Ng | [\@AndrewYNg](https://x.com/AndrewYNg) | Founder of DeepLearning.AI. Applied ML and career advice |
+| Yann LeCun | [\@ylecun](https://x.com/ylecun) | Deep learning pioneer, NYU. Strong and useful dissenting opinions |
+| Fei-Fei Li | [\@drfeifei](https://x.com/drfeifei) | Stanford HAI. Created ImageNet. Human-centered AI |
+| Sebastian Raschka | [\@rasbt](https://x.com/rasbt) | Author and educator on LLM implementation |
+| Lex Fridman | [\@lexfridman](https://x.com/lexfridman) | Long-form interviews with AI researchers and founders |
+| Logan Kilpatrick | [\@OfficialLoganK](https://x.com/OfficialLoganK) | AI developer ecosystem and platform |
+| Kai-Fu Lee | [\@kaifulee](https://x.com/kaifulee) | Investor and author. Global and China AI perspective |
