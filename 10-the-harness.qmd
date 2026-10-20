@@ -6,7 +6,7 @@ The model is one part of Claude Code. Most of what decides how an agent behaves 
 
 ## Three Rings {#three-rings}
 
-**Claude Code is three rings: the model, the built-in harness that Anthropic ships, and your harness around both.** You cannot change the model. You can change a few settings of the built-in harness. You build the outer ring.
+**The model:** Claude Code is three rings: the model, the built-in harness that Anthropic ships, and your harness around both. You cannot change the model. You can change a few settings of the built-in harness. You build the outer ring.
 
 ![Claude Code as three rings. The model sits at the center. The built-in harness runs the loop: the context window feeds the model, the model's tool call goes to the tool-call check, approved calls run as tools, and the results return to the context window. Your harness is the outer ring, in three sectors, each feeding a different part of the loop. A plugin from a marketplace can install parts into any of the three sectors.](images/diagrams/ch02-three-rings.svg){#fig-three-rings fig-alt="Three concentric rings, labeled Claude Code as a whole. At the center, the model. Around it, the built-in harness, which holds the context window, the tool-call check, and the tools, connected in a loop: the context window feeds the model, the model's tool call goes to the check, the check passes it to the tools, and the tools' results return to the context window. The outer ring is your harness, in three sectors, each with an arrow to the part of the built-in harness it changes. Read by the model, all markdown: the files CLAUDE.md, MEMORY.md for auto memory, and SKILL.md for each skill, then the folders rules/ and output-styles/, into the context window. Applied by the harness: settings.json, which holds permission rules, hooks, the model, the effort level, and more, with an arrow into the built-in harness. Adds tools: MCP connections, which the Claude app calls connectors, subagents, and workflows, into the tools. Outside the rings, a package labeled Plugin, from a marketplace, has a dashed arrow labeled installs that stops at the outer edge of your harness, since a plugin can add parts to any of the three sectors. Outside the rings, you send messages, which go into the context window, and the model's replies come back to you. Two arrows connect the tools with the world outside all three rings, actions going out and output coming back, which the tools pass on as results. The world outside holds your project files; the terminal, where git, gh, and other CLIs run; the web, for search and pages; and apps such as GitHub and Supabase." width="100%"}
 
@@ -34,7 +34,7 @@ Place each of these in a sector, or outside the rings: a line in CLAUDE.md sayin
 
 ## Read by the Model {#read-by-the-model}
 
-**Everything in this sector is markdown that ends up in the context window.** It shapes what the model does and guarantees nothing. How to write a CLAUDE.md and a skill is on [Directing the Agent](02-directing-the-agent.qmd); this section is about what the sector holds and when each part loads.
+**The model:** everything in this sector is markdown that ends up in the context window. It shapes what the model does and guarantees nothing. How to write a CLAUDE.md and a skill is on [Directing the Agent](02-directing-the-agent.qmd); this section is about what the sector holds and when each part loads.
 
 | Item | What it is | When it loads |
 |---|---|---|
@@ -61,6 +61,8 @@ A **rules file** is advice the model reads. A **permission rule** is a line in `
 Everything here competes for the same window. A long CLAUDE.md crowds out the code the model needs to see, and a buried instruction is easier to overlook. Keep this sector short, and move anything that must hold every time into the next one.
 
 ## Applied by the Harness: Advice Versus Enforcement {#advice-versus-enforcement}
+
+**The model:** an instruction is advice the model weighs against everything else in its context window. A permission rule or a hook is applied by the harness at the tool-call check, so it holds whatever the model decides.
 
 This is the second sector of the [three rings](#three-rings): `settings.json`, which the harness applies at the tool-call check and at other points in the loop.
 
@@ -166,6 +168,8 @@ Make a practice folder with no GitHub connection, so a push that gets through fa
 
 ## Adds Tools: Reaching Beyond the Repo {#reach-beyond-the-repo-mcp}
 
+**The model:** a tool you add gives the model a new action, and the model still chooses whether to call it. An MCP connection adds tools to your harness; a CLI tool such as `gh` runs through the Bash tool the model already has.
+
 The third sector of the [three rings](#three-rings) adds tools: MCP connections that reach outside systems, and subagents and workflows that hand work to other model instances.
 
 **An agent has three ways to reach a system outside your repo.** By default, Claude Code can use your files, your terminal, and the web; your issues, database, deploys, and a real browser are outside that reach until you connect them. Of the three routes, only an MCP connection adds a tool to your harness. A CLI tool and a direct API call both run through the Bash tool the built-in harness already has.
@@ -228,7 +232,7 @@ Find the mistake: "I'll ask Claude to spin up three subagents: one builds the lo
 
 ## Blast Radius {#blast-radius}
 
-**An action's blast radius is everything it can change if it goes wrong. Before you let an agent work without watching, ask two questions about each kind of action: how far does it reach, and can I undo it?** The farther it reaches, the fewer ways to undo it, and the less the agent should do it without you.
+**The model:** an action's blast radius is everything it can change if it goes wrong. Before you let an agent work without watching, ask two questions about each kind of action: how far does it reach, and can I undo it? The farther it reaches, the fewer ways to undo it, and the less the agent should do it without you.
 
 Claude Code saves a **checkpoint** of your files before each prompt you send, and `/rewind` (or `Esc` twice on an empty prompt) restores the code, the conversation, or both. A checkpoint records only changes Claude makes with its own file-editing tool. So every action falls into one of three groups:
 

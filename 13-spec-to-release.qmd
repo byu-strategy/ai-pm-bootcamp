@@ -6,6 +6,8 @@ This segment follows one feature from an idea to the people who use it. First th
 
 ## The feature loop: mockup, spec, build
 
+**The model:** the spec is the gate between exploring and building. Edit it while that is cheap, before any code exists; then build until every acceptance criterion has evidence.
+
 Three skills carry a feature from idea to verified code, with one human gate in the middle.
 
 | Skill | What it produces | Then |
@@ -87,6 +89,8 @@ Its hard rules: never reword a criterion to make it pass, never drop a failing c
 
 ## Deploying and releasing are separate acts
 
+**The model:** deploying puts code on a server; releasing lets people use it. Keeping them separate makes every release a deliberate act you can schedule, stage, or limit to some users.
+
 [RELEASE-PIPELINE.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/RELEASE-PIPELINE.md) starts from two definitions. **Deploy**: code reaches a server. **Release**: people see it.
 
 Most setups join them: push `main` and it is live. With several agents committing to `main` all day, `main` always holds someone's half-finished work. The kit separates three moments ([deploy is not release](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/deploy-is-not-release.md)):
@@ -137,6 +141,8 @@ The testing agents run on a different copy, the **disposable environment** ([DIS
 
 ## Release flags {#release-flags}
 
+**The model:** a release flag lets one deploy carry a feature that only some people see, so releasing it becomes a setting you change.
+
 [RELEASE-FLAGS-SPEC.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/RELEASE-FLAGS-SPEC.md) is the other half of separating deploy from release. Every commit ships to production switched off ("dark"). A super admin turns the feature on from an admin page, one audience at a time: Off, Team, named users, tenants, Everyone. No deploy is involved, and turning it off is a click.
 
 The design in brief:
@@ -166,6 +172,8 @@ How a feature reaches people shapes its code: where the check sits, what a user 
 A release flag adds three standard criteria: a `walk` check that a user without the flag does not see the feature, a `unit` test that flag-off behaves as before, and a `structure` check that the server checks the flag. `/build-spec`'s report then says **"shipped dark"** with the release step, so nobody mistakes "done" for "live".
 
 ## Flag or staging: decided by whose data
+
+**The model:** a flag controls who the code runs for; staging controls where its effects land. Choose by whose data the feature touches.
 
 A flag controls who the code runs for. It does not undo what the code did: an email sent stays sent. Staging, with its egress fence, controls where the effects land. Two questions decide ([flag or staging is whose data](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/flag-or-staging-is-whose-data.md)):
 

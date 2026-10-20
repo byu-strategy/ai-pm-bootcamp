@@ -22,7 +22,7 @@ It also covers spec-driven builds and a release pipeline ([From Spec to Release]
 
 ## The kit on the three rings {#kit-on-the-rings}
 
-**The kit is a set of additions to your harness, plus a few git hooks and shell commands outside it.** Placed on the [three rings](10-the-harness.qmd#three-rings), each part shows what it can and cannot guarantee.
+**The model:** the kit is a set of additions to your harness, plus a few git hooks and shell commands outside it. Placed on the [three rings](10-the-harness.qmd#three-rings), each part shows what it can and cannot guarantee.
 
 | Where it sits | Kit part | What it does |
 |---|---|---|
@@ -40,6 +40,8 @@ It also covers spec-driven builds and a release pipeline ([From Spec to Release]
 Each working agreement appears twice. The CLAUDE.md section tells the agent to stage files by name, and `bash-guard` blocks `git add -A` when the agent does not. The advice prevents most mistakes cheaply; the hook catches the rest. That pairing is the design of the whole kit.
 
 ## Concurrent agents {#concurrent-agents}
+
+**The model:** parallel agents collide on what they share: dev-server ports, the database, and the git working tree. A worktree separates files only, so the kit handles ports and the database with hooks in both of its modes.
 
 The problem the kit started with: one person running several agents at once, or a small team (usually two people) each running several against the same `main`. Most of it pays off with no collaborator at all, because the port assignment and the git and schema guards protect you from your own parallel agents.
 
@@ -161,6 +163,8 @@ The loop in one line: claim a lane, pull and rebase, work with your agents, inte
 
 ## Fast design loops {#fast-design-loops}
 
+**The model:** a mockup frozen from the real app is judged on the design, because everything around the change is the app itself. A clickable prototype of every screen, marked up by screen number, takes the place of a Figma round.
+
 The [`/mockup`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/mockup/SKILL.md) skill gets a design in front of you in minutes, close enough to the real app that you judge the design and not the drawing.
 
 | Mode | What you get | When |
@@ -182,6 +186,8 @@ The snapshots come from your running app at desktop width, or at phone width for
 | **Keep the computer running** | macOS, plugged in: System Settings, Battery, Options, "Prevent automatic sleeping on power adapter when the display is off". On battery: `caffeinate -i` in a spare terminal. Windows: set sleep to Never when plugged in, or use PowerToys Awake. Closing a Mac's lid sleeps it regardless |
 
 ## Hooks and guardrails {#hooks-and-guardrails}
+
+**The model:** each working agreement appears twice: as advice in CLAUDE.md, which prevents most mistakes cheaply, and as a hook, which catches the rest every time.
 
 The working agreements are advice; the hooks run every time ([Advice Versus Enforcement](10-the-harness.qmd#advice-versus-enforcement)). [The kit on the three rings](#kit-on-the-rings) lists the five Claude Code hooks. This section covers what the table leaves out: what `bash-guard` checks, the architecture guards, and the git hooks, which act on the repository whoever runs git.
 
@@ -223,6 +229,8 @@ Git runs these only after `git config core.hooksPath .githooks`, a setting each 
 
 ## Memory {#memory}
 
+**The model:** personal memory stays on the computer where it was written. A lesson the team needs goes in tracked team memory, which every teammate's sessions load at start.
+
 Claude Code memory stays on one machine, under `~/.claude/projects/<launch path>/memory/`. If your agents learn that the seed script wipes a table, your teammate's agents do not know it. The kit handles this in three parts:
 
 | Part | What it is |
@@ -237,6 +245,8 @@ Promotion is one memory at a time on purpose. A personal memory folder names peo
 
 ## Bug feedback loops {#bug-feedback-loops}
 
+**The model:** a bug report captured with its context (screenshot, recent clicks, errors) gives a coding agent what it needs to reproduce and fix the problem, and committing the fix closes the report.
+
 [FEEDBACK-LOOP-SPEC.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/FEEDBACK-LOOP-SPEC.md) specifies the path back from users to code: a one-click widget that captures a report with its context (a screenshot, recent clicks, console and network errors, all scrubbed of secrets in the browser), an admin inbox, a `/fix-bug <id>` hand-off to a coding agent, and a `post-commit` git hook that closes the report and notifies the reporter when the fix is committed. Like the other build specs, it is detailed enough for an agent to build in your stack.
 
 Two skills work with it:
@@ -249,6 +259,8 @@ Two skills work with it:
 `fix-bug` and `regression-check` are worked examples from a real project, so their table names and paths are placeholders to adapt ([SKILLS.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/SKILLS.md)).
 
 ## Agents that test your app {#agents-that-test}
+
+**The model:** an agent that drives the real interface and reads the page state tests the app the way a user meets it. Findings go into the same bug inbox as human reports.
 
 Agents can use your app the way a person does, in four ways. All of them file findings into the same bug inbox as human reports, so a finding hands off to `/fix-bug` with its screenshot attached.
 

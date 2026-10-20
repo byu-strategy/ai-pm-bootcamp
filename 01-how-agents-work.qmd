@@ -6,7 +6,7 @@ This page gives you the minimum model of a coding agent you need before the work
 
 ## What Makes an Agent an Agent
 
-**An agent is a model in a loop with tools.** The **model** is a large language model (LLM), such as Claude: a program that takes in text and images and writes text back. Every way of using Claude runs the same models; they differ in how far they let the model reach, which [One Engine, Many Surfaces](11-surfaces.qmd) compares.
+**The model:** an agent is a model in a loop with tools. The **model** is a large language model (LLM), such as Claude: a program that takes in text and images and writes text back. Every way of using Claude runs the same models; they differ in how far they let the model reach, which [One Engine, Many Surfaces](11-surfaces.qmd) compares.
 
 A chatbot can write you a PRD. An agent can read your repo (short for repository, the folder that holds your project's code), write the code, run it, watch it fail, fix it, and deploy the result. That difference is why the workshop runs in a terminal instead of a browser tab.
 
@@ -74,6 +74,8 @@ Ask Claude Code to make a small change in a project, then watch the transcript i
 The program around the model, which builds each request and runs the tool calls, is called the **harness**. Part of it is built in: the context window, the tool-call check, and the tools. The rest is your harness, which you shape yourself with files such as CLAUDE.md and settings. The workshop maps both on [Understanding the Harness](10-the-harness.qmd#three-rings).
 
 ## The Command Line
+
+**The model:** the terminal is only a window; the shell runs the commands. Claude Code sends commands to the same shell, and asks you before it runs one, so reading a command is how you decide.
 
 Most of what a coding agent does happens on the [command line](https://en.wikipedia.org/wiki/Command-line_interface): a text-based way to control your computer by typing commands instead of clicking. The program that shows it is a **terminal**: Terminal on macOS; PowerShell or Git Bash on Windows; or the terminal panel built into VS Code.
 

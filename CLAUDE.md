@@ -65,6 +65,15 @@ Management course book (`~/courses/product-management`, chapters 01, 02, 06b, 09
 and from the Agent Team Kit (`~/ai-foundry-byu/agent-team-kit`). When either source changes,
 the matching page here may need the same change. The pre-rebuild chapters are in git history.
 
+### Learn in Claude buttons
+
+`_extensions/learn` (copied from the Product Management book) adds a button to every `##` section
+whose first paragraph opens with `**The model:**`. The button copies a prompt that runs the
+`/learn` skill, whose single source is `byu-strategy/builder-template` (`.claude/skills/learn`);
+its fetcher reads any `byu-strategy.github.io/<book>/` link from the repo `byu-strategy/<book>`.
+To give a section a button, write its model line. The prompt installs the skill into the
+attendee's `~/.claude/skills/learn`, not into their repo.
+
 ### Chapter Naming Convention
 
 - `00-04` - Start Here

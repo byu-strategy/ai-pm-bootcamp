@@ -1,0 +1,30 @@
+/* The Learn button beside a section heading (see learn.js). Quiet until hovered. */
+.learn-btn {
+  position: relative;
+  display: inline-flex; align-items: center; gap: .3em;
+  margin-left: .55em; padding: .12em .55em .12em .45em;
+  vertical-align: middle;
+  font: 600 .8rem/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+  letter-spacing: .01em;
+  color: #0057B8; background: #EEF4FB;
+  border: 1px solid #D3E1F1; border-radius: 999px;
+  cursor: pointer; opacity: .75;
+  transition: opacity .15s, background .15s, border-color .15s;
+}
+.learn-btn:hover, .learn-btn:focus-visible { opacity: 1; background: #E1ECF8; border-color: #B9D0EA; }
+.learn-btn:focus-visible { outline: 2px solid #0057B8; outline-offset: 2px; }
+.learn-btn svg { flex: none; display: block; }
+.learn-icon { display: inline-flex; }
+.learn-btn.learn-copied { opacity: 1; color: #2C7A4C; background: #E8F4EC; border-color: #B7DBC3; }
+.learn-btn.learn-failed { color: #B03A3A; background: #FBEDED; border-color: #EBC5C5; }
+.learn-note {
+  position: absolute; left: 0; top: calc(100% + 6px); white-space: nowrap;
+  padding: .3em .6em; border-radius: 6px;
+  font-weight: 500; font-size: .78rem; color: #fff; background: #002E5D;
+  opacity: 0; pointer-events: none; transform: translateY(-2px);
+  transition: opacity .15s, transform .15s; z-index: 10;
+}
+.learn-copied .learn-note { opacity: 1; transform: none; }
+.learn-failed .learn-note { background: #B03A3A; }
+@media (prefers-reduced-motion: reduce) { .learn-btn, .learn-note { transition: none; } }
+@media print { .learn-btn { display: none; } }

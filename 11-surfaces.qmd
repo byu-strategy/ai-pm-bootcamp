@@ -12,7 +12,7 @@ Checked on October 10, 2026 against Anthropic's [desktop app documentation](http
 
 ## One engine, many surfaces
 
-**Every Claude Code surface runs the same model and the same built-in harness.** The context window, the tool-call check, and the tools work the same way in each. The surfaces differ in the window you see and in which parts of your harness they can read.
+**The model:** every Claude Code surface runs the same model and the same built-in harness. The context window, the tool-call check, and the tools work the same way in each. The surfaces differ in the window you see and in which parts of your harness they can read.
 
 | Surface | What it is | Pick it when |
 |---|---|---|
@@ -32,6 +32,8 @@ Predict, then check: you add a line to your project's `CLAUDE.md` while working 
 :::
 
 ## The CLI in VS Code or the desktop app? {#cli-in-vs-code-or-the-desktop-app}
+
+**The model:** both setups run the same model and the same harness. VS Code is better when you work on the code yourself; the desktop app is better when you direct and review the agent.
 
 Most people end up choosing between two setups: the **Claude Code CLI in VS Code's terminal** and the **Claude desktop app's Code tab**. Both run the same inner rings and read the same harness files, so the choice is about the window.
 
@@ -111,6 +113,8 @@ From the [troubleshooting](https://code.claude.com/docs/en/desktop#troubleshooti
 - **Worktrees start without your ignored files.** Files in `.gitignore`, such as `.env`, are not copied into a worktree; list them in a [`.worktreeinclude`](https://code.claude.com/docs/en/worktrees) file to have them copied.
 
 ## Other coding agents
+
+**The model:** Codex, Copilot CLI, and Antigravity CLI run the same agent loop with a different model inside a different built-in harness. The ideas transfer completely; of your harness files, the markdown ones transfer best and settings transfer least.
 
 Some of you use Codex or GitHub Copilot at work. Three other coding agents run in the terminal on the same agent loop ([How Agents Work](01-how-agents-work.qmd)): OpenAI's **Codex**, GitHub's **Copilot CLI**, and Google's **Antigravity CLI** (which replaced Gemini CLI for individual users). In ring terms, each is a different model inside a different built-in harness. Your harness files partly transfer: the ideas all do, and some of the files do.
 

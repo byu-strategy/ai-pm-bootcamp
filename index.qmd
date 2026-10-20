@@ -18,6 +18,10 @@ Most of the workshop is built around the **Agent Team Kit**, an open-source work
 
 If you can already start Claude Code in a repo, explain what `CLAUDE.md` does, and push a change to GitHub, skip to [Understanding the Harness](10-the-harness.qmd).
 
+::: {.callout-tip title="Learning a section with Claude"}
+Sections that state a model have a **Learn in Claude** button beside the heading. Click it to copy a prompt, then paste it into Claude Code in any repo. Claude tutors you on that section for as long as you choose and saves a short learning log to a `learning/` folder in that repo. The first time, it installs the `/learn` skill into your personal skills folder.
+:::
+
 ## The full-stack product builder
 
 The premise behind this workshop is that with AI coding agents, one person can take a product from an idea to live software that customers use. Product management, UX design, and engineering used to be three jobs held by three people. AI lets one person work across all three, and we call that person a **full-stack product builder**. We describe what that person can do with six skills, each drawn from one or more of the three jobs:

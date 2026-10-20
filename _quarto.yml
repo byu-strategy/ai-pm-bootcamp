@@ -29,6 +29,12 @@ book:
         - 90-kit-reference.qmd
         - 97-thought-leaders.qmd
 
+# Adds a "Learn in Claude" button to each ## section that states "**The model:**" (_extensions/learn).
+# The button copies a prompt that runs the /learn skill from byu-strategy/builder-template.
+filters:
+  - learn
+learn-base-url: "https://byu-strategy.github.io/ai-pm-bootcamp/"
+
 bibliography: references.bib
 csl: informs.csl
 

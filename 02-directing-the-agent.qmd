@@ -6,7 +6,7 @@ This page covers what the workshop assumes you know: what the agent can see, how
 
 ## It Knows Only What It Can See
 
-**The agent can use only what is in its context window.** Whatever is not in it does not exist for the agent: not the conversation you had yesterday, not the decision you made in your head, not the file it never opened.
+**The model:** the agent can use only what is in its context window. Whatever is not in it does not exist for the agent: not the conversation you had yesterday, not the decision you made in your head, not the file it never opened.
 
 #### What fills the window
 
@@ -86,6 +86,8 @@ Type `/` to see every command. These are the ones the workshop uses:
 | `/diff` | Review the changes in your files, including Claude's edits |
 
 ## Skills
+
+**The model:** a skill is a procedure you write down once, and its full text enters the context window only when it is used. Standing facts go in CLAUDE.md; a procedure you need sometimes goes in a skill.
 
 A skill is a reusable procedure you teach Claude once: a folder with a `SKILL.md` file of instructions, plus any reference files or scripts it needs. You run it with `/skill-name`, or Claude loads it on its own when your request matches the skill's description.
 

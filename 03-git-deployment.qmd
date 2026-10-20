@@ -33,6 +33,8 @@ To create a repository, click **New** on your GitHub dashboard (or the **+** men
 
 ## The Git and GitHub Workflow
 
+**The model:** a change moves through four places: the files you edit, the staging area, a commit in your local history, and GitHub. Each move is a command you choose to run.
+
 Changes move through four places: you edit files in your working directory, stage the ones you want to save, commit them as a snapshot, and push the snapshot to a remote repository on GitHub.
 
 ![](images/git-visual.jpg)
