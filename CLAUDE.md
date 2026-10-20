@@ -60,7 +60,7 @@ The book follows a three-part structure defined in `_quarto.yml`:
 
 ### Where the content comes from
 
-Rebuilt 2026-10-19 for the Oct 21, 2026 workshop. Most pages are condensed from the Product
+Rebuilt 2026-10-19 as a reusable site: keep it generic (no event dates, times, venues, or one-off logistics), since the workshop runs repeatedly and attendees refer back to it. The agenda is in minutes, three hours in all. Most pages are condensed from the Product
 Management course book (`~/courses/product-management`, chapters 01, 02, 06b, 09, A2, A3, 09c)
 and from the Agent Team Kit (`~/ai-foundry-byu/agent-team-kit`). When either source changes,
 the matching page here may need the same change. The pre-rebuild chapters are in git history.

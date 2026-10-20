@@ -1,22 +1,19 @@
 ---
 title: "Welcome"
 author: "Scott Murff"
-date: "10/21/2026"
 ---
-
-*AI PM Bootcamp · Wednesday, October 21, 2026 · Workshop 1:00 to 5:00 PM, dinner 5:30 PM*
 
 ## What this workshop is
 
 This workshop assumes you already build with Claude Code, or with Codex or Copilot at work. It covers what most people who use these tools every day have not set up yet: choosing the right surface for the job, rules and hooks the agent cannot ignore, running several agents at once without them breaking each other's work, and taking a feature from a written spec to a controlled release.
 
-Most of the afternoon is built around the **Agent Team Kit**, an open-source set of hooks, skills, and working agreements for a small team (or one person) running many Claude Code agents in parallel. It is public at [github.com/ai-foundry-byu/agent-team-kit](https://github.com/ai-foundry-byu/agent-team-kit), and you will install it on your own repo in the lab.
+Most of the workshop is built around the **Agent Team Kit**, an open-source set of hooks, skills, and working agreements for a small team (or one person) running many Claude Code agents in parallel. It is public at [github.com/ai-foundry-byu/agent-team-kit](https://github.com/ai-foundry-byu/agent-team-kit), and you will install it on your own repo in the lab.
 
 ## Two tracks
 
 | Track | Who it is for | How it runs |
 |---|---|---|
-| **Start Here** | Anyone who is not yet comfortable directing Claude Code: writing a `CLAUDE.md`, using skills, committing and deploying | Self-paced. Work through it before 1:00 on Wednesday |
+| **Start Here** | Anyone who is not yet comfortable directing Claude Code: writing a `CLAUDE.md`, using skills, committing and deploying | Self-paced. Work through it before the workshop |
 | **Workshop** | Everyone | Taught live, with a hands-on lab |
 
 If you can already start Claude Code in a repo, explain what `CLAUDE.md` does, and push a change to GitHub, skip to [One Engine, Many Surfaces](10-surfaces.qmd).
@@ -36,22 +33,22 @@ The premise behind this workshop is that with AI coding agents, one person can t
 | **AI Systems** | How do the models work, and why do they behave the way they do? |
 | **Launch and Learn** | How do people find it, and did it work? |
 
-This afternoon is mostly **Agentic Workflow**, with parts of Design (specs and mockups) and Application Architecture (environments and releases). The full semester version of all six is the BYU course [Product Management](https://byu-strategy.github.io/product-management/), which this site draws from.
+The workshop is mostly **Agentic Workflow**, with parts of Design (specs and mockups) and Application Architecture (environments and releases). The full semester version of all six is the BYU course [Product Management](https://byu-strategy.github.io/product-management/), which this site draws from.
 
 ## Agenda
 
-| Time | Segment | Page |
+Three hours in all.
+
+| Minutes | Segment | Page |
 |---|---|---|
-| 1:00 | Welcome and the builder model | This page |
-| 1:15 | One engine, many surfaces | [Surfaces](10-surfaces.qmd) |
-| 1:45 | The harness: rules, hooks, blast radius, MCP, subagents | [The Harness](11-the-harness.qmd) |
-| 2:25 | Break | |
-| 2:35 | The Agent Team Kit: parallel agents without collisions | [Agent Team Kit](12-agent-team-kit.qmd) |
-| 3:20 | From spec to release | [Spec to Release](13-spec-to-release.qmd) |
-| 3:55 | Lab: install the kit and run it | [Lab](14-lab.qmd) |
-| 4:45 | What this looks like at full scale, and questions | [Full Scale](15-software-factory.qmd) |
-| 5:00 | Workshop ends | |
-| 5:30 | Networking dinner | |
+| 10 | Welcome and the builder model | This page |
+| 25 | One engine, many surfaces | [Surfaces](10-surfaces.qmd) |
+| 30 | The harness: rules, hooks, blast radius, MCP, subagents | [The Harness](11-the-harness.qmd) |
+| 10 | Break | |
+| 35 | The Agent Team Kit: parallel agents without collisions | [Agent Team Kit](12-agent-team-kit.qmd) |
+| 25 | From spec to release | [Spec to Release](13-spec-to-release.qmd) |
+| 35 | Lab: install the kit and run it | [Lab](14-lab.qmd) |
+| 10 | What this looks like at full scale, and questions | [Full Scale](15-software-factory.qmd) |
 
 ## What to bring
 

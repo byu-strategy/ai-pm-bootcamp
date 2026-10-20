@@ -2,7 +2,7 @@
 title: "What This Looks Like at Full Scale"
 ---
 
-Everything this afternoon has been one builder directing a few agents. This closing segment shows the same pattern run by an engineering organization all day. In September 2026, Gergely Orosz published an account of what OpenAI internally calls its agentic software factory.
+Everything in the workshop so far has been one builder directing a few agents. This closing segment shows the same pattern run by an engineering organization all day. In September 2026, Gergely Orosz published an account of what OpenAI internally calls its agentic software factory.
 
 ![Image source: Gergely Orosz, The Pragmatic Engineer, "Inside OpenAI's agentic software factory," September 15, 2026](images/openai-agentic-factory.jpeg){fig-alt="A flow diagram. A software builder defines an outcome for Codex, which writes code using context from internal systems. Code goes to CI build and test, then to parallel agentic code review by specialist agents that classify risk. Low-risk changes go to agentic deploy; higher-risk changes get an engineer review first. Deployed changes are watched in production, with a Perf Factory agent detecting latency regressions and a Sevbot agent investigating incidents. Both feed fixes back to Codex."}
 
@@ -29,7 +29,7 @@ Figures from the same piece: use of Codex in non-engineering departments at Open
 
 ## You are running a small version of this factory
 
-Each part of the factory has a counterpart in the [Agent Team Kit](12-agent-team-kit.qmd) covered this afternoon.
+Each part of the factory has a counterpart in the [Agent Team Kit](12-agent-team-kit.qmd) covered in the workshop.
 
 | Factory | Agent Team Kit |
 |---|---|

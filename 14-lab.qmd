@@ -2,17 +2,17 @@
 title: "Lab: Install the Kit and Run It"
 ---
 
-In this lab you install the Agent Team Kit into a repo on your own laptop, read what the installer changed, and then watch it work: two named sessions that get different dev-server ports, a git command the guard refuses, a feature taken through `/spec` and `/build-spec`, and, if you have time, a worktree merged from a cockpit. Plan on about 50 minutes. Background for every step is on [The Agent Team Kit](12-agent-team-kit.qmd) and [From Spec to Release](13-spec-to-release.qmd).
+In this lab you install the Agent Team Kit into a repo on your own laptop, read what the installer changed, and then watch it work: two named sessions that get different dev-server ports, a git command the guard refuses, a feature taken through `/spec` and `/build-spec`, and, if you have time, a worktree merged from a cockpit. Plan on about 35 minutes; finish the rest on your own afterward. Background for every step is on [The Agent Team Kit](12-agent-team-kit.qmd) and [From Spec to Release](13-spec-to-release.qmd).
 
 | Step | Time |
 |---|---|
-| 0. Prerequisites and a repo | 5 min |
-| 1. Install and review the diff | 10 min |
+| 0. Prerequisites and a repo | 3 min |
+| 1. Install and review the diff | 7 min |
 | 2. Fit the kit to your stack, load the launchers | 5 min |
-| Exercise 1: two sessions, two ports | 7 min |
+| Exercise 1: two sessions, two ports | 5 min |
 | Exercise 2: the git guard | 5 min |
-| Exercise 3: `/spec`, then `/build-spec` | 15 min |
-| Exercise 4 (stretch): worktree mode | the rest |
+| Exercise 3: `/spec`, then `/build-spec` | 10 min |
+| Exercise 4 (stretch): worktree mode | on your own |
 
 ## 0. Prerequisites and a repo
 
@@ -158,7 +158,7 @@ Use one session (either is fine; the other can stay idle). Pick a small feature 
 - Is anything in **Decisions already made** something you did not decide? That is an invented requirement; move it to Open questions or delete it.
 - What does **Access and release** say? For this feature, "no flag" with a reason is the likely answer.
 
-Edit the spec by hand wherever it is wrong. This is the cheapest change you will make all afternoon.
+Edit the spec by hand wherever it is wrong. This is the cheapest change you will make in the whole build.
 
 **Then run `/build-spec`.** Watch for: one commit per punch-list item, made with explicit paths; boxes checked off in `punchlist.md`; tests written for the `unit` criteria; and `.specs/<slug>/check.md` filling with three-line entries. When it finishes (or when your time is up; it resumes from `punchlist.md`), open the URL it hands you and drive the check sheet yourself.
 
