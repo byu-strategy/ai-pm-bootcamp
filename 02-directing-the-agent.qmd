@@ -2,7 +2,7 @@
 title: "Directing the Agent: The Basics"
 ---
 
-This page covers the everyday controls for directing Claude Code: how to talk to it, what it can and cannot see, CLAUDE.md, slash commands, skills, permission modes, and how to tell whether its work is actually done. Read it if you have run Claude Code a few times but have not yet written a CLAUDE.md or a skill. Skip it if you already use CLAUDE.md and skills daily.
+This page covers the everyday controls for directing Claude Code: how to talk to it, what it can and cannot see, CLAUDE.md, slash commands, skills, and permission modes. Read it if you have run Claude Code a few times but have not yet written a CLAUDE.md or a skill. Skip it if you already use CLAUDE.md and skills daily.
 
 ## Why This Matters
 
@@ -10,7 +10,7 @@ Directing an agent comes down to three questions you answer for every task:
 
 1. **What can it see?** The agent knows only what is in its context window: all the text the model has in front of it at one moment.
 2. **What may it do?** Instructions advise; hooks and permission rules enforce; modes and sandboxes limit the damage. This page covers modes. [The Harness](11-the-harness.qmd) covers the rest.
-3. **How will you know it worked?** Its own report is a claim. Your check is the evidence.
+3. **How will you know it worked?** Its own report is a claim. Your check is the evidence. [From Spec to Release](13-spec-to-release.qmd) covers how to make that check part of the build.
 
 All three get easier when you have written down what you want before anyone builds it. That written description is a spec, and [Spec to Release](13-spec-to-release.qmd) covers it.
 
@@ -95,7 +95,7 @@ A personal tool for capturing and evaluating problems that could become product 
 | Commands | The dev, build, test, and database commands, one line each |
 | Architecture | Where each kind of code goes, so new code lands in the right place |
 | Conventions | Naming, styling, the words used in the interface |
-| Definition of done | The checks that must pass before work counts as finished (see [Done Means You Saw It Work](#done-means-you-saw-it-work)) |
+| Definition of done | The checks that must pass before work counts as finished (see [From Spec to Release](13-spec-to-release.qmd)) |
 | Leave alone unless asked | Lines the agent must not cross on its own: pushing to GitHub, adding a new sign-in or database library, deleting database tables |
 
 When a convention changes, update CLAUDE.md in the same commit as the change, because an out-of-date file misdirects every session that reads it.
@@ -216,25 +216,5 @@ You have three things to tell Claude: "We use Supabase for the database," "To pu
 By default Claude Code asks before it edits a file or runs a command. Press `Shift+Tab` to cycle through its permission modes, which include the default (ask before edits and commands), accept edits (edit files without asking, still ask before commands), and plan mode (read and plan only, change nothing). The current mode shows below the prompt. Plan mode is a good start for any change you have not thought through: Claude reads the code and proposes a plan, and nothing changes until you approve it.
 
 Modes are one control among several. [The Harness](11-the-harness.qmd) covers the rest: why an instruction in CLAUDE.md is advice and a hook or permission rule is enforcement, how to limit the damage a wrong command can do, connecting outside tools with MCP, and handing work to subagents.
-
-## Done Means You Saw It Work
-
-**Passing tests the agent wrote prove little. Read the diff, run the app, and check the behavior you asked for.** An agent stops when the work *looks* done to it. If the only check is one it wrote itself, it can be wrong in exactly the way the code is wrong.
-
-Your definition of done has three checks:
-
-1. **Read the diff**, the list of lines added and removed in each changed file. What files changed? Anything you did not ask for? `/diff` in Claude Code, or the diff view in VS Code or the desktop app, shows it.
-2. **Run the app.** Start it and use the feature the way a user would.
-3. **Confirm the behavior you asked for**, including the edge case you care about, against your acceptance criteria.
-
-**Worked example.** You ask for "a due date on each task; overdue tasks show in red." Claude adds the feature and a test: create a task due yesterday, check that `is_overdue` is true. The test passes. You run the app and every task created this morning is red. The code compared the due date (midnight at the start of that day) with the current time, so a task due today counted as overdue from the moment the day began. The test only tried a task due yesterday, so it passed. The agent's test and the agent's code missed the same case. Your acceptance criterion ("a task due today is not overdue") caught it.
-
-Better still, give the agent a check it can run itself, so it can confirm the result without you: a test suite, a build, or a screenshot compared against a design. Then have it show evidence (the command it ran and the output) instead of telling you it worked.
-
-**Match the check to the risk.** Not every change needs a run through the app. The Agent Team Kit's rule ([verify proportional to risk](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/verify-proportional-to-risk.md)): if the diff shows the whole effect (a changed label, a color, a one-line fix), reading the diff is enough. If the change can fail in ways the diff does not show (a new layout, a form that saves, data loading, anything that changes state), run the app and use it.
-
-::: {.callout-tip title="Try it"}
-Next time Claude reports a feature done, before you look at the app, write down one behavior that would prove it works and one edge case that might break it. Then check both. Record whether the agent's own report was right.
-:::
 
 For the full version of this material, see [Directing the Agent](https://byu-strategy.github.io/product-management/02-directing-the-agent.html) in the Product Management book.

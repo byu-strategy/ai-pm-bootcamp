@@ -46,7 +46,7 @@ Ask Claude to open it:
 
 > Open the app in my browser.
 
-(Or run `open index.html` on a Mac, `explorer.exe index.html` on Windows.) Now check it yourself, the way [Done Means You Saw It Work](02-directing-the-agent.qmd#done-means-you-saw-it-work) describes. Add three to-dos, mark one done, delete one, and reload the page. Are the remaining two still there? Try an edge case: what happens if you add an empty to-do?
+(Or run `open index.html` on a Mac, `explorer.exe index.html` on Windows.) Now check it yourself: Claude saying it works is a claim, and using the app is the evidence. Add three to-dos, mark one done, delete one, and reload the page. Are the remaining two still there? Try an edge case: what happens if you add an empty to-do?
 
 If something is wrong, tell Claude what you saw, in plain words: "When I add an empty to-do it shows a blank row. It should ignore empty input." Then check again.
 
