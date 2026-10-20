@@ -1,0 +1,100 @@
+---
+title: "Your First Build"
+---
+
+This page is a guided exercise: build a small web app with Claude Code, run it, read the diff, commit it, push it to GitHub, and deploy it to a public URL. It takes 30 to 45 minutes. Do it before the workshop if you have never taken an app from an empty folder to a live link with Claude Code. Skip it if you have.
+
+Before you start, finish [Setup](00-setup.qmd): Claude Code installed and signed in, Git installed, and GitHub and Vercel accounts. As you work, keep the [agent loop](01-how-agents-work.qmd#the-agent-loop-gather-context-act-check) in mind: when is Claude gathering context, when is it acting, and does it check its work before it says it is done?
+
+## 1. Make a folder and start Claude Code
+
+Open VS Code, open a terminal (`` Ctrl + ` ``), and run:
+
+```bash
+mkdir todo-app
+cd todo-app
+claude
+```
+
+::: {.callout-tip collapse="true" title="File and folder naming"}
+Agents usually name files for you, but when you name them yourself: use lowercase, use hyphens instead of spaces or underscores (`customer-surveys-2026.csv`, not `Customer Surveys 2026.csv`), be descriptive but short, and avoid special characters.
+:::
+
+Then, inside Claude Code, turn on the [Explanatory output style](https://code.claude.com/docs/en/output-styles), which makes Claude add short *Insight* notes explaining the choices behind the code it writes:
+
+```
+/output-style explanatory
+```
+
+Claude Code saves that choice in a new hidden folder, `.claude`, inside your project (run `ls -la` in a second terminal to see it). The `.claude` folder is where a project's Claude Code configuration lives: settings, and later skills and hooks.
+
+## 2. Build the app
+
+Paste this prompt into Claude Code:
+
+> Build me a simple to-do list app as a single static web page: one index.html with HTML, CSS, and JavaScript, no frameworks and no build step. Save the to-dos in the browser's localStorage so they survive a page reload. I should be able to add a to-do, mark it done, and delete it.
+
+Claude will ask permission before it creates files. Read each request and press **Enter** to approve. (The [permission modes](02-directing-the-agent.qmd#permission-modes) section explains how to approve less often.)
+
+::: {.callout-tip collapse="true" title="Why a static page?"}
+A static page is a set of files a browser opens directly, with no server code. It is the simplest thing that deploys to Vercel for free, and you can open it on your laptop without installing anything. Once you are comfortable, ask for a Next.js app instead; Vercel deploys that too.
+:::
+
+## 3. Run it and check it
+
+Ask Claude to open it:
+
+> Open the app in my browser.
+
+(Or run `open index.html` on a Mac, `explorer.exe index.html` on Windows.) Now check it yourself, the way [Done Means You Saw It Work](02-directing-the-agent.qmd#done-means-you-saw-it-work) describes. Add three to-dos, mark one done, delete one, and reload the page. Are the remaining two still there? Try an edge case: what happens if you add an empty to-do?
+
+If something is wrong, tell Claude what you saw, in plain words: "When I add an empty to-do it shows a blank row. It should ignore empty input." Then check again.
+
+Ask for one improvement of your own, such as a count of remaining items or a filter for done and not done.
+
+## 4. Read the diff
+
+Before you save a version, look at what changed. In Claude Code, run:
+
+```
+/diff
+```
+
+You can also open the Source Control panel in VS Code (the branch icon in the left sidebar) and click a file to see its changes side by side. Ask yourself: did Claude change anything you did not ask for? Is there a file you do not recognize? Ask Claude to explain any line you do not follow.
+
+## 5. Commit
+
+Ask Claude:
+
+> Initialize a git repository here and commit the app with a clear message.
+
+Claude will run `git init`, `git add`, and `git commit`. Read the commands before you approve them. Then run `git log --oneline` in a terminal and confirm your commit is there. [GitHub & Deployment](03-git-deployment.qmd) explains what each command does.
+
+## 6. Push to GitHub
+
+Ask Claude:
+
+> Create a new public GitHub repository called todo-app and push this project to it.
+
+Claude will use the GitHub command-line tool (`gh`). If `gh` is not installed or not signed in, Claude will walk you through `gh auth login`. When it finishes, open the repository on github.com and confirm your files are there.
+
+## 7. Deploy
+
+Follow [Deploying from GitHub](03-git-deployment.qmd#deploying-from-github): sign in to Vercel, click **Add New**, then **Project**, import `todo-app`, and click **Deploy**. Open the URL Vercel gives you and use the app on your phone.
+
+Now make one more change through Claude Code (for example, change the page title), commit it, and push. Watch Vercel redeploy, and reload the live URL to see the change. The rest of the workshop builds on this sequence: change, check, commit, push, and see it live.
+
+## 8. Build a second app (optional, 15 minutes)
+
+Pick a small problem from your own work and build an app for it the same way. Ideas: a meeting-notes formatter, a feature-request tracker, a calculator for a pricing model you use. Start with a conversation, as in [Conversational Coding](02-directing-the-agent.qmd#conversational-coding), and add one feature at a time.
+
+Before you add the second feature, ask Claude to write a CLAUDE.md for the project, then run `/clear` and confirm Claude still knows what the app is for.
+
+::: {.callout-tip title="Check yourself before the workshop"}
+You are ready if you can do each of these without looking anything up:
+
+- Start Claude Code in a new folder.
+- Explain what `/diff`, `/clear`, and `/context` do.
+- Commit and push a change, and find it on GitHub.
+- Point to a live URL for something you built.
+:::

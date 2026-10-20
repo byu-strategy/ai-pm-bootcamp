@@ -1,5 +1,0 @@
----
-title: "Final Presentations"
----
-
-Student demos of products they have built throughout the semester.

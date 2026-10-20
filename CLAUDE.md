@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Quarto book project for the BYU AI PM Bootcamp, a workshop teaching Product Managers how to build full-stack applications using AI-assisted development tools like Claude Code. The book is published as a static website via GitHub Pages.
+This is a Quarto book project for the BYU AI PM Bootcamp, a workshop for product managers who already use Claude Code, centered on the Agent Team Kit. The book is published as a static website via GitHub Pages.
 
 **Project Type**: Quarto Book
 **Output Format**: HTML website
@@ -44,36 +44,32 @@ Useful for testing changes to a specific chapter without rebuilding the entire b
 
 The book follows a three-part structure defined in `_quarto.yml`:
 
-1. **Overview** - Introduction and computer setup instructions
-2. **Topics** - Core workshop content chapters (numbered 01-05)
-3. **Resources** - Reference materials, checklists, tools (numbered 95-99)
+1. **Start Here** - self-paced on-ramp for anyone not yet fluent with Claude Code (00-04)
+2. **Workshop** - the live session, built around the Agent Team Kit (10-15)
+3. **Resources** - kit reference and thought leaders (90-99)
 
 ### Key Files
 
-- `_quarto.yml` - Main configuration file defining book structure, chapters, and output settings
-- `index.qmd` - Landing page and schedule
-- `00-computer-set.qmd` - Pre-workshop setup instructions for installing Claude Code, VS Code, Git, Node, Python
-- `01-vibe-coding.qmd` - Introduction to AI-assisted coding and the vibe coding movement
-- `02-spec-driven-development.qmd` - Structured approach to feature development
-- `03-git-deployment.qmd` - Version control and deployment workflows
-- `04-power-users.qmd` - Power user techniques and advanced workflows
-- `99-prompts.qmd` - Prompt engineering resources
-- `99-first-prototype.qmd` - Building first prototypes and command line basics
-- `99-llms-prompt-engineering.qmd` - LLMs and prompt engineering fundamentals
-- `95-eng-checklist.qmd` - Engineering checklist
-- `96-code-base-review.qmd` - Code base review guidelines
-- `97-thought-leaders.qmd` - Thought leaders in AI-assisted development
-- `98-tools.qmd` - Tools and resources
+- `_quarto.yml` - book structure: Start Here, Workshop, Resources
+- `index.qmd` - welcome, two tracks, the six-skill builder model, agenda, bio
+- Start Here (self-paced on-ramp): `00-setup.qmd`, `01-how-agents-work.qmd`, `02-directing-the-agent.qmd`, `03-git-deployment.qmd`, `04-first-build.qmd`
+- Workshop (taught live): `10-surfaces.qmd`, `11-the-harness.qmd`, `12-agent-team-kit.qmd`, `13-spec-to-release.qmd`, `14-lab.qmd`, `15-software-factory.qmd`
+- Resources: `90-kit-reference.qmd`, `97-thought-leaders.qmd`
 - `_header.html` / `_footer.html` - Custom HTML injected into all pages
 - `styles.css` - Custom CSS styling
-- `references.bib` - Bibliography for citations
-- `informs.csl` - Citation style
+
+### Where the content comes from
+
+Rebuilt 2026-10-19 for the Oct 21, 2026 workshop. Most pages are condensed from the Product
+Management course book (`~/courses/product-management`, chapters 01, 02, 06b, 09, A2, A3, 09c)
+and from the Agent Team Kit (`~/ai-foundry-byu/agent-team-kit`). When either source changes,
+the matching page here may need the same change. The pre-rebuild chapters are in git history.
 
 ### Chapter Naming Convention
 
-- `00-*` - Setup and prerequisites
-- `01-04` - Core workshop topics (active chapters in Topics section)
-- `95-99` - Resources, tools, and appendices
+- `00-04` - Start Here
+- `10-15` - Workshop
+- `90-99` - Resources
 
 ## Deployment
 
@@ -146,14 +142,10 @@ By default, code chunks are shown but **not executed** during rendering. Overrid
 
 ## Workshop Context
 
-This book supports a hands-on workshop where participants:
-- Install Claude Code, VS Code, Git, Node, and Python
-- Build prototypes using AI-assisted development
-- Learn command-line fundamentals
-- Follow spec-driven development workflows
-- Deploy applications to production
-
-The workshop emphasizes becoming a "Full-Stack Product Builder" who can use AI tools to rapidly prototype and ship products without waiting for engineering support.
+Attendees already use Claude Code (or Codex or Copilot). The workshop covers surfaces, the
+harness (rules, hooks, MCP, subagents), and the Agent Team Kit: parallel agents, spec to
+release, and a hands-on install lab. Writing follows the course-book rules in the hub
+CLAUDE.md: no em dashes, no mannered prose, no hype.
 
 ## Git Workflow
 

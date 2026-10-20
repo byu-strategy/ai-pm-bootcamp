@@ -1,0 +1,73 @@
+---
+title: "Setup"
+---
+
+Finish this before the workshop. If Claude Code already runs on your laptop and `gh auth status` says you are signed in, you are done; skip to step 6 to check the rest.
+
+If something fails, paste the error into Claude, ChatGPT, or Gemini and ask how to fix it. Most install errors are a missing dependency, and the chatbot will tell you what to install.
+
+## 1. A paid Claude plan
+
+Claude Code needs a paid plan: **Claude Pro** ($20 per month) is enough for the workshop. If you build with it daily you will reach Pro's usage limits, and **Claude Max** ($100 per month) is the next step. See [claude.com/pricing](https://www.claude.com/pricing). A work Claude Team or Enterprise seat also works.
+
+## 2. GitHub
+
+- [ ] A [GitHub](https://github.com/) account (free)
+- [ ] The GitHub CLI: `brew install gh` on macOS, `winget install GitHub.cli` on Windows ([other options](https://cli.github.com/))
+- [ ] Sign in: `gh auth login`
+
+The lab uses `gh` to clone the Agent Team Kit.
+
+## 3. VS Code (or the editor you already use)
+
+Download [VS Code](https://code.visualstudio.com/) if you do not have an editor. On Windows, check **Add to PATH** during installation. Open a terminal inside it with **Terminal → New Terminal**.
+
+## 4. Claude Code
+
+In the terminal:
+
+```bash
+# macOS
+curl -fsSL https://claude.ai/install.sh | bash
+```
+
+```powershell
+# Windows (PowerShell)
+irm https://claude.ai/install.ps1 | iex
+```
+
+Check it, then start it and sign in:
+
+```bash
+claude --version
+claude
+```
+
+Then ask Claude to install anything else you are missing:
+
+> Help me install the following or confirm they are already installed: git, Node.js (LTS), and pnpm.
+
+The first time you run `claude` in VS Code's terminal, it installs the Claude Code extension, which opens Claude's changes in VS Code's diff viewer. If you prefer the Claude desktop app, install it too; [One Engine, Many Surfaces](10-surfaces.qmd) compares them.
+
+## 5. Optional: Supabase and Vercel
+
+Two parts of the workshop (the schema lock and the release pipeline) make more sense with a real database and a real deploy. Free accounts at [Supabase](https://supabase.com/) and [Vercel](https://vercel.com/) are enough. Sign up with your GitHub account. You can follow the workshop without them.
+
+## 6. Optional: other coding agents
+
+If your team uses another agent, install it too; [One Engine, Many Surfaces](10-surfaces.qmd) maps Claude Code's concepts to each.
+
+| Agent | Install (macOS) | Start |
+|---|---|---|
+| GitHub Copilot CLI | `brew install --cask copilot-cli` | `copilot` |
+| OpenAI Codex | `curl -fsSL https://chatgpt.com/codex/install.sh \| sh` | `codex` |
+| Google Antigravity CLI | `curl -fsSL https://antigravity.google/cli/install.sh \| bash` | `agy` |
+
+## 7. Check before you arrive
+
+- [ ] `claude` starts and is signed in
+- [ ] `gh auth status` shows you are signed in
+- [ ] `git --version` and `node --version` both print a version
+- [ ] You have a repo to use in the lab: one of your own (commit everything first), or a scratch app made with `npx create-next-app@latest kit-lab`
+
+New to Claude Code? Work through the rest of Start Here, then [Your First Build](04-first-build.qmd).

@@ -1,0 +1,237 @@
+---
+title: "The Agent Team Kit"
+---
+
+This segment covers the Agent Team Kit: what it is, why several Claude Code agents working in one repo collide, the two ways the kit keeps them apart, the hooks that enforce its rules, the working agreements that go with them, and how lessons reach every session through shared memory. You will install it in the [Lab](14-lab.qmd); this page is the map you will need there. Every file named here is in the public repo at [github.com/ai-foundry-byu/agent-team-kit](https://github.com/ai-foundry-byu/agent-team-kit), and the [Kit Reference](90-kit-reference.qmd) lists them all.
+
+## What it is and who it is for
+
+The kit is a set of hooks, skills, shell launchers, and written working agreements for running several Claude Code agents in parallel on one codebase. It is written for two situations:
+
+- **One person running several agents at once**, for example one agent on the header, one on a settings page, and one fixing a bug.
+- **A small team, usually two people**, where most code is written by agents and each person runs several of them against the same `main`.
+
+Most of it pays off with no collaborator at all. The port assignment and the git and schema guards protect you from your own parallel agents. The pieces that exist for a second person (the migration notice on pull, the pull-and-rebase habit) do nothing until a second person shows up.
+
+The repo has four kinds of thing in it:
+
+| Folder or file | What it is | What you do with it |
+|---|---|---|
+| `hooks/` | Claude Code hooks and git hooks: the automation | The installer copies them into your repo and wires them up |
+| `skills/` and `snippets/` | Skills (`/spec`, `/build-spec`, `/stage`, ...) and text to paste into `CLAUDE.md` | The installer copies the skills and appends three snippets |
+| `docs/` | The reading: references, build specs, design notes | Read them, or hand a build spec to an agent |
+| `install.sh`, `bootstrap.sh`, `worktree-commands.sh` | The three scripts you run | Install once, set up a teammate, launch named sessions |
+
+The kit runs against your repo; it does not live inside it. You clone it to a scratch folder, run `install.sh` pointed at your project, and delete the clone. Nothing is nested and there is no submodule ([ADOPT.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/ADOPT.md)).
+
+## Why parallel agents collide
+
+When two agents work in one repo, most of the trouble has nothing to do with the code they write. They share three things the code depends on: the ports their dev servers listen on, the database, and the git working tree (including git's staging area, the index).
+
+| What they share | What goes wrong | Does a git worktree fix it? | The kit's answer |
+|---|---|---|---|
+| **Dev-server ports** | Every agent starts the dev server on the default port. The second one fails or moves to another port, and an agent that still assumes `localhost:3000` tests its sibling's server and reports that server's errors as its own | No. Each worktree still starts its own server | The `dev-port` hook gives each session its own port |
+| **The database** | Two migrations at once, or a seed reset while another agent is mid-task. Nothing errors; the data is quietly wrong | No. Every worktree reads the same `.env` and the same database | The schema lock, the psql DDL block, and the `post-merge` notice |
+| **Files in the working tree** | Two agents edit the same file and one overwrites the other | Yes | Give each agent a different area, or use worktree mode |
+| **The git index** | `git add -A` stages a sibling's half-finished files. `git stash` or `git reset --hard` destroys them. Even a plain `git commit` commits whatever a sibling staged a moment ago | Yes. Each worktree has its own index | The `bash-guard` hook blocks the blanket and destructive commands |
+
+The two rows a worktree does not fix are the ones that cause the most confusion day to day. A worktree isolates files. Ports and the database stay shared, which is why the kit handles them in both of its modes ([DESIGN-NOTES.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/DESIGN-NOTES.md)).
+
+**The kit does not depend on agents talking to each other.** Each Claude Code session is a separate process with its own context, and a message from one session to another is plain text with no authority ([The Harness](11-the-harness.qmd)). So the kit routes all coordination through two things every session can see: lock files on disk, under `.git/.wg-agent/`, and git itself (tracked migrations, shared settings). The lock folder is found with `git rev-parse --git-common-dir`, which returns the same path from the main checkout and from every worktree, so a lock taken in one is seen by all of them.
+
+## Two ways to run it {#two-modes}
+
+The kit supports two modes. Almost everything is shared between them: the port assignment, the schema lock, the architecture guards, the skills, the specs, and the launchers. They differ in one thing, how agents are kept from colliding on files.
+
+- **Stay on main.** Every agent commits to one `main`. You keep them apart by giving each a different area of the codebase. There is no merge step. You are at the keyboard, watching.
+- **Worktree mode.** Each agent works in its own git worktree on its own branch. One session on `main`, the **cockpit**, merges each finished branch in. File collisions cannot happen, so you can start several agents and leave, at the cost of one merge per worker.
+
+```{mermaid}
+flowchart LR
+  subgraph A["Stay on main"]
+    direction TB
+    A1["cs header-copy"] --> M1[("main")]
+    A2["cs footer-links"] --> M1
+    A3["cs settings-page"] --> M1
+  end
+  subgraph B["Worktree mode"]
+    direction TB
+    W1["wt fix-login<br/>own worktree and branch"] --> C["cockpit<br/>on main"]
+    W2["wt search-page<br/>own worktree and branch"] --> C
+    C -->|"integrate"| M2[("main")]
+  end
+```
+
+| | Stay on main | Worktree mode |
+|---|---|---|
+| **How agents are kept apart** | By you: each gets a different area | By git: each has its own worktree |
+| **Two agents editing one file** | Possible, and rare if you divide the work well | Cannot happen |
+| **Integration step** | None. Commits interleave on `main` | One merge per worker, done by the cockpit |
+| **Setup per agent** | None | Each new worktree needs its own dependencies and `.env.local` |
+| **Best when** | You are at the keyboard supervising | You want to start agents and walk away |
+| **Overhead** | The lightest | A merge per worker plus the per-worktree setup |
+| **Ports, schema lock, guards, skills, specs, launchers** | Yes | Yes, identical |
+
+There is exactly one behavioral difference. The git guard that blocks blanket staging, `reset --hard`, and `stash` is needed on a shared tree, and it turns itself off inside a linked worktree, where the tree belongs to one agent. It detects this by comparing the worktree's own git directory with the shared one, so there is no mode setting.
+
+**How to choose** ([README](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/README.md#which-should-you-use)):
+
+- **Start with stay on main** if you are usually at the keyboard and know the codebase well enough to give agents areas that do not overlap. This fits most solo builders and small supervised teams.
+- **Use worktree mode** when you want agents running unattended on work that might overlap. You pay a merge per worker and get guaranteed file isolation.
+- **You can mix them.** The setup is the same, so the choice is per terminal: `cs <name>` for a session in the shared tree, `wt <name>` for a worktree.
+
+### The launchers
+
+`worktree-commands.sh` defines four shell functions. Each starts a **named** Claude Code session with permission prompts skipped and Remote Control on.
+
+| Command | What it starts | The `claude` command it runs |
+|---|---|---|
+| `cs <name>` | A named session in the current folder (stay on main) | `claude --name <name> --dangerously-skip-permissions --remote-control` |
+| `wt <name>` | A worker: a new worktree and a session named the same | `claude --worktree <name> --name <name> --dangerously-skip-permissions --remote-control` |
+| `cockpit` | A named session in the main checkout, called `<repo>-cockpit` | `claude --name <repo>-cockpit --dangerously-skip-permissions --remote-control` |
+| `wtls` | Nothing; lists worktrees and branches | `git worktree list` |
+
+Extra arguments pass through, so `wt fix-login --tmux` puts the worker in its own tmux session. Integration is deliberately not a shell command. In the cockpit you say "integrate fix-login", and Claude runs the [`merge-worktree`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/merge-worktree/SKILL.md) skill: it checks that it is on `main` in the main checkout with a clean tree, merges, stops and shows you any conflict instead of resolving it, removes the worktree, and does not push.
+
+Two things to know about the launchers:
+
+- **Skipping permission prompts widens the blast radius.** With prompts off, the agent runs every command without asking. The kit's hooks still run, because a hook fires whatever the permission mode. Decide whether that trade fits the repo you are in ([Blast Radius](11-the-harness.qmd#blast-radius)).
+- **Name every session.** The name appears in the `/resume` picker and the terminal title. With six terminals open, `footer-links` is findable; an unnamed session is a folder path that looks like every other one.
+
+### The worktree loop
+
+1. **Start the cockpit** in one pinned terminal: `cockpit`.
+2. **Start a worker per task** in other terminals: `wt fix-citations`, `wt search-page`. Name each for its task.
+3. **Workers commit to their own branches.** They may stage everything (their tree is their own). They do not merge or push.
+4. **Integrate from the cockpit** as each finishes: "integrate fix-citations". Work that touched different files merges cleanly; overlapping work becomes a conflict you settle there.
+5. **Ship from the cockpit** when the merged work is ready ([From Spec to Release](13-spec-to-release.qmd)).
+
+Worktree mode also swaps one `CLAUDE.md` section. The installer appends the stay-on-main rules; for worktree mode you replace them with [`snippets/CLAUDE-md-worktree.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/snippets/CLAUDE-md-worktree.md), which tells workers they may stage freely, that the database is still shared, and that only the cockpit integrates. Full details are in [WORKTREE-MODE.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/WORKTREE-MODE.md).
+
+## The hooks that enforce it
+
+The working agreements are advice. The hooks are the parts that run every time, whatever the agent decides ([Advice Versus Enforcement](11-the-harness.qmd#advice-versus-enforcement)). The kit has two kinds: Claude Code hooks, wired in `.claude/settings.json`, which act on the agents; and git hooks, in `.githooks/`, which act on the repository whoever runs git.
+
+### Claude Code hooks
+
+| Hook | When it runs | What it does |
+|---|---|---|
+| `dev-port.mjs` | Session start | Claims the first free port in a pool (default 5180 to 5199), skipping the human's port (default 5173), and tells the session: "Your dev-server port for THIS session is N", with the command to start the server on it |
+| `team-memory.mjs` | Session start | Loads the repo's tracked `.claude/team-memory/` folder into this session's memory (see [Memory](#memory)) |
+| `bash-guard.sh` and `bash-guard.mjs` | Before every Bash command | The shell script is a fast filter that passes harmless commands through without starting Node. Anything that might be blocked goes to `bash-guard.mjs`, which does the four jobs below |
+| `file-size-nudge.mjs` | After every Edit or Write | Warns the agent the moment an edit breaks an architecture guard, so it is fixed before commit |
+| `session-release.mjs` | Session end | Frees this session's port and, if it holds it, the schema lock |
+
+A hook blocks by exiting with code 2. Claude Code then cancels the command and passes the hook's message back to the agent as the reason, so the agent learns what to do instead.
+
+### What `bash-guard` checks
+
+| Job | What it blocks | Why |
+|---|---|---|
+| **Git safety** | `git add -A`, `git add .`, `git commit -a`, `git reset --hard`, `git checkout -- .`, `git clean -f`, `git stash`, and force-push | On a shared tree, blanket staging mixes two agents' work into one commit, and the destructive commands erase another agent's uncommitted work with no commit to recover from. All but force-push turn off inside a worktree |
+| **Commit-sweep guard** | A `git commit` with no file paths when the index holds files this session did not stage | The index is shared. Even after a clean `git add path/a`, a plain commit takes everything staged, including a sibling's files. The fix it suggests: `git commit -m "..." -- path/a path/b` |
+| **Schema lock** | A second session's migration, type generation, seed, or dependency install while another session holds the lock | Two schema changes at once corrupt shared state without an error. The lock expires after 10 minutes of inactivity, so a crashed session cannot block everyone |
+| **psql DDL block** | `CREATE`, `ALTER`, `DROP`, `TRUNCATE`, `GRANT`, `REVOKE` typed straight into `psql` | Every schema change should be a tracked migration file. `SELECT` queries and `psql -f <file>` are allowed |
+
+The schema lock's list of commands (`SCHEMA_RE`) defaults to Supabase and pnpm. If your stack differs, edit it ([HOOKS.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/HOOKS.md)). The lock is local to one machine: it knows nothing about a collaborator's laptop. That coordination is a message between people.
+
+### The architecture guards
+
+Agents write a lot of code quickly, and without a limit some files grow to thousands of lines. Two guards push back:
+
+- **The file-size ratchet** (`file-size-budget.mjs`). New files may have up to 800 lines (`BUDGET`). Files already over the limit are listed in `FROZEN` at their current length and may only get shorter. A file that is long for a good reason goes in `EXEMPT` with that reason written next to it. By default it covers files under `src/` (`isGoverned`).
+- **Import boundaries** (`import-boundaries.mjs`). A dangerous import (the default example is a database client that bypasses row-level security) may appear only in files on an `ALLOWLIST`. A new file importing it fails until someone adds it to the list with a comment saying why.
+
+Both run in two places: the `file-size-nudge.mjs` hook during the session, and `arch-check.mjs` from the `pre-commit` git hook on the staged files. The kit's guidance on a red guard: treat it as a prompt to check whether the file does one job, and split it along a real seam. Deleting comments to get under the number defeats the purpose ([arch guards are alarms](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/arch-guards-as-alarms.md)).
+
+On an existing repo, run `node scripts/hooks/arch-check.mjs` once after installing and paste the files it flags into `FROZEN` and `ALLOWLIST`. That accepts today's state and blocks only new growth.
+
+### Git hooks
+
+| Git hook | When it runs | What it does |
+|---|---|---|
+| `post-merge` | After `git pull` or `git merge` | If migration files arrived, prints them and the commands to apply and check them. Silent otherwise |
+| `pre-commit` | Before each commit | Runs the architecture guards on the staged files, with a marked place to add your formatter or linter |
+| `pre-push` | Before each push | Runs your typecheck (`CHECK_CMD`) and tests (`TEST_CMD`), which you set at the top of the file. Tag must-never-break end-to-end tests `@critical` and add them here |
+
+Git runs these only after `git config core.hooksPath .githooks`, a setting each clone makes once. The installer sets it for you; a teammate who clones the repo runs `./bootstrap.sh`, which sets it and checks that Node and the settings file are present.
+
+**One limit.** Every guard here runs only on machines that installed it, and anyone can get around a regex with a different tool. The kit's README says so plainly: treat local hooks as the fast reminder and CI on push as the real gate.
+
+## The collaboration model
+
+The hooks stop the mechanical collisions. These agreements, from the [README](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/README.md#collaboration-model-end-to-end), are the human part. They apply in both modes.
+
+| Agreement | What it means in practice |
+|---|---|
+| **Stay in your lanes** | Before a work block, each person says which area they are in. Two people's agents editing the same files at once is the one thing the hooks cannot sort out |
+| **Pull and rebase often** | No hook does it for you, on purpose: it needs a clean tree and human judgment on conflicts. Do it at the start of a session, before you push, and whenever your teammate says "pushed" |
+| **Commit small and often** | Small commits make pulls, rebases, and reviews cheap, and make `git revert` a precise undo. Stage explicit paths |
+| **One session is the cockpit** | One session in the main checkout does the acts that need a human: the pull and rebase, merges, and the push. Workers produce; the cockpit integrates on a clean tree |
+| **Announce migrations; agree who releases** | The schema lock cannot see your teammate, so a migration is a "pushing schema" message between people. Decide up front who cuts release tags; tagging is always a person's act, never an agent's |
+| **Review each other's output** | Agents produce plausible code fast. Read the diff of what the other person's agents committed, for example with `/code-review` on recent commits |
+| **Share knowledge through tracked files** | Personal Claude memory stays on one machine. Standing rules go in `CLAUDE.md`; lessons go in `.claude/team-memory/`, promoted with `/share-memory` |
+| **Name every session** | The launchers set `--name`, so the `/resume` picker and terminal titles show what each session is for |
+
+The loop in one line: claim a lane, pull and rebase, work with your agents, integrate through the cockpit, review, and coordinate schema and releases by hand.
+
+## Memory {#memory}
+
+Claude Code memory is the one part of a setup that does not travel. It lives under `~/.claude/projects/<launch path>/memory/` on your machine. If your agents learn that the seed script wipes a table, your teammate's agents do not know it.
+
+The kit handles this in three parts:
+
+| Part | What it is |
+|---|---|
+| **The memory pack** ([`memory-pack/`](https://github.com/ai-foundry-byu/agent-team-kit/tree/main/memory-pack)) | 32 short lessons from building software with parallel agents, one per file, in Claude Code's memory format (a rule, then **Why**, then **How to apply**). Examples: never `--amend` on a shared branch; `git commit -- <path>` commits the working tree of that path, not what you staged; run your own dev server and kill only your own process; verify in proportion to risk |
+| **`.claude/team-memory/`** | `install.sh` copies the pack into this tracked folder. At every session start the `team-memory.mjs` hook links each file into that session's memory folder and writes the team's index lines at the top of the person's `MEMORY.md`, between two marker comments, leaving their own entries alone. New lessons arrive with `git pull` |
+| **`/share-memory`** | The way a personal lesson becomes a team one. It picks the memory (or proposes a short list), removes credentials, customer data, and people's names, rewrites it so someone who was not there can act on it while keeping the concrete reason, moves it into the team folder, deletes the personal copy, and commits |
+
+Promotion is one memory at a time on purpose. A personal memory folder names people, accounts, and production details that should not be shared.
+
+**Where does a rule go?** Standing rules about how the project works (commands, where code goes, what never to do) go in `CLAUDE.md`, which every agent reads at start ([WRITING-CLAUDE-MD.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/WRITING-CLAUDE-MD.md)). Lessons learned along the way (a trap, an incident, "never do X because Y") go in team memory.
+
+## Hub and spokes
+
+The rest of the kit deals with agents inside one repo. [HUB-AND-SPOKES.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/HUB-AND-SPOKES.md) deals with a different question: a real project's files are spread across a git repo, a shared drive, and private folders, so where should you start Claude?
+
+Where you launch decides two things. Memory is keyed to the launch folder, so starting from a different folder gives you a different, empty memory. And Claude's file tools can reach only the launch folder plus any folder passed with `--add-dir`.
+
+The pattern: make one neutral folder per project the **hub**. It holds only a `CLAUDE.md` that says where things live and a `launch` script. Every content folder, code included, is a **spoke** mounted with `--add-dir`. You always launch from the hub, so there is one memory per project, and you never move the hub, because moving it orphans that memory.
+
+The tooling is in [`hub/`](https://github.com/ai-foundry-byu/agent-team-kit/tree/main/hub):
+
+```bash
+./hub/install-hub.sh            # once: creates ~/hubs, the dispatcher, the template, and a `hub` alias
+hub new myproject               # scaffold ~/hubs/myproject
+$EDITOR ~/hubs/myproject/launch # list your spokes, one absolute path each
+hub myproject                   # launch
+hub myproject --add-dir /path   # mount a sensitive folder for this run only
+```
+
+Sort spokes by who may see them (private, team, external), and leave sensitive ones out of the default list. One honest limit, from the doc: the file tools respect the mounted folders, but Bash can read anything your user account can. With permission prompts on, a Bash command reaching outside stops and asks. With `--dangerously-skip-permissions`, it does not, which is why the hub template ships with prompts on.
+
+The hub and the launchers stack. The hub decides where you launch and which folders are in scope; `cs`, `wt`, and `cockpit` decide how many sessions run and how isolated they are.
+
+## Tending agents while you are away
+
+[TENDING-AGENTS.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/TENDING-AGENTS.md) covers three settings for starting several agents and stepping away:
+
+| Need | Setting |
+|---|---|
+| **See what each session did** | Verbose mode: `"verbose": true` in `~/.claude/settings.json`, or `claude --verbose` for one session |
+| **Reach sessions from your phone** | Remote Control. The launchers pass `--remote-control`, so each session appears in the Claude app when you are signed in to Claude |
+| **Keep the computer running** | macOS, plugged in: System Settings, Battery, Options, "Prevent automatic sleeping on power adapter when the display is off". On battery: `caffeinate -i` in a spare terminal. Windows: set sleep to Never when plugged in, or use PowerToys Awake. Closing a Mac's lid sleeps it regardless |
+
+## What the kit does not solve
+
+The README lists its own gaps. The ones that matter most for a team:
+
+- **CI.** Local hooks are reminders. The real gate is tests, lint, and the architecture check running on every push in GitHub Actions, and you write that workflow yourself.
+- **Secrets.** Sharing a `.env` file hands over full database and provider access. Use per-person credentials, and if schema integrity matters, a database role with no DDL rights.
+- **Review and revert norms.** Committing straight to `main` means recovery is `git revert`. Agree how you review and roll back before the first bad commit.
+- **Spend.** Several agents per person use tokens quickly. Set an expectation.
+
+::: {.callout-tip title="Try it"}
+Before the lab, open a session in a repo you work in and ask: *"If I ran three Claude Code sessions in this folder at once, which of these would collide: dev-server ports, the database, files, the git index? For each, say what would happen and point to the file or setting involved. Do not change anything."* Keep the answer; it tells you which of the kit's hooks you will notice first.
+:::

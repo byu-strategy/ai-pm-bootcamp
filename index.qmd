@@ -1,67 +1,68 @@
 ---
 title: "Welcome"
 author: "Scott Murff"
-date: "1/1/2026"
-format:
-  html: default
-  pdf: default
+date: "10/21/2026"
 ---
 
-## Overview
+*AI PM Bootcamp · Wednesday, October 21, 2026 · Workshop 1:00 to 5:00 PM, dinner 5:30 PM*
 
-Welcome to Scott Murff's Full-Stack Product Builder workshop.
+## What this workshop is
 
-In this workshop, we explore the hypothesis that: with the help of AI tools a new professional archetype is arising, that of *full-stack product builder*. 
+This workshop assumes you already build with Claude Code, or with Codex or Copilot at work. It covers what most people who use these tools every day have not set up yet: choosing the right surface for the job, rules and hooks the agent cannot ignore, running several agents at once without them breaking each other's work, and taking a feature from a written spec to a controlled release.
 
-A full-stack product builder is someone who is able to play well across the entire digital product lifecycle of:
+Most of the afternoon is built around the **Agent Team Kit**, an open-source set of hooks, skills, and working agreements for a small team (or one person) running many Claude Code agents in parallel. It is public at [github.com/ai-foundry-byu/agent-team-kit](https://github.com/ai-foundry-byu/agent-team-kit), and you will install it on your own repo in the lab.
 
-1) Strategy: figure out what to build, why, and for whom
-2) Design & Engineering: actually build, scale, and maintain the product
-3) Go-to-Market & Growth: Launch and distribute the product
-4) Data Science: Analyze product performance and make data driven bets for the next round of strategic choices.
+## Two tracks
 
-Historically, especially in large organizations, no one person was competent at all of these things.
+| Track | Who it is for | How it runs |
+|---|---|---|
+| **Start Here** | Anyone who is not yet comfortable directing Claude Code: writing a `CLAUDE.md`, using skills, committing and deploying | Self-paced. Work through it before 1:00 on Wednesday |
+| **Workshop** | Everyone | Taught live, with a hands-on lab |
 
-We are now living in a world where high agency, curious, and ambitous individuals can learn to do all of these things relatively well. Not to say it's easy, but it's now possible whereas in the past it was actually impossible.
+If you can already start Claude Code in a repo, explain what `CLAUDE.md` does, and push a change to GitHub, skip to [One Engine, Many Surfaces](10-surfaces.qmd).
 
-The role of a Product Manager has always been demanding. Often labeled the "CEO of Product," the skillset required of a product manager are broad and typically include:
+## The full-stack product builder
 
-- Strategic thinking – setting vision, making trade-offs, and aligning with business goals
-- Customer insight – understanding user needs and pain points
-- Analytical ability – using data and critical thinking to guide decisions
-- Technical & design fluency – collaborating effectively with engineers and designers
-- Execution & organization – planning roadmaps, prioritizing, and delivering results
-- Communication & leadership – influencing, storytelling, and managing stakeholders
+The premise behind this workshop is that with AI coding agents, one person can take a product from an idea to live software that customers use. We call that person a **full-stack product builder**. The model has six skills:
 
-The day-to-day responsibilities of different product managers can vary widely due to differences in organizational size. In smaller companies and startups, product managers may function as full-stack PMs, taking on a broad set of responsibilities that can include customer research, defining product strategy, writing requirements and even code, creating prototypes, tracking metrics, and handling marketing or sales support.
+![](images/diagrams/builder-axes.svg){fig-alt="A hexagon with one builder axis at each corner, clockwise from the upper left: Agentic Workflow, Discovery, Design, Launch and Learn, AI Systems, and Application Architecture, each with an icon. Faint rings inside mark levels from the center to the edge." fig-align="center" width="70%"}
 
-By contrast, in larger organizations, roles tend to become much more specialized. Activities such as user research, data analysis, product design, or technical specification may be owned by separate functions (e.g. data scientists, designers, or technical product managers) allowing a PM to focus more narrowly on business strategy while still collaborating closely with specialized colleagues.
+| Skill | The question it answers |
+|---|---|
+| **Agentic Workflow** | How do I put AI to work, as the way I build and inside the product? |
+| **Discovery** | What should I build, for whom, and should I? |
+| **Design** | What does the surface look like, how does it flow, and how do I write it down so an agent can build it? |
+| **Application Architecture** | How is it structured, shipped, and kept safe? |
+| **AI Systems** | How do the models work, and why do they behave the way they do? |
+| **Launch and Learn** | How do people find it, and did it work? |
 
-This reality helps explain the ongoing debate about whether technical skills are important for product managers to have. In some companies, strong technical expertise is absolutely essential, while in others a PM can succeed without deep technical knowledge.
+This afternoon is mostly **Agentic Workflow**, with parts of Design (specs and mockups) and Application Architecture (environments and releases). The full semester version of all six is the BYU course [Product Management](https://byu-strategy.github.io/product-management/), which this site draws from.
 
-For our purposes we take the perspective that a PM must have relatively deep techincal knowledge to orchestrate AI in powerful ways. Fortunately, AI itself has dramatically accelerated how quickly one can learn technical skills. What used to take months can now be learned in days with focused effort.
+## Agenda
 
-The focus of todays workshop will be on engineering and design skills. 
+| Time | Segment | Page |
+|---|---|---|
+| 1:00 | Welcome and the builder model | This page |
+| 1:15 | One engine, many surfaces | [Surfaces](10-surfaces.qmd) |
+| 1:45 | The harness: rules, hooks, blast radius, MCP, subagents | [The Harness](11-the-harness.qmd) |
+| 2:25 | Break | |
+| 2:35 | The Agent Team Kit: parallel agents without collisions | [Agent Team Kit](12-agent-team-kit.qmd) |
+| 3:20 | From spec to release | [Spec to Release](13-spec-to-release.qmd) |
+| 3:55 | Lab: install the kit and run it | [Lab](14-lab.qmd) |
+| 4:45 | What this looks like at full scale, and questions | [Full Scale](15-software-factory.qmd) |
+| 5:00 | Workshop ends | |
+| 5:30 | Networking dinner | |
 
-![](images/activities.png)
+## What to bring
 
-If our hypothesis is correct we should see a convergence of skills into a single profile. That convergence can come from any direction. Today, our focus is on PMs developing engineering and design skills to become full-stack product builders.
+- A laptop with Claude Code installed and signed in to a paid Claude plan ([Setup](00-setup.qmd))
+- A GitHub account, with the GitHub CLI (`gh`) signed in
+- A repo you are willing to install the kit into: one of your own projects, or a fresh scratch app
 
-![](images/full-stack-from-to.png)
+## Instructor
 
-The workshop is designed for technically inclined PMs and adjacent roles with some prior coding experience recommended, although not required. 
+Scott Murff is an Associate Teaching Professor of Strategy at the BYU Marriott School of Business, where he directs the Strategic Management program and teaches courses on strategy, product management, and artificial intelligence. He has over 15 years of experience at the intersection of business and technology as a consultant, product manager, and data scientist.
 
-You'll learn to:
+Before BYU, Scott spent nearly seven years at McKinsey & Company in roles ranging from analytics specialist consultant to principal product manager, leading product development and performance management work for Fortune 500 clients. Earlier he built forecasting models as a VP at Zions Bancorporation and did regulatory research at the U.S. Office of the Comptroller of the Currency.
 
-- Use Claude Code for rapid product development using spec-driven development principles (must sign up for your own $20/month subscription)
-- Build and connect a full-stack app with a Supabase backend (Postgres relational database)
-- Deploy your app live on Vercel, with GitHub for version control
-
-
-## Instrutor Bio
-
-Scott Murff is an Associate Teaching Professor of Strategy at the BYU Marriott School of Business, where he also serves as program director and teaches courses on business strategy, decision-making, and artificial intelligence. He brings over 15 years of experience at the intersection of business and technology, having worked as a consultant, product manager, and data scientist.
-
-Prior to joining BYU, Scott spent nearly seven years at McKinsey & Company in roles ranging from analytics specialist consultant to principal product manager, where he led product development and performance management initiatives for Fortune 500 clients. His earlier career includes building forecasting models as a VP at Zions Bancorporation and conducting regulatory research at the U.S. Office of the Comptroller of the Currency.
-
-Scott holds a Master’s degree in Management Science & Engineering from Stanford University and a B.A. in Economics with a minor in Math, from BYU. He is passionate about helping people apply AI, analytics, and strategy to meaningful real-world problems.
+Scott holds a master's degree in Management Science and Engineering from Stanford University and a B.A. in Economics with a minor in Mathematics from BYU.

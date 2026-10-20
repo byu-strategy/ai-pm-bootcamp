@@ -1,0 +1,165 @@
+---
+title: "Kit Reference"
+---
+
+This page indexes every file in the [Agent Team Kit](https://github.com/ai-foundry-byu/agent-team-kit): the scripts you run, the hooks, the skills, the snippets for `CLAUDE.md`, the docs, the hub tooling, and the memory pack, each with a one-line description and a link to it on GitHub. The column "Installed?" says whether `install.sh` copies the file into your repo. How the pieces fit together is on [The Agent Team Kit](12-agent-team-kit.qmd) and [From Spec to Release](13-spec-to-release.qmd).
+
+## Scripts you run
+
+| File | What it does | Installed? |
+|---|---|---|
+| [`install.sh`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/install.sh) | Wires the kit into a repo: copies hooks, skills, launchers, and build specs; appends to `.gitignore` and `CLAUDE.md`; seeds team memory; sets `core.hooksPath`. Safe to re-run | Run from the kit |
+| [`bootstrap.sh`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/bootstrap.sh) | A teammate's one-time setup after cloning: sets `core.hooksPath`, restores exec bits, checks Node and the settings file | Yes, repo root |
+| [`worktree-commands.sh`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/worktree-commands.sh) | The launchers: `cs <name>`, `wt <name>`, `cockpit`, `wtls`. Source it from your shell | Yes, repo root |
+
+## Claude Code hooks
+
+Installed to `scripts/hooks/` and wired by `.claude/settings.json`. Per-hook detail is in [HOOKS.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/HOOKS.md).
+
+| File | Event | What it does |
+|---|---|---|
+| [`hooks/settings.json`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/hooks/settings.json) | (wiring) | Registers the hooks below; installed as `.claude/settings.json` unless one exists |
+| [`dev-port.mjs`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/hooks/scripts/dev-port.mjs) | SessionStart | Claims a free dev-server port for this session from a pool, skipping the human's port, and tells the session how to start on it |
+| [`team-memory.mjs`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/hooks/scripts/team-memory.mjs) | SessionStart | Links the tracked `.claude/team-memory/` files into this session's memory and writes their index lines into `MEMORY.md` |
+| [`bash-guard.sh`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/hooks/scripts/bash-guard.sh) | PreToolUse (Bash) | A shell-only filter that passes harmless commands and sends possible matches to `bash-guard.mjs` |
+| [`bash-guard.mjs`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/hooks/scripts/bash-guard.mjs) | PreToolUse (Bash) | Git safety, the commit-sweep guard, the schema lock, and the psql DDL block |
+| [`file-size-nudge.mjs`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/hooks/scripts/file-size-nudge.mjs) | PostToolUse (Edit, Write) | Tells the agent at once when an edit breaks an architecture guard |
+| [`session-release.mjs`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/hooks/scripts/session-release.mjs) | SessionEnd | Frees this session's port claim and schema lock |
+| [`agent-coord.mjs`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/hooks/scripts/agent-coord.mjs) | (helper) | Shared code: reads the hook payload, finds `.git/.wg-agent/` through the common git dir, detects a linked worktree |
+| [`file-size-budget.mjs`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/hooks/scripts/file-size-budget.mjs) | (config) | The file-size ratchet: `BUDGET`, `FROZEN`, `EXEMPT`, `isGoverned` |
+| [`import-boundaries.mjs`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/hooks/scripts/import-boundaries.mjs) | (config) | The import-boundary guard: `RESTRICTED_RE`, `ALLOWLIST` |
+| [`arch-check.mjs`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/hooks/scripts/arch-check.mjs) | (CLI) | Runs both architecture guards on the files given, or on all of `src/`; used by `pre-commit` and in CI |
+
+## Git hooks
+
+Installed to `.githooks/`; git runs them once `core.hooksPath` is set.
+
+| File | When | What it does |
+|---|---|---|
+| [`post-merge`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/hooks/githooks/post-merge) | After a pull or merge | Lists migration files that just arrived and the commands to apply and check them |
+| [`pre-commit`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/hooks/githooks/pre-commit) | Before a commit | Runs the architecture guards on staged files, with a slot for your formatter or linter. Not copied if you already have one |
+| [`pre-push`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/hooks/githooks/pre-push) | Before a push | Runs `CHECK_CMD` and `TEST_CMD` (typecheck and tests, plus `@critical` end-to-end tests). Not copied if you already have one |
+
+## Skills
+
+Installed to `.claude/skills/`. Per-skill detail and how to write your own are in [SKILLS.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/SKILLS.md). Several come from one real project, so their paths and table names are placeholders to adapt.
+
+| Skill | What it does |
+|---|---|
+| [`spec`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/spec/SKILL.md) | Turns an exploration into `.specs/<slug>/spec.md` and a punch list, every criterion tagged `walk`, `unit`, or `structure`, then stops for approval |
+| [`spec/TEMPLATE.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/spec/TEMPLATE.md) | The spec template, including the required Access and release section |
+| [`build-spec`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/build-spec/SKILL.md) | Works an approved punch list one committed item at a time and closes each criterion by its check; writes `check.md` for the browser checks |
+| [`mockup`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/mockup/SKILL.md) | A throwaway, high-fidelity HTML mockup in `.mockups/`, edited from a frozen copy of the real page when one exists |
+| [`push`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/push/SKILL.md) | Cuts a release (notes, version bump, commit) and pushes; the only sanctioned push |
+| [`stage`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/stage/SKILL.md) | Puts a release candidate on staging: migrate staging, check parity, tag `-rcN`, push atomically, watch, smoke-test the commit |
+| [`promote`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/promote/SKILL.md) | Ships to production exactly the commit staging is serving, even if `main` has moved on |
+| [`remove-flag`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/remove-flag/SKILL.md) | Takes a release flag out of the code once it is on for everyone, in one commit |
+| [`merge-worktree`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/merge-worktree/SKILL.md) | From the cockpit, merges a worker's branch into `main`, stops on conflicts, prunes the worktree, never pushes |
+| [`share-memory`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/share-memory/SKILL.md) | Promotes a personal memory into `.claude/team-memory/`, scrubbed of secrets, customer data, and names, and commits it |
+| [`regression-check`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/regression-check/SKILL.md) | Before finishing a change to shared code: map every caller, judge each affected feature, add behavior tests |
+| [`fix-bug`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/fix-bug/SKILL.md) | Loads an in-app bug report by id from the database and fixes it only after reproducing it |
+| [`ux-critique`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/ux-critique/SKILL.md) | Drives a flow in a real browser, compares each step with what a user would expect, files the gaps as bug reports |
+| [`userflow-map`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/userflow-map/SKILL.md) | Maintains a data-driven map of the app's screens and transitions, with issues flagged by screen |
+
+## Snippets for `CLAUDE.md` and `.gitignore`
+
+| File | What it is | Installed? |
+|---|---|---|
+| [`CLAUDE-md-main.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/snippets/CLAUDE-md-main.md) | "Concurrent agents on `main`": the stay-on-main rules | Appended |
+| [`CLAUDE-md-worktree.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/snippets/CLAUDE-md-worktree.md) | The worktree-mode version of that section; use it instead of the one above | No |
+| [`CLAUDE-md-working-discipline.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/snippets/CLAUDE-md-working-discipline.md) | The definition of done: green checks, regression pass, diff review, real build, verify in proportion to risk | Appended |
+| [`CLAUDE-md-mockups.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/snippets/CLAUDE-md-mockups.md) | Mockups in gitignored `.mockups/`, a clickable link, desktop and mobile by default | Appended |
+| [`CLAUDE-md-release-flags.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/snippets/CLAUDE-md-release-flags.md) | Release-flag rules, for once the project has flags | No |
+| [`CLAUDE-md-access-model.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/snippets/CLAUDE-md-access-model.md) | Who sees what: this project's roles, entitlements, preferences, and capability function, to fill in | No |
+| [`gitignore-additions.txt`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/snippets/gitignore-additions.txt) | The `.gitignore` lines that share settings, skills, and team memory and ignore `.mockups/` and `.specs/` | Equivalent lines appended |
+
+## Docs
+
+| Doc | What it covers |
+|---|---|
+| [`README.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/README.md) | Overview, the two-mode decision, setup, and the collaboration model |
+| [`ADOPT.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/ADOPT.md) | Start here to install: prerequisites, the no-nesting install, and three adoption paths |
+| [`SETUP-PROJECT.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/SETUP-PROJECT.md) | Owner install reference: the settings to change per stack, what is tracked, how to verify |
+| [`SETUP-COLLABORATOR.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/SETUP-COLLABORATOR.md) | Joining a repo that already has the kit |
+| [`WORKTREE-MODE.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/WORKTREE-MODE.md) | Worktree mode: the feature-by-feature comparison, the launchers, the integration loop |
+| [`TENDING-AGENTS.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/TENDING-AGENTS.md) | Verbose mode, Remote Control, and keeping a Mac or Windows machine awake |
+| [`HOOKS.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/HOOKS.md) | Every hook and git gate: what it does, why, what to change, its limits |
+| [`SKILLS.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/SKILLS.md) | Every skill, the pattern each one teaches, and how to write your own |
+| [`WRITING-CLAUDE-MD.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/WRITING-CLAUDE-MD.md) | The sections worth having in a project's `CLAUDE.md` |
+| [`CONVENTIONS.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/CONVENTIONS.md) | Transferable repo conventions: scratch files, formatting, secrets, commits, release flags, verification |
+| [`HUB-AND-SPOKES.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/HUB-AND-SPOKES.md) | One neutral launch folder per project, with content mounted by `--add-dir` |
+| [`DRIVING-THE-APP.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/DRIVING-THE-APP.md) | Screenshots, recorded walkthroughs, and driving the app as a user to verify it |
+| [`HANDS-ON-EDITS.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/HANDS-ON-EDITS.md) | Editing by hand: jumping from a page element to its source, and committing one file safely from an editor |
+| [`DISPOSABLE-ENVIRONMENT.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/DISPOSABLE-ENVIRONMENT.md) | Where agents drive: a wipeable copy, stubs as a separate setting, guards against reaching production |
+| [`RELEASE-PIPELINE.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/RELEASE-PIPELINE.md) | Push runs CI, an `-rc` tag deploys staging, a final tag deploys production; the two roads |
+| [`STAGING-TWIN-SPEC.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/STAGING-TWIN-SPEC.md) | Build spec: staging as production's twin, with a parity check, a data slice, and an egress fence |
+| [`RELEASE-FLAGS-SPEC.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/RELEASE-FLAGS-SPEC.md) | Build spec: ship dark, release by audience from an admin page, remove the flag when done; the six levers |
+| [`MOCKUP-SHELLS-SPEC.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/MOCKUP-SHELLS-SPEC.md) | Build spec: freeze a real page into one editable HTML file for mockups |
+| [`FEEDBACK-LOOP-SPEC.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/FEEDBACK-LOOP-SPEC.md) | Build spec: the in-app feedback widget, inbox, `/fix-bug` hand-off, and close-on-commit hook |
+| [`SIDEBAR-SPEC.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/SIDEBAR-SPEC.md) | Build spec: a collapsible left navigation rail, with the version chip and release notes `push` updates |
+| [`IMPERSONATION-SPEC.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/IMPERSONATION-SPEC.md) | Build spec: "View as" any user or role, enforced on the server, read-only by default, audited |
+| [`CRAWLERS-SPEC.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/CRAWLERS-SPEC.md) | Build spec: route, form-action, and browser crawlers that find errors on a disposable copy |
+| [`WALKS-AND-SWEEPS-SPEC.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/WALKS-AND-SWEEPS-SPEC.md) | Build spec: scripted browser walks of a journey and sweeps that click every control, filed as bug reports |
+| [`DESIGN-NOTES.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/DESIGN-NOTES.md) | The reasoning behind each piece |
+| [`ORIGIN-CONVERSATION.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/ORIGIN-CONVERSATION.md) | A redacted account of the working session the kit was designed in |
+
+The installer copies seven of these into your repo's `docs/`: the feedback loop, sidebar, mockup shells, release pipeline, staging twin, and release flags specs, and the driving-the-app guide.
+
+## Hub tooling
+
+Run from a clone of the kit, once per machine. See [HUB-AND-SPOKES.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/HUB-AND-SPOKES.md).
+
+| File | What it does |
+|---|---|
+| [`hub/README.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/hub/README.md) | Quick start and defaults for the hub tooling |
+| [`hub/install-hub.sh`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/hub/install-hub.sh) | Creates `~/hubs`, installs the dispatcher and template, adds a `hub` alias to your shell |
+| [`hub/hub`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/hub/hub) | The dispatcher: `hub ls`, `hub new <name>`, `hub <name>` |
+| [`hub/_template/launch`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/hub/_template/launch) | A hub's launch script: list `SPOKES`, launch from the hub; permission prompts on by default |
+| [`hub/_template/CLAUDE.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/hub/_template/CLAUDE.md) | A hub's routing map, to fill in |
+
+## Memory pack
+
+`install.sh` copies the pack into `.claude/team-memory/`, and the `team-memory.mjs` hook loads it into every session. Each file is one lesson with **Why** and **How to apply**.
+
+| File | What it is |
+|---|---|
+| [`memory-pack/README.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/README.md) | What the pack is and how to adopt it, with or without team memory |
+| [`memory-pack/MEMORY.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/MEMORY.md) | The one-line-per-memory index |
+| [`memory-pack/TEAM-MEMORY-README.md`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/TEAM-MEMORY-README.md) | Becomes `.claude/team-memory/README.md` in your repo |
+
+The 32 lessons:
+
+| Memory | The lesson |
+|---|---|
+| [`never-amend-on-shared-main`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/never-amend-on-shared-main.md) | No `--amend` or rebase on a shared branch; a sibling may have moved `HEAD` |
+| [`commit-pathspec-uses-working-tree`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/commit-pathspec-uses-working-tree.md) | `git commit -- <path>` commits the working tree of that path, not what you staged |
+| [`format-only-touched-files`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/format-only-touched-files.md) | Never format the whole repo; format the files you touched |
+| [`sequential-ids-collide-in-parallel`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/sequential-ids-collide-in-parallel.md) | Parallel agents take the same next number for migrations and fixtures |
+| [`run-your-own-dev-server`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/run-your-own-dev-server.md) | Never trust the default port; run your own, read the real port, stop only your process |
+| [`verify-with-the-real-build`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/verify-with-the-real-build.md) | A typecheck can pass while the build fails; build before pushing import changes |
+| [`verify-proportional-to-risk`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/verify-proportional-to-risk.md) | Typecheck trivial changes; run behavior and layout changes in the browser |
+| [`keep-a-small-green-critical-suite`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/keep-a-small-green-critical-suite.md) | Test the existing behavior a change could break; gate a small `@critical` suite before push |
+| [`develop-against-a-disposable-copy`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/develop-against-a-disposable-copy.md) | Once real users exist, local development never points at the production database |
+| [`subtraction-audit-on-redesign`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/subtraction-audit-on-redesign.md) | When a redesign replaces a surface, delete what it made obsolete in the same change |
+| [`throwaway-mockups-gitignored`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/throwaway-mockups-gitignored.md) | High-fidelity HTML mockups in a gitignored folder, shared as a `file://` link |
+| [`ai-surface-full-lifecycle`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/ai-surface-full-lifecycle.md) | Every AI-working surface needs start, live progress, and stop |
+| [`ai-status-motion-one-system`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/ai-status-motion-one-system.md) | Put all "working" indicators on a few shared components |
+| [`every-mutating-button-gives-feedback`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/every-mutating-button-gives-feedback.md) | Instant press plus an in-flight state that replaces the label and disables the button |
+| [`arch-guards-as-alarms`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/arch-guards-as-alarms.md) | A red guard is a prompt to check whether the file still does one job |
+| [`design-first-then-verify`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/design-first-then-verify.md) | Show the tradeoffs and a quick mockup before building; verify honestly |
+| [`communicate-direct-and-plain`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/communicate-direct-and-plain.md) | Answer first, short reason, plain drafted copy |
+| [`no-em-dashes`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/no-em-dashes.md) | No em dashes in copy, comments, commits, notes, or replies |
+| [`commit-freely-never-push`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/commit-freely-never-push.md) | Commit each unit of work without asking; the owner decides when to push |
+| [`real-icons-not-emoji`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/real-icons-not-emoji.md) | Use the project's icon set in the interface, never emoji |
+| [`deploy-is-not-release`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/deploy-is-not-release.md) | A push runs CI, a tag deploys, a flag releases to an audience |
+| [`promote-the-staged-commit`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/promote-the-staged-commit.md) | After a rehearsal, ship exactly the commit staging served, read from staging itself |
+| [`staging-is-a-twin-not-a-demo`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/staging-is-a-twin-not-a-demo.md) | Same build and configuration as production, differences on a list a parity check enforces |
+| [`fence-outward-writes-at-one-chokepoint`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/fence-outward-writes-at-one-chokepoint.md) | Every outbound write through one helper with allowlists, and a test that fails on any bypass |
+| [`check-before-flagging-a-shipped-feature`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/check-before-flagging-a-shipped-feature.md) | A new flag with no audience hides a live feature; set the audience before the deploy |
+| [`check-a-secrets-shape-never-print-it`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/check-a-secrets-shape-never-print-it.md) | Diagnose a credential by its length and characters and a harmless test call; never print it |
+| [`decide-the-release-at-spec-time`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/decide-the-release-at-spec-time.md) | The spec names kind, key, seam, whose flags, off path, and rollout; a flagged build reports "shipped dark" |
+| [`flag-or-staging-is-whose-data`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/flag-or-staging-is-whose-data.md) | A flag controls who; rehearse deploy-time changes, and per-request ones only if the first audience could harm outsiders irreversibly |
+| [`branch-once-at-a-seam`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/branch-once-at-a-seam.md) | One flag check at one seam, a plain if/else, off returns nothing new |
+| [`env-flags-are-for-what-stays`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/env-flags-are-for-what-stays.md) | Environment variables hold kill switches, stubs, and configuration; rollouts are release flags |
+| [`removing-a-flag-check-silent-callers`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/removing-a-flag-check-silent-callers.md) | Before deleting the off branch, read deployed config and find callers that omit the flag |
+| [`pick-the-lever-by-lifetime-and-owner`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/pick-the-lever-by-lifetime-and-owner.md) | Release flag, kill switch, role, entitlement, or preference, chosen by how long it lasts and who changes it |

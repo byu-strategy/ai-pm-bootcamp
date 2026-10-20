@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 640" role="img" aria-labelledby="t2 d2" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+  <title id="t2">What fills the context window, and what /compact and /clear do to it</title>
+  <desc id="d2">Three tall bars, each a context window filled from the bottom. Mid-session: system instructions, CLAUDE.md, skill descriptions, your messages and Claude's replies, and a large block of tool results, nearly full. An arrow labeled /compact leads to the second bar: system instructions, CLAUDE.md, the skills you used (the list of skill descriptions does not reload), and a small summary of the conversation, with free space above; early details may be lost. An arrow labeled /clear runs under the bars to the third bar: system instructions, CLAUDE.md, skill descriptions, and an empty conversation. CLAUDE.md is highlighted in all three because it is reloaded every time.</desc>
+  <defs>
+    <marker id="cw-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#002E5D"/>
+    </marker>
+    <clipPath id="cw-c1"><rect x="50" y="120" width="230" height="420" rx="8"/></clipPath>
+    <clipPath id="cw-c2"><rect x="385" y="120" width="230" height="420" rx="8"/></clipPath>
+    <clipPath id="cw-c3"><rect x="720" y="120" width="230" height="420" rx="8"/></clipPath>
+    <linearGradient id="cw-claude" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1A6BC6"/><stop offset="100%" stop-color="#004A9E"/></linearGradient>
+    <linearGradient id="cw-tools" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#C9DBEF"/><stop offset="100%" stop-color="#A9C4E3"/></linearGradient>
+    <linearGradient id="cw-conv" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#EEF3FA"/><stop offset="100%" stop-color="#DCE7F3"/></linearGradient>
+    <filter id="cw-shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#0a2e4d" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="1000" height="640" rx="8" fill="#FAFBFC"/>
+
+  <!-- Column headings -->
+  <text x="165" y="40" text-anchor="middle" font-size="21" font-weight="700" fill="#002E5D">Mid-session</text>
+  <text x="165" y="68" text-anchor="middle" font-size="17" fill="#5A6672">Near the limit, Claude Code</text>
+  <text x="165" y="89" text-anchor="middle" font-size="17" fill="#5A6672">summarizes on its own</text>
+
+  <text x="500" y="40" text-anchor="middle" font-size="21" font-weight="700" fill="#002E5D">After /compact</text>
+  <text x="500" y="68" text-anchor="middle" font-size="17" fill="#5A6672">Same task continues.</text>
+  <text x="500" y="89" text-anchor="middle" font-size="17" fill="#5A6672">Early details may be lost.</text>
+
+  <text x="835" y="40" text-anchor="middle" font-size="21" font-weight="700" fill="#002E5D">After /clear</text>
+  <text x="835" y="68" text-anchor="middle" font-size="17" fill="#5A6672">New conversation.</text>
+  <text x="835" y="89" text-anchor="middle" font-size="17" fill="#5A6672">CLAUDE.md still loads.</text>
+
+  <!-- Window frames (white fill = free space) -->
+  <g filter="url(#cw-shadow)">
+    <rect x="50" y="120" width="230" height="420" rx="8" fill="#FFFFFF"/>
+    <rect x="385" y="120" width="230" height="420" rx="8" fill="#FFFFFF"/>
+    <rect x="720" y="120" width="230" height="420" rx="8" fill="#FFFFFF"/>
+  </g>
+
+  <!-- ===== Bar 1: mid-session ===== -->
+  <g clip-path="url(#cw-c1)">
+    <rect x="50" y="120" width="230" height="192" fill="url(#cw-tools)"/>
+    <rect x="50" y="312" width="230" height="96" fill="url(#cw-conv)"/>
+    <rect x="50" y="408" width="230" height="44" fill="#E9ECEF"/>
+    <rect x="50" y="452" width="230" height="44" fill="url(#cw-claude)"/>
+    <rect x="50" y="496" width="230" height="44" fill="#D9DEE4"/>
+  </g>
+  <line x1="50" y1="312" x2="280" y2="312" stroke="#FFFFFF" stroke-width="2"/>
+  <line x1="50" y1="408" x2="280" y2="408" stroke="#FFFFFF" stroke-width="2"/>
+  <line x1="50" y1="452" x2="280" y2="452" stroke="#FFFFFF" stroke-width="2"/>
+  <line x1="50" y1="496" x2="280" y2="496" stroke="#FFFFFF" stroke-width="2"/>
+  <text x="165" y="205" text-anchor="middle" font-size="19" font-weight="600" fill="#002E5D">Tool results</text>
+  <text x="165" y="233" text-anchor="middle" font-size="17" fill="#2C3E50">files it read,</text>
+  <text x="165" y="254" text-anchor="middle" font-size="17" fill="#2C3E50">command output</text>
+    <text x="165" y="350" text-anchor="middle" font-size="19" font-weight="600" fill="#002E5D">Conversation</text>
+  <text x="165" y="375" text-anchor="middle" font-size="17" fill="#2C3E50">your messages and</text>
+  <text x="165" y="395" text-anchor="middle" font-size="17" fill="#2C3E50">Claude's replies</text>
+  <text x="165" y="436" text-anchor="middle" font-size="17" fill="#2C3E50">Skill descriptions</text>
+  <text x="165" y="480" text-anchor="middle" font-size="18" font-weight="700" fill="#FFFFFF">CLAUDE.md</text>
+  <text x="165" y="524" text-anchor="middle" font-size="17" fill="#5A6672">System instructions</text>
+
+  <!-- ===== Bar 2: after /compact ===== -->
+  <g clip-path="url(#cw-c2)">
+    <rect x="385" y="340" width="230" height="68" fill="url(#cw-conv)"/>
+    <rect x="385" y="408" width="230" height="44" fill="#E9ECEF"/>
+    <rect x="385" y="452" width="230" height="44" fill="url(#cw-claude)"/>
+    <rect x="385" y="496" width="230" height="44" fill="#D9DEE4"/>
+  </g>
+  <line x1="385" y1="340" x2="615" y2="340" stroke="#8A939C" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <line x1="385" y1="408" x2="615" y2="408" stroke="#FFFFFF" stroke-width="2"/>
+  <line x1="385" y1="452" x2="615" y2="452" stroke="#FFFFFF" stroke-width="2"/>
+  <line x1="385" y1="496" x2="615" y2="496" stroke="#FFFFFF" stroke-width="2"/>
+  <text x="500" y="250" text-anchor="middle" font-size="17" fill="#8A939C">free space</text>
+  <text x="500" y="368" text-anchor="middle" font-size="18" font-weight="600" fill="#002E5D">Summary of the</text>
+  <text x="500" y="391" text-anchor="middle" font-size="18" font-weight="600" fill="#002E5D">conversation</text>
+  <text x="500" y="436" text-anchor="middle" font-size="17" fill="#2C3E50">Skills you used</text>
+  <text x="500" y="480" text-anchor="middle" font-size="18" font-weight="700" fill="#FFFFFF">CLAUDE.md</text>
+  <text x="500" y="524" text-anchor="middle" font-size="17" fill="#5A6672">System instructions</text>
+
+  <!-- ===== Bar 3: after /clear ===== -->
+  <g clip-path="url(#cw-c3)">
+    <rect x="720" y="408" width="230" height="44" fill="#E9ECEF"/>
+    <rect x="720" y="452" width="230" height="44" fill="url(#cw-claude)"/>
+    <rect x="720" y="496" width="230" height="44" fill="#D9DEE4"/>
+  </g>
+  <line x1="720" y1="452" x2="950" y2="452" stroke="#FFFFFF" stroke-width="2"/>
+  <line x1="720" y1="496" x2="950" y2="496" stroke="#FFFFFF" stroke-width="2"/>
+  <text x="835" y="250" text-anchor="middle" font-size="17" fill="#8A939C">empty conversation</text>
+  <text x="835" y="436" text-anchor="middle" font-size="17" fill="#2C3E50">Skill descriptions</text>
+  <text x="835" y="480" text-anchor="middle" font-size="18" font-weight="700" fill="#FFFFFF">CLAUDE.md</text>
+  <text x="835" y="524" text-anchor="middle" font-size="17" fill="#5A6672">System instructions</text>
+
+  <!-- Frames on top -->
+  <rect x="50" y="120" width="230" height="420" rx="8" fill="none" stroke="#002E5D" stroke-width="1.5"/>
+  <rect x="385" y="120" width="230" height="420" rx="8" fill="none" stroke="#002E5D" stroke-width="1.5"/>
+  <rect x="720" y="120" width="230" height="420" rx="8" fill="none" stroke="#002E5D" stroke-width="1.5"/>
+
+  <!-- Arrow: /compact -->
+  <line x1="290" y1="250" x2="376" y2="250" stroke="#002E5D" stroke-width="2" marker-end="url(#cw-navy)"/>
+  <text x="333" y="238" text-anchor="middle" font-size="17" font-weight="700" fill="#002E5D" font-family="Menlo, Consolas, monospace">/compact</text>
+
+  <!-- Arrow: /clear (runs under the bars) -->
+  <path d="M165,544 L165,590 Q165,600 175,600 L825,600 Q835,600 835,590 L835,550" fill="none" stroke="#002E5D" stroke-width="2" marker-end="url(#cw-navy)"/>
+  <rect x="455" y="586" width="90" height="28" fill="#FAFBFC"/>
+  <text x="500" y="606" text-anchor="middle" font-size="18" font-weight="700" fill="#002E5D" font-family="Menlo, Consolas, monospace">/clear</text>
+</svg>

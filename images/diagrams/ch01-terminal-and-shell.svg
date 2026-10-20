@@ -1,0 +1,75 @@
+<svg viewBox="0 0 1000 690" xmlns="http://www.w3.org/2000/svg" role="img" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+<title>The terminal, the shell, and a script</title>
+<desc>You type into a terminal window, which passes each line to the shell, zsh or Bash, which reads each line and runs it. The shell runs programs and works on files: git, npm, python3, and your files. Claude Code reaches the same shell directly, with no terminal window, in two ways: Claude's Bash tool, running a command such as git commit, and a hook, running a script such as require-review.sh. Below, a shell script, require-review.sh, with three lines labeled: the first line, #!/bin/bash, says which shell runs the file; the middle lines are commands, run top to bottom; the last line, exit 2, ends the script with an exit code.</desc>
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0057B8"/></marker><marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5A6672"/></marker><linearGradient id="nav" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0B3D73"/><stop offset="1" stop-color="#002E5D"/></linearGradient><filter id="sh" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="3" stdDeviation="5" flood-opacity="0.13"/></filter></defs>
+<rect width="1000" height="690" rx="8" fill="#FAFBFC"/>
+<g transform="translate(0,-50)">
+<circle cx="110" cy="150" r="40" fill="#E6EEF7"/>
+<g transform="translate(92,132) scale(1.5)" fill="none" stroke="#002E5D" stroke-width="1.47" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+  <circle cx="12" cy="7" r="4" /></g>
+
+<text x="110" y="218" font-size="19" font-weight="700" fill="#002E5D" text-anchor="middle">You</text>
+<rect x="30" y="340" width="170" height="120" rx="12" fill="#FFFFFF" stroke="#002E5D" stroke-width="1.5" filter="url(#sh)"/>
+<g transform="translate(99,360) scale(1.333)" fill="none" stroke="#002E5D" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16" /></g>
+
+<text x="115" y="425" font-size="19" font-weight="700" fill="#002E5D" text-anchor="middle">Claude Code</text>
+<rect x="256" y="100" width="214" height="110" rx="10" fill="#1F2A36" filter="url(#sh)"/>
+<rect x="256" y="100" width="214" height="26" rx="10" fill="#2E3B49"/><rect x="256" y="116" width="214" height="10" fill="#2E3B49"/>
+<circle cx="274" cy="113" r="5" fill="#E96B5F"/>
+<circle cx="290" cy="113" r="5" fill="#E8B84A"/>
+<circle cx="306" cy="113" r="5" fill="#5FBF6A"/>
+<text x="274" y="166" font-size="16" font-weight="400" fill="#E6EEF7" text-anchor="start" font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve">% git status</text>
+<rect x="274" y="178" width="9" height="16" fill="#E6EEF7"/>
+<text x="363.0" y="240" font-size="19" font-weight="700" fill="#002E5D" text-anchor="middle">Terminal</text>
+<text x="363.0" y="262" font-size="15" font-weight="400" fill="#5A6672" text-anchor="middle">the window</text>
+<rect x="256" y="324" width="214" height="152" rx="10" fill="none" stroke="#8A939C" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="458" y="344" font-size="15" font-weight="600" fill="#8A939C" text-anchor="end" font-style="italic">no window</text>
+<rect x="528" y="90" width="172" height="390" rx="14" fill="url(#nav)" filter="url(#sh)"/>
+<g transform="translate(596,220) scale(1.5)" fill="none" stroke="#FFFFFF" stroke-width="1.47" stroke-linecap="round" stroke-linejoin="round"><path d="m7 11 2-2-2-2" />
+  <path d="M11 13h4" />
+  <rect width="18" height="18" x="3" y="3" rx="2" ry="2" /></g>
+
+<text x="614.0" y="290" font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">Shell</text>
+<text x="614.0" y="316" font-size="16" font-weight="400" fill="#C9D8EA" text-anchor="middle">zsh or Bash</text>
+<text x="614.0" y="352" font-size="15" font-weight="400" fill="#C9D8EA" text-anchor="middle">reads each line</text>
+<text x="614.0" y="372" font-size="15" font-weight="400" fill="#C9D8EA" text-anchor="middle">and runs it</text>
+<line x1="152" y1="155" x2="250" y2="155" stroke="#5A6672" stroke-width="2" marker-end="url(#ag)"/>
+<text x="201" y="143" font-size="15" font-weight="400" fill="#5A6672" text-anchor="middle">you type</text>
+<line x1="472" y1="155" x2="522" y2="155" stroke="#5A6672" stroke-width="2" marker-end="url(#ag)"/>
+<line x1="202" y1="370" x2="522" y2="370" stroke="#0057B8" stroke-width="2.5" marker-end="url(#ar)"/>
+<text x="272" y="360" font-size="15" font-weight="700" fill="#0057B8" text-anchor="start" paint-order="stroke" stroke="#FAFBFC" stroke-width="6">Bash tool</text>
+<text x="272" y="392" font-size="15" font-weight="400" fill="#2C3E50" text-anchor="start" font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve">git commit -m ...</text>
+<line x1="202" y1="440" x2="522" y2="440" stroke="#0057B8" stroke-width="2.5" marker-end="url(#ar)"/>
+<text x="272" y="430" font-size="15" font-weight="700" fill="#0057B8" text-anchor="start" paint-order="stroke" stroke="#FAFBFC" stroke-width="6">Hook</text>
+<text x="272" y="462" font-size="15" font-weight="400" fill="#2C3E50" text-anchor="start" font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve">require-review.sh</text>
+<text x="770" y="150" font-size="17" font-weight="700" fill="#002E5D" text-anchor="start">Programs and files</text>
+<rect x="770" y="170" width="200" height="44" rx="8" fill="#FFFFFF" stroke="#D9DEE4" stroke-width="1.5"/>
+<text x="788" y="198" font-size="16" font-weight="400" fill="#2C3E50" text-anchor="start" font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve">git</text>
+<rect x="770" y="226" width="200" height="44" rx="8" fill="#FFFFFF" stroke="#D9DEE4" stroke-width="1.5"/>
+<text x="788" y="254" font-size="16" font-weight="400" fill="#2C3E50" text-anchor="start" font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve">npm</text>
+<rect x="770" y="282" width="200" height="44" rx="8" fill="#FFFFFF" stroke="#D9DEE4" stroke-width="1.5"/>
+<text x="788" y="310" font-size="16" font-weight="400" fill="#2C3E50" text-anchor="start" font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve">python3</text>
+<rect x="770" y="338" width="200" height="44" rx="8" fill="#FFFFFF" stroke="#D9DEE4" stroke-width="1.5"/>
+<text x="788" y="366" font-size="16" font-weight="400" fill="#2C3E50" text-anchor="start">your files</text>
+<line x1="702" y1="285" x2="764" y2="285" stroke="#5A6672" stroke-width="2" marker-end="url(#ag)"/>
+<text x="733" y="273" font-size="15" font-weight="400" fill="#5A6672" text-anchor="middle">runs</text>
+<line x1="30" y1="520" x2="970" y2="520" stroke="#D9DEE4" stroke-width="1.5"/>
+<rect x="30" y="548" width="940" height="168" rx="12" fill="#FFFFFF" stroke="#D9DEE4" stroke-width="1.5"/>
+<g transform="translate(50,566) scale(0.9167)" fill="none" stroke="#002E5D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12.5 8 15l2 2.5" />
+  <path d="m14 12.5 2 2.5-2 2.5" />
+  <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+  <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z" /></g>
+
+<text x="82" y="584" font-size="17" font-weight="700" fill="#002E5D" text-anchor="start">A shell script:</text>
+<text x="218" y="584" font-size="17" font-weight="400" fill="#2C3E50" text-anchor="start" font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve">require-review.sh</text>
+<text x="56" y="626" font-size="16" font-weight="600" fill="#0057B8" text-anchor="start" font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve">#!/bin/bash</text>
+<line x1="470" y1="621" x2="560" y2="621" stroke="#D9DEE4" stroke-width="1.5" stroke-dasharray="3 4"/>
+<text x="572" y="626" font-size="16" font-weight="400" fill="#5A6672" text-anchor="start">which shell runs this file</text>
+<text x="56" y="658" font-size="16" font-weight="400" fill="#2C3E50" text-anchor="start" font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve">CMD=$(jq -r '.tool_input.command')</text>
+<line x1="470" y1="653" x2="560" y2="653" stroke="#D9DEE4" stroke-width="1.5" stroke-dasharray="3 4"/>
+<text x="572" y="658" font-size="16" font-weight="400" fill="#5A6672" text-anchor="start">commands, run top to bottom</text>
+<text x="56" y="690" font-size="16" font-weight="600" fill="#0057B8" text-anchor="start" font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" xml:space="preserve">exit 2</text>
+<line x1="470" y1="685" x2="560" y2="685" stroke="#D9DEE4" stroke-width="1.5" stroke-dasharray="3 4"/>
+<text x="572" y="690" font-size="16" font-weight="400" fill="#5A6672" text-anchor="start">ends with an exit code</text>
+</g>
+</svg>

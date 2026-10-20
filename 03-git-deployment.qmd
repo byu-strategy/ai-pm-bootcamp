@@ -2,214 +2,124 @@
 title: "GitHub & Deployment"
 ---
 
-The next set of tools we’ll explore are Git and GitHub. These have become the standard platforms developers use to manage versions of code and collaborate on the software that powers digital products. As AI creates new possibilities in product development, mastering these tools is no longer optional, they are now essential to be a high performing AI-Powered PM or AI Product PM.
+This page covers Git, GitHub, and deploying an app to a public URL with Vercel. Read it if you have not used Git before or have never deployed anything. Skip it if you already commit, push, and deploy from GitHub.
+
+Git and GitHub are the standard tools developers use to keep versions of code and to collaborate on it. When an agent edits your code many times an hour, they are also how you undo its mistakes. You will rarely type Git commands yourself, because Claude Code commits and pushes when you ask, but you should know what each one does when you read its output.
 
 ## Git & GitHub
 
-Although the terms Git and GitHub are often used interchangeably, they are two distinct tools that work together.
+The two names are often used interchangeably, but they are two different tools that work together.
 
-**Git** is an open-source version control system that individual users install on their local computer. It tracks every change you make to the files in a specified folder (called a repository) and acts like a time machine allowing you to go back to any previous version, see what changed, when it changed, and who made the change. Git is the most widely used version control system in the world, with an estimated 90–95% of professional software development teams using it today.
+**Git** is an open-source version control system you install on your computer. It tracks every change to the files in a folder (called a repository) and lets you return to any earlier version, see what changed, when, and who changed it. Think of it as a time machine plus parallel copies: every commit is a saved snapshot of the whole project you can return to, and every branch is a separate line of snapshots you can work on without touching the others.
 
-We will be using git to version control your projects throughout this course. Take a moment to to make sure you have Git installed on your computer by running the following from the command line:
+Check that Git is installed by running this in a terminal:
 
-```markdown
+```bash
 git --version
 ```
 
-If you don't have git installed ask Claude Code to guide you through installation.
+If it is not installed, ask Claude Code to install it for you.
 
-**GitHub** is a cloud-based platform, owned by Microsoft, that allows you to store your Git repositories online, making it easy to collaborate with others over the internet. You can think of GitHub as the Google Drive or Dropbox of your code files, but with additional tools for teamwork and project management that extend the use of Git from individuals to entire teams. Developers use Git on their local machines and push their files and subsequent changes to GitHub when they’re ready to share or back them up online. Product Managers and other collaborators can then review, comment on, and track progress through the GitHub web interface.
+**GitHub** is a website, owned by Microsoft, that stores Git repositories online so you can back them up, share them, and collaborate. Developers work with Git on their own computers and push their changes to GitHub when they are ready to share them. Product managers and other collaborators can then review, comment on, and track progress through the GitHub web interface. GitHub is also where a host such as Vercel picks up your code to deploy it.
 
-We will be using GitHub to deploy applications to the internet and create a public facing project portfolio you can share with employers and others.
+If you do not have a GitHub account:
 
-If you don't have one already, sign-up for a GitHub account using the following steps:
+1. Go to [github.com](https://github.com/) and click **Sign up** (or **Continue with Google**).
+2. Follow the prompts to create your personal account.
 
-1. Navigate to https://github.com/.
-2. Click Sign up.
-3. Alternatively, click on Continue with Google to sign up using social login.
-4. Follow the prompts to create your personal account.
-5. In the upper-right corner of any page, select , then click New repository.
-6. Name the repository whatever you want.
+To create a repository, click **New** on your GitHub dashboard (or the **+** menu in the top right, then **New repository**) and give it a name. You can also ask Claude Code to do it with the GitHub command-line tool: "Create a private GitHub repo for this folder and push it" runs `gh repo create` for you.
 
-![](images/new-repo.jpg)
+![The New button on your GitHub dashboard.](images/new-repo.jpg){fig-alt="The top of a GitHub dashboard. In the left sidebar under Top repositories, a green New button is outlined in red."}
 
-## The Git<-->GitHub Workflow
+## The Git and GitHub Workflow
 
-A typical workflow in git consists of editing files in your working directory, staging them, which just means listing which ones you want to save, saving or committing them and lastly, pushing them to a remote cloud hosted folder (called a **respository**) for others to use.
-
-**1. Working Directory**
-
-The Working Directory is the folder on your computer where you're actively making changes to files such as writing code, editing documents, or creating new files.
-
-A Working Directory is just a regular folder you’re already familiar with, the kind you see in Windows Explorer or Mac Finder.
-
-**2. Staging Area**
-
-The Staging Area is a place where you catalogue (or "stage") the edited files from the Working Directory that you want to include in your next snapshot (version) of your project.
-
-Each snapshot is called a **commit**, and the Staging Area lets you choose exactly which edited files will be saved in the next official version of your project.
-
-Even if you've edited, say, 5 files, you may only want to include 3 of those changed files in your next commit. The Staging Area is where you make these choices, it gives you control over what gets saved and when.
-
-You may hear the Staging Area referred to as the *index* because that’s the technical name Git uses internally for this part of the system.
-
-**3. Local Repository**
-
-The Local Repository is the part of Git on your computer that stores the official history of your project: all the snapshots (commits) you've made so far.
-
-When you commit (i.e., Save) changes from the Staging Area, Git saves a permanent version of those changes in your Local Repository. This allows you to go back in time, review past versions, undo mistakes, or see who changed what and why.
-
-You can think of the Local Repository as your personal project archive that keeps track of every meaningful step in your project’s development.
-
-Unlike the Working Directory, the Local Repository is not a folder you typically see in Finder or Windows Explorer, rather, it lives inside a hidden folder named .git. Git uses the hidden .git folder to store all your commits as well as other project related information. It is possible to unhide the .git folder and browse it like a normal folder but many of the files are not human readable since they are designed for Git’s internal use and may look confusing or cryptic to most users.
-
-Even though the files in the .git folder aren’t meant to be read directly by humans, Git commands allow you to retrieve any saved snapshot of your project and restore files in their original, human-readable form.
-
-So the local repository contains everything from your Working Directory that you chose to stage and then commit.
-
-Think of the .git folder as a vault of your project’s history. You can’t really read the vault contents directly, but Git gives you keys (commands) to retrieve and restore anything you’ve ever committed.
-
-**4. Remote Repository**
-
-The Remote Repository is a copy of your Local Repository that is stored on the internet using a platform like GitHub.
-
-It contains the same kinds of commits and project history as your Local Repository, but it's shared with others, which makes it perfect for collaborating with teammates, backing up your work, or deploying projects. 
-
-Your Local Repository is your personal copy, just on your computer.
-
-The Remote Repository is the shared copy in the cloud that you and your team keep in sync.
-
-## Illustrating the Workflow
-
-The illustration below helps you visualize the four parts of a Git workflow. 
+Changes move through four places: you edit files in your working directory, stage the ones you want to save, commit them as a snapshot, and push the snapshot to a remote repository on GitHub.
 
 ![](images/git-visual.jpg)
 
+| Stage | What it is |
+|-------|------------|
+| **Working Directory** | The ordinary folder on your computer where you (and the agent) edit files |
+| **Staging Area** | The list of changed files you want to include in your next commit. Git also calls it the *index* |
+| **Local Repository** | Your project's full history of commits, stored in a hidden `.git` folder inside the project |
+| **Remote Repository** | A copy of the repository on GitHub, shared with others and kept in sync with yours |
+
+A few notes on each:
+
+- **Staging** lets you choose what goes into a commit. If you edited five files, you can commit three of them and leave the other two for later.
+- **The `.git` folder** holds every commit. Its files are not meant to be read directly; Git commands retrieve and restore any version in readable form.
+- **The remote** is what makes backup, collaboration, and deployment possible. Your local repository is your copy; the remote is the shared one.
+
+**Commit only the files you touched.** When two Claude Code sessions work in one folder, `git add .` stages the other session's half-finished files along with yours. Stage files by name instead (`git add app/page.tsx`). The [Agent Team Kit](12-agent-team-kit.qmd) builds this rule in.
+
 ## The Hierarchy of a Git Project
 
-Git and GitHub organize your project using a four-level hierarchy as follows:
+| Level | Concept | Description |
+|-------|---------|-------------|
+| 1 | Files | The individual contents of your project |
+| 2 | Commits | Snapshots of the project at specific points in time |
+| 3 | Branches | Lines of commits used for parallel work |
+| 4 | Repositories | The container for the whole project and its history |
 
-| Level | Concept     | Description                                              |
-|-------|-------------|----------------------------------------------------------|
-| 1     | Files       | The individual contents of your project                  |
-| 2     | Commits     | Snapshots of the project at specific points in time      |
-| 3     | Branches    | Timelines of commits used for parallel development       |
-| 4     | Repositories| The full project container with history and structure    |
+**Files.** Usually plain text files containing code (`.py`, `.html`, `.js`), plus images (`.png`, `.jpg`) and data files (`.csv`, `.json`).
 
-**Level 1: Files ** 
+**Commits.** A commit is a snapshot of the whole project plus a message saying what changed and why. Each commit has a unique identifier called a **hash**, such as `9a3e6c2bd8c2fb4f09f7bbfe42f27f3853fccc60`, usually shortened to seven characters (`9a3e6c2`). Small commits with clear messages are what make history useful: "Add rating to problems" is a point you can return to; "updates" is not.
 
-These are the individual files in your project,  most commonly plain text files containing code (like `.py`, `.html`, or `.js`), but other file types such as images (`.png`, `.jpg`) and data files (`.csv`, `.json`) are also supported and commonly used.
-
-**Level 2: Commits** 
-
-A **commit** is a snapshot of your entire project at a specific point in time. Git stores the exact state of all tracked files when you make a commit. Each commit has a unique identifier called a **hash** that looks like this: `9a3e6c2bd8c2fb4f09f7bbfe42f27f3853fccc60` (usually shortened to 7 characters for ease of viewing `3fccc60`) that lets you reference or return to a specific version or your project.
-
-The word *commit* can be both a **noun** (“This commit broke the build”) and a **verb** (“I’m committing my changes”), meaning to save a snapshot of the current state of your project.
-
-**Level 3: Branches**  
-
-A branch in Git is a movable pointer that marks the latest commit in a line of development, automatically advancing as new commits are added, which makes it easy to manage and organize different streams of work. For example, the main branch might look like this:
+**Branches.** A branch is a pointer to the latest commit in one line of work, and it moves forward as you add commits. Most repositories have a default branch called `main`, which usually holds the version that is live. To build a feature without touching `main`, you create a branch from it:
 
 `main → commit A → commit B → commit C`
 
-If you create a new branch based on commit B called `feature-login`, it will start as:
-
-`feature-login → commit B`
-
-Then, as you add new commits to the feature branch, the pointer moves forward to always reference the tip (i.e., latest commit) of the branch:
-
 `feature-login → commit B → commit D → commit E`
 
-Meanwhile, `main` can continue independently with its own commits. At some point you might merge the `feature-login` branch back to `main.`
+`main` can keep moving on its own, and when the feature is ready you merge `feature-login` back into `main`. `HEAD` is a pointer to the branch (or commit) you currently have checked out; `git status` tells you where it is. [Spec to Release](13-spec-to-release.qmd) covers how branches and pull requests fit into shipping with agents.
 
-`HEAD` is a special pointer that tracks which branch is currently active on your computer.
+**Repositories.** A repository (repo) holds all the project's files, commits, branches, and settings. It can live on your computer and on GitHub at the same time.
 
-Most of the time `HEAD` points to a branch name (like `main` or `feature-x`) although it can point directly to a commit hash ID like `3fccc60`. HEAD answers the question of "where am I?." You can run the command `git status` to see which branch/commit is currently active.
+## Common Git Commands
 
-Developers use branches to work on features or bug fixes in isolation. Most repositories have a default branch called **`main`** (previously called `master`), which typically represents the production-ready version of the code.
- 
-When you checkout a branch, Git updates your working directory to reflect the latest commit on that branch. You’re not editing that commit itself, instead, you're preparing to build on top of it.
- 
-Any changes you make and commit will be saved as a new commit, extending the history of the branch.
+| Command | What it does |
+|---------|--------------|
+| `git init` | Start a new repository in the current folder |
+| `git clone <url>` | Copy a remote repository to your computer |
+| `git status` | Show what has changed and what is staged |
+| `git add <file>` | Stage a file (`git add .` stages every change; see the caution above) |
+| `git restore --staged <file>` | Unstage a file |
+| `git restore <file>` | Discard your changes to a file and return it to the last commit |
+| `git commit -m "<message>"` | Save the staged changes as a commit |
+| `git log --oneline` | Show the commit history, one line per commit |
+| `git diff` | Show changes you have not staged yet (`git diff --staged` for staged ones) |
+| `git switch -c <name>` | Create a branch and switch to it |
+| `git switch <name>` | Switch to an existing branch |
+| `git merge <branch>` | Merge a branch into the current one |
+| `git push` | Upload your commits to GitHub |
+| `git pull` | Download and merge changes from GitHub |
+| `git stash` | Set uncommitted changes aside temporarily (`git stash apply` brings them back) |
+| `git remote -v` | Show which GitHub repository this folder is connected to |
 
-**Level 4: Repositories**
-
-A **repository** (or **repo**) is the container that holds all your project’s files, commit history, branches, and metadata. It's essentially your entire project, tracked and version-controlled. Repositories can live on your local computer (with Git) and be hosted online (e.g., on GitHub) for sharing and collaboration.
-
-::: {.callout-tip collapse="true" title="What all is contained in a repo?"}
-
-A repository (or repo) in Git stores:
-
-Commits: Snapshots of the project’s file state over time
-Branches: Named pointers to specific commits
-Tags: Named, static pointers to commits (usually used for releases)
-Refs: Internally, all pointers (branches, tags, HEAD) are stored as refs
-Blobs: File contents (each version of each file)
-Trees: Directory structures (which files go in which folders)
-HEAD: A special ref pointing to your current working location
-Configuration: Repo settings like remotes, ignore rules, hooks, etc.
+::: {.callout-tip title="Try it"}
+In a project with some history, ask Claude Code: "Show my last ten commits and, for each, one line on what it changed." Pick one that is three or more commits back and ask what the app would lose if you returned to it. Could a teammate tell from the messages what happened?
 :::
-
-## Common git commands
-
-| Command            | Syntax                                          | Description |
-|--------------------|--------------------------------------------------|-------------|
-| **Initialize repo** | `git init`                                      | Creates a new Git repository in the current directory |
-| **Clone repo**      | `git clone <url>`                                | Copies a remote repository to your local machine |
-| **Check status**    | `git status`                                     | Shows the current state of working directory and staging area |
-| **Stage changes**   | `git add <file>`                                 | Adds file(s) to the staging area |
-|                     | `git add .`                                      | Stages all changes in the current directory |
-| **Unstage file**    | `git restore --staged <file>`                    | Removes a file from the staging area |
-| **Discard changes** | `git restore <file>`                             | Reverts file to last committed state |
-| **Commit changes**  | `git commit -m "<message>"`                      | Saves staged changes with a message |
-|                     | `git commit --amend`                             | Modifies the last commit (e.g., to fix message) |
-| **View log**        | `git log`                                        | Shows commit history |
-|                     | `git log --oneline --graph`                      | Condensed log with branch structure |
-| **View diff**       | `git diff`                                       | Shows unstaged changes |
-|                     | `git diff --staged`                              | Shows staged vs last commit |
-| **Create branch**   | `git branch <name>`                              | Creates a new branch |
-| **Switch branch**   | `git switch <name>`                              | Switches to another branch |
-|                     | `git switch -c <name>`                           | Creates and switches to a new branch |
-| **Merge branches**  | `git merge <branch>`                             | Merges specified branch into current branch |
-| **Delete branch**   | `git branch -d <name>`                           | Deletes a branch (safe) |
-|                     | `git branch -D <name>`                           | Forces deletion of a branch |
-| **View branches**   | `git branch`                                     | Lists all local branches |
-| **Track remote branch** | `git branch -u origin/<branch>`              | Sets upstream for local branch |
-| **Push changes**    | `git push`                                       | Uploads commits to remote (default branch) |
-|                     | `git push origin <branch>`                       | Pushes a specific branch to remote |
-| **Pull changes**    | `git pull`                                       | Fetches + merges changes from remote into current branch |
-| **Fetch only**      | `git fetch`                                      | Downloads changes from remote but doesn’t merge |
-| **Check remotes**   | `git remote -v`                                  | Lists configured remotes and URLs |
-|                     | `git tag -a <name> -m "<msg>"`                   | Annotated tag with message |
-| **Checkout commit** | `git checkout <commit>`                          | Switches to a specific commit (detached HEAD) |
-| **Stash changes**   | `git stash`                                      | Temporarily saves uncommitted changes |
-|                     | `git stash apply`                                | Reapplies stashed changes |
-| **View staged files** | `git ls-files --stage`                         | Shows what's in the staging area |
 
 ## Deploying from GitHub
 
-There are many ways to deploy an application, but for now we’ll use one of the simplest approaches: deploying with Vercel. Vercel is a cloud platform that integrates directly with GitHub, making it easy to deploy your code straight from your repository. Once you connect your GitHub repo, Vercel automatically builds and hosts your application whenever you push changes.
+There are many ways to deploy an application. One of the simplest is [Vercel](https://vercel.com/), a hosting platform that connects to GitHub. Once you connect a repository, Vercel builds and publishes your app, and it rebuilds and republishes it every time you push to `main`.
 
 ::: {.callout-tip collapse="true" title="What does deployment mean?"}
+Deployment is taking code that runs on your computer and making it available to anyone at a public URL. It usually involves four steps:
 
-Deployment is the process of taking code that runs locally on your computer and making it available to the world over the internet.  
-
-When you deploy, a few important steps typically happen:  
-
-1. **Build step** – Your source code is transformed into optimized files that can run efficiently on a server. For example, JavaScript is bundled, images are compressed, and dependencies are installed.  
-2. **Hosting** – Those built files are placed on a server (a computer that’s always online) so they can be accessed any time.  
-3. **Serving** – The server makes your application available at a public web address (URL), so anyone can open it in a browser.  
-4. **Updates** – Each time you push new code to GitHub, the deployment system (like Vercel) rebuilds and redeploys the application automatically, so your site stays up to date.  
-
-In short: **deployment is how you go from “it works on my laptop” to “anyone in the world can visit my app at a URL.”**
-
+1. **Build.** The source code is turned into optimized files a server can run: dependencies are installed, JavaScript is bundled, images are compressed.
+2. **Host.** The built files are placed on a server, a computer that is always online.
+3. **Serve.** The server makes the app available at a public web address.
+4. **Update.** Each time you push new code to GitHub, the host rebuilds and redeploys the app, so the live site matches `main`.
 :::
 
-Go to [vercel.com](https://vercel.com/) and sign up for an account using your email, or your Google or GitHub account.
+To deploy:
 
-Once signed in, click on "Add New" and select "Project"? Connect your GitHub account and import the repo containing your the code for your app. 
+1. Go to [vercel.com](https://vercel.com/) and sign up, preferably with your GitHub account.
+2. Click **Add New**, then **Project**.
+3. Connect your GitHub account and import the repository that holds your app.
+4. Click **Deploy**, wait for the build to finish, and open the URL Vercel gives you.
 
-Deploy the app and visit the URL to view your published app.
+Vercel works best with web frameworks such as Next.js, or with a plain HTML, CSS, and JavaScript site. A Python Streamlit app does not run on Vercel; deploy it to [Streamlit Community Cloud](https://streamlit.io/cloud) instead, which also imports a GitHub repository. If you are not sure which host fits your app, ask Claude Code.
 
-
-
+For the longer version, including pull requests, automated checks, environments, and rolling back a bad deploy, see [Version Control, Environments, and Deploys](https://byu-strategy.github.io/product-management/09-version-control-testing-and-tech-debt.html) in the Product Management book.

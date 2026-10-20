@@ -1,0 +1,235 @@
+---
+title: "Lab: Install the Kit and Run It"
+---
+
+In this lab you install the Agent Team Kit into a repo on your own laptop, read what the installer changed, and then watch it work: two named sessions that get different dev-server ports, a git command the guard refuses, a feature taken through `/spec` and `/build-spec`, and, if you have time, a worktree merged from a cockpit. Plan on about 50 minutes. Background for every step is on [The Agent Team Kit](12-agent-team-kit.qmd) and [From Spec to Release](13-spec-to-release.qmd).
+
+| Step | Time |
+|---|---|
+| 0. Prerequisites and a repo | 5 min |
+| 1. Install and review the diff | 10 min |
+| 2. Fit the kit to your stack, load the launchers | 5 min |
+| Exercise 1: two sessions, two ports | 7 min |
+| Exercise 2: the git guard | 5 min |
+| Exercise 3: `/spec`, then `/build-spec` | 15 min |
+| Exercise 4 (stretch): worktree mode | the rest |
+
+## 0. Prerequisites and a repo
+
+You need:
+
+- **Claude Code**, installed and signed in to a paid Claude plan ([Setup](00-setup.qmd)). Run `claude update` if you have not recently; the launchers use the `--name`, `--worktree`, and `--remote-control` flags.
+- **git**, and the **GitHub CLI** signed in (`gh auth status` should show your account). The install command clones the kit with `gh`.
+- **Node** on your `PATH` (`node --version`). The kit's hooks are Node scripts.
+- **A repo to install into.** Either one of your own projects, or a fresh scratch app.
+
+For a scratch app, from the folder where you keep projects:
+
+```bash
+npx create-next-app@latest kit-lab --yes
+cd kit-lab
+git log --oneline
+```
+
+`create-next-app` creates a git repo and makes a first commit; `git log` should show it. If you use your own repo instead, start from a clean tree: commit or set aside your changes so that the install is the only thing in the diff, and consider a branch (`git switch -c try-agent-team-kit`).
+
+## 1. Install the kit and review the diff
+
+From the root of your repo, run the three commands from the kit's README:
+
+```bash
+gh repo clone ai-foundry-byu/agent-team-kit /tmp/agent-team-kit
+/tmp/agent-team-kit/install.sh "$PWD"
+rm -rf /tmp/agent-team-kit
+```
+
+The installer prints one `[ok]` line per step, plus `[!]` lines where it left something for you to merge by hand (an existing `.claude/settings.json`, an existing `pre-commit` or `pre-push` hook, or a `.gitignore` that ignores all of `.claude/`). Read those lines before moving on.
+
+Now look at what it did:
+
+```bash
+git status
+git diff
+```
+
+| You should see | What it is |
+|---|---|
+| `scripts/hooks/` (new) | The Claude Code hook scripts: `dev-port.mjs`, `bash-guard.sh` and `bash-guard.mjs`, `session-release.mjs`, `team-memory.mjs`, the architecture guards, and their shared helper |
+| `.claude/settings.json` (new) | The wiring that makes Claude Code run those hooks |
+| `.claude/skills/` (new) | The kit's 13 skills: `spec`, `build-spec`, `mockup`, `push`, `stage`, `promote`, `remove-flag`, `merge-worktree`, `share-memory`, `regression-check`, `fix-bug`, `ux-critique`, `userflow-map` |
+| `.claude/team-memory/` (new) | The memory pack: 32 lessons, an index, and a README |
+| `.githooks/` (new) | `post-merge`, `pre-commit`, `pre-push` |
+| `docs/` (new files) | The build specs the skills point at: feedback loop, sidebar, mockup shells, release pipeline, staging twin, release flags, and the driving-the-app guide |
+| `bootstrap.sh`, `worktree-commands.sh` (new) | Teammate setup, and the `cs` / `wt` / `cockpit` launchers |
+| `.gitignore` (changed) | Rules that keep `.claude/` private except the shared settings, skills, and team memory, plus `.mockups/` and `.specs/` |
+| `CLAUDE.md` (new or changed) | Three appended sections: "Concurrent agents on `main`", "Working discipline (definition of done)", and "Mockups and design iteration" |
+
+It also ran `git config core.hooksPath .githooks`, which does not appear in the diff (`git config core.hooksPath` prints it). It did not touch your source code.
+
+Read the appended `CLAUDE.md` sections; they are what every agent in this repo will read at start. Then commit the install, staging explicit paths:
+
+```bash
+git add .claude .githooks scripts docs bootstrap.sh worktree-commands.sh CLAUDE.md .gitignore
+git commit -m "chore: install agent team kit"
+```
+
+(Several skills, such as `fix-bug` and `userflow-map`, are worked examples from a real project with its table names and paths. In your own repo, delete the ones you will not adapt. For the lab, leave them.)
+
+## 2. Fit the kit to your stack and load the launchers
+
+**Fit the dev-port hook.** The defaults assume a Vite app run with pnpm (human's port 5173). For a Next.js app run with npm, open `scripts/hooks/dev-port.mjs` and change two of the four constants near the top:
+
+```js
+const RESERVED_PORT = 3000;                                   // Next's default, kept for you
+const START_HINT = (port) => `npm run dev -- -p ${port}`;     // pnpm users: `pnpm dev -p ${port}`
+```
+
+Leave the pool (`POOL_LOW` 5180 to `POOL_HIGH` 5199) as it is. Commit the change: `git commit -m "chore: dev-port for next + npm" -- scripts/hooks/dev-port.mjs`. The other knobs are in [Fitting the kit to other stacks](#knobs) below; you do not need them for the lab.
+
+**Load the launchers.** The installer copied `worktree-commands.sh` into your repo. Load it into this terminal, and into every new terminal you open for the lab:
+
+```bash
+source ./worktree-commands.sh
+type cs        # should print "cs is a shell function"
+```
+
+To have the launchers in every new terminal, add a `source` line with the absolute path to your shell's startup file (the README's form is `echo 'source /path/to/agent-team-kit/worktree-commands.sh' >> ~/.zshrc`; point it at a copy that will stay put, such as this repo's).
+
+Every launcher passes `--dangerously-skip-permissions`, so the agent will not ask before running commands. The kit's hooks still run. On a scratch app that is a reasonable trade; on your own repo, decide deliberately ([Blast Radius](11-the-harness.qmd#blast-radius)). The first time, Claude Code asks you to accept that mode.
+
+## Exercise 1: two named sessions, two ports
+
+Open two terminals in the repo root (and `source ./worktree-commands.sh` in each). Give the two sessions areas that do not overlap: one works on the home page, the other builds a new page.
+
+```bash
+cs home-copy        # terminal 1
+cs about-page       # terminal 2
+```
+
+In each session, ask:
+
+```text
+What dev-server port were you assigned for this session, and what command starts it?
+```
+
+The first session should report 5180 and the second 5181, each with the start command from `dev-port.mjs`. The claims are folders on disk; in a third terminal:
+
+```bash
+ls .git/.wg-agent/ports/
+```
+
+Now give each its task:
+
+- **home-copy:** *"Change the main heading and the intro text on the home page (app/page.tsx) to describe a small task-tracking app. Start your dev server on your assigned port and give me the URL."*
+- **about-page:** *"Create an About page at /about (app/about/page.tsx) with a heading and two short paragraphs. Start your dev server on your assigned port and give me the URL."*
+
+Open both URLs. Two servers are running side by side and neither touched port 3000. Type `/resume` in either session (then Escape) and notice the picker shows `home-copy` and `about-page` instead of folder paths.
+
+## Exercise 2: watch the git guard refuse
+
+Keep both sessions open. In **home-copy**:
+
+```text
+Run exactly this command so I can see how the hook responds: git add -A
+```
+
+The command is blocked, and the agent receives the guard's reason ("Blanket `git add` stages the WHOLE working tree...") and should offer to stage explicit paths instead. Try the same with `git stash`.
+
+Now the subtler case, the commit-sweep guard. The git index is shared by both sessions.
+
+1. In **about-page**: *"Stage app/about/page.tsx with git add. Do not commit yet."*
+2. In **home-copy**: *"Stage app/page.tsx with git add, then run git commit -m 'Update home copy' with no file paths after it."*
+
+The commit is blocked, because the index holds a file this session did not stage. A plain commit would have taken the About page with it. The guard's suggested fix is the form the kit's `CLAUDE.md` section asks for: `git commit -m "Update home copy" -- app/page.tsx`. Let the agent use it, then let **about-page** commit its own file the same way. `git log --stat -2` should show two commits, one file each.
+
+## Exercise 3: `/spec` a small feature, then `/build-spec` it
+
+Use one session (either is fine; the other can stay idle). Pick a small feature with a visible part and a part a test can check. Two that fit a fresh app:
+
+- A dark-mode toggle in the header that remembers the choice on the next visit.
+- A contact form on `/contact` that rejects an invalid email with a message and shows a thank-you state after a valid submission.
+
+**Explore first.** Talk it through for a few minutes in plain language: what it is called, where it sits, what happens on an error, what you have decided against. If you want to see it, ask for a `/mockup` first.
+
+**Then run `/spec`.** The skill writes `.specs/<slug>/spec.md` and `.specs/<slug>/punchlist.md` and stops. Open the spec and check it against the rules from [From Spec to Release](13-spec-to-release.qmd#spec-skill):
+
+- Does every criterion carry a `walk`, `unit`, or `structure` tag?
+- Does each name the screen, and describe one observable thing?
+- Is anything in **Decisions already made** something you did not decide? That is an invented requirement; move it to Open questions or delete it.
+- What does **Access and release** say? For this feature, "no flag" with a reason is the likely answer.
+
+Edit the spec by hand wherever it is wrong. This is the cheapest change you will make all afternoon.
+
+**Then run `/build-spec`.** Watch for: one commit per punch-list item, made with explicit paths; boxes checked off in `punchlist.md`; tests written for the `unit` criteria; and `.specs/<slug>/check.md` filling with three-line entries. When it finishes (or when your time is up; it resumes from `punchlist.md`), open the URL it hands you and drive the check sheet yourself.
+
+## Exercise 4 (stretch): worktree mode with a cockpit
+
+Close the two `cs` sessions first. The cockpit needs a clean tree, so commit or discard anything left over (`git status` should be empty).
+
+**Terminal 1, the cockpit**, at the repo root:
+
+```bash
+cockpit             # a session named after your repo, e.g. kit-lab-cockpit
+```
+
+**Terminal 2, a worker:**
+
+```bash
+wt pricing-page
+```
+
+Claude Code creates a new worktree (under `.claude/worktrees/`) and starts the session there. Two things to do in the worker:
+
+1. **Set up the worktree.** It is a fresh checkout with no `node_modules` and no `.env.local`. Ask the worker to run `npm install` (and copy `.env.local` in, if your app has one).
+2. **Give it the task and let it commit:** *"Add a /pricing page with three plan cards. Then stage everything with git add -A and commit."* This time `git add -A` is allowed: the guard relaxes inside a worktree, because the tree belongs to this one agent.
+
+Exit the worker (`/exit`). If Claude Code asks whether to keep or remove the worktree, keep it; the cockpit cleans it up.
+
+In a spare terminal, `wtls` lists the worktrees and the branch each is on. Note the branch for `pricing-page` (Claude Code may name it `worktree-pricing-page`). Then, in the **cockpit**:
+
+```text
+integrate pricing-page
+```
+
+If the skill cannot find that branch, give it the exact name `wtls` showed.
+
+The `merge-worktree` skill checks that it is on `main` in the main checkout with a clean tree, merges the branch, stops and shows you any conflict, removes the worktree, and reports that the work is on `main` locally. It does not push.
+
+## Fitting the kit to other stacks {#knobs}
+
+The defaults assume Supabase and pnpm. These are the settings to change, all in files the installer copied into your repo ([SETUP-PROJECT.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/SETUP-PROJECT.md)):
+
+| File | Setting | What to set |
+|---|---|---|
+| `scripts/hooks/dev-port.mjs` | `POOL_LOW` / `POOL_HIGH`, `RESERVED_PORT`, `START_HINT` | The agents' port range, your own dev server's default port, and your stack's command to start a server on a given port. Give each app its own range if you run agents on two apps at once |
+| `scripts/hooks/bash-guard.mjs` | `SCHEMA_RE` | The commands that wait for the schema lock: your migration, type-generation, seed, and dependency commands (for npm, add `npm install`) |
+| `scripts/hooks/bash-guard.mjs` | `PSQL_DDL_RE` | The psql DDL block; remove it if you do not use `psql` |
+| `.githooks/post-merge` | the `supabase/migrations/` path | Your migrations folder |
+| `.githooks/pre-push` | `CHECK_CMD`, `TEST_CMD` | Your typecheck and test commands. The defaults are `pnpm -s check` and `pnpm -s test`; a project without those scripts cannot push until you change them |
+| `scripts/hooks/file-size-budget.mjs` | `BUDGET`, `FROZEN`, `EXEMPT`, `isGoverned` | The line limit, today's oversized files, and which files are covered (by default, files under `src/`) |
+| `scripts/hooks/import-boundaries.mjs` | `RESTRICTED_RE`, `ALLOWLIST` | The import to keep rare, and the files allowed to use it |
+
+On an existing codebase, run `node scripts/hooks/arch-check.mjs` once and paste what it flags into `FROZEN` and `ALLOWLIST`, so only new growth is blocked. Re-running the installer later overwrites the hook scripts, so keep your edits small and re-apply them after an update ([ADOPT.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/ADOPT.md#updating-later)).
+
+## If you get stuck
+
+| What you see | What to do |
+|---|---|
+| `error: ... is not a git repo` from the installer | Run it from your repo root, or `git init` and commit first |
+| The hooks do nothing: no port reported, `git add -A` goes through | Start a **new** session; hooks and skills load at session start. Check that `.claude/settings.json` exists and `node --version` works. If Claude Code asked whether to trust the folder, accept |
+| `cs: command not found` | Run `source ./worktree-commands.sh` in that terminal (each new terminal needs it unless you added it to `~/.zshrc`) |
+| `unknown option` for `--name`, `--worktree`, or `--remote-control` | Update Claude Code: `claude update` |
+| An error about Remote Control | You need to be signed in with a Claude account. To continue without it, run `claude --name home-copy --dangerously-skip-permissions` directly |
+| No free port, or a port held by a session that is gone | Look in `.git/.wg-agent/ports/`; each folder's `owner` file names the session. A claim older than 12 hours is reclaimed automatically; for a dead session you can delete its folder |
+| "another session holds the schema lock" | Another session is running a migration, seed, or dependency install. Wait and retry; `.git/.wg-agent/schema.lock/owner` shows who. The lock is released at session end, or after 10 minutes of inactivity |
+| The agent will not run `git add -A` even when asked | The kit's `CLAUDE.md` section tells it not to. Say it is a test of the hook and that the hook will block it |
+| `git push` blocked by `pre-push` | Its default commands are `pnpm -s check` and `pnpm -s test`. Set `CHECK_CMD` and `TEST_CMD` to commands your project has |
+| The installer printed `[!] .claude/settings.json exists` | Copy the `hooks` block from the kit's [`hooks/settings.json`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/hooks/settings.json) into yours by hand |
+| The worker in a worktree cannot start the app | Run `npm install` in the worktree and copy `.env.local` in |
+| A worktree is missing your latest commits or the kit itself | A new worktree may start from your GitHub remote's `main` rather than your unpushed local commits. On your own repo, push the kit install before using `wt` |
+| `integrate` says the tree is not clean | Commit or discard the leftover changes in the main checkout, then ask again |
+| You want to undo the install | `git revert` the install commit (or reset to the commit before it, since you started clean), then `git config --unset core.hooksPath` |
+
+## After the lab
+
+Install the kit in one real project, and write your next feature with `/spec` before any code. The [Kit Reference](90-kit-reference.qmd) lists every doc, skill, hook, and snippet, and [Full Scale](15-software-factory.qmd) shows what the same pieces look like at a larger company.

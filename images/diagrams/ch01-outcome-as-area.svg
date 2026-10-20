@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500" role="img" aria-labelledby="t d" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+  <title id="t">Outcome is an area: the sides multiply</title>
+  <desc id="d">Two panels drawn on the same axes. In each, the horizontal side is Belief, which is Information times Reasoning, and the vertical side is Execution. The left panel, every factor strong, shows a large filled rectangle labeled Outcome, the full area. The right panel, one factor weak, has the same Belief side, but Execution is near zero, so the rectangle collapses to a thin strip labeled Outcome near zero, almost no area left.</desc>
+  <defs>
+    <linearGradient id="gGood" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0E63C4"/><stop offset="100%" stop-color="#003F87"/></linearGradient>
+    <linearGradient id="gBad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F4E1E1"/><stop offset="100%" stop-color="#E9C8C8"/></linearGradient>
+    <filter id="sh" filterUnits="userSpaceOnUse" x="0" y="0" width="1000" height="500">
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#0A2E4D" flood-opacity="0.13"/>
+    </filter>
+  </defs>
+  <rect x="0" y="0" width="1000" height="500" rx="8" fill="#FAFBFC"/>
+  <line x1="500" y1="36" x2="500" y2="466" stroke="#E1E5EA" stroke-width="1.5"/>
+
+  <!-- left panel: every factor strong -->
+  <text x="305" y="62" text-anchor="middle" font-size="21" font-weight="700" fill="#0057B8">Every factor strong</text>
+  <path d="M170,410 V110 H433 A7,7 0 0 1 440,117 V410 Z" fill="url(#gGood)" filter="url(#sh)"/>
+  <line x1="170" y1="96" x2="170" y2="410" stroke="#8A939C" stroke-width="2"/>
+  <line x1="170" y1="410" x2="456" y2="410" stroke="#8A939C" stroke-width="2"/>
+  <text x="305" y="256" text-anchor="middle" font-size="22" font-weight="700" fill="#FFFFFF">Outcome</text>
+  <text x="305" y="280" text-anchor="middle" font-size="16" fill="#CFE0F5">the full area</text>
+  <text x="156" y="266" text-anchor="end" font-size="18" font-weight="600" fill="#2C3E50">Execution</text>
+  <text x="305" y="440" text-anchor="middle" font-size="18" font-weight="600" fill="#2C3E50">Belief</text>
+  <text x="305" y="462" text-anchor="middle" font-size="16" fill="#5A6672">Information × Reasoning</text>
+
+  <!-- right panel: one factor weak -->
+  <text x="755" y="62" text-anchor="middle" font-size="21" font-weight="700" fill="#B03A3A">One factor weak</text>
+  <path d="M620,410 V386 H885 A5,5 0 0 1 890,391 V410 Z" fill="url(#gBad)" stroke="#B03A3A" stroke-width="2"/>
+  <line x1="620" y1="96" x2="620" y2="410" stroke="#8A939C" stroke-width="2"/>
+  <line x1="620" y1="410" x2="906" y2="410" stroke="#8A939C" stroke-width="2"/>
+  <text x="755" y="340" text-anchor="middle" font-size="22" font-weight="700" fill="#B03A3A">Outcome ≈ 0</text>
+  <text x="755" y="364" text-anchor="middle" font-size="16" fill="#8A5252">almost no area left</text>
+  <text x="606" y="404" text-anchor="end" font-size="18" font-weight="600" fill="#B03A3A">Execution ≈ 0</text>
+  <text x="755" y="440" text-anchor="middle" font-size="18" font-weight="600" fill="#2C3E50">Belief</text>
+  <text x="755" y="462" text-anchor="middle" font-size="16" fill="#5A6672">Information × Reasoning</text>
+</svg>

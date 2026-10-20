@@ -1,0 +1,259 @@
+---
+title: "From Spec to Release"
+---
+
+This segment follows one feature from an idea to the people who use it, with the Agent Team Kit's skills at each step: a mockup built from the real page, a spec you approve before any code exists, a build that counts as done only when each acceptance criterion has evidence, and a release that is a separate, deliberate act from deploying. It ends with the feedback loop that brings problems back. The kit's skills are linked as they come up, and the [Kit Reference](90-kit-reference.qmd) lists them all.
+
+## The feature loop: mockup, spec, build
+
+Three skills carry a feature from idea to verified code, with one human gate in the middle.
+
+| Skill | What it produces | Then |
+|---|---|---|
+| [`/mockup`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/mockup/SKILL.md) | A throwaway HTML page in `.mockups/` you can judge in a browser | You react and it iterates on the same file |
+| [`/spec`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/spec/SKILL.md) | `.specs/<slug>/spec.md` and `punchlist.md` | **It stops.** You read and edit the spec, then approve |
+| [`/build-spec`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/build-spec/SKILL.md) | Code, tests, one commit per punch-list item, and a check sheet | You drive the check sheet; it reports what is closed and what is open |
+
+Editing a spec by hand is the cheapest change in the whole loop, and it is available only before code exists. That gate is the reason `/spec` and `/build-spec` are two skills. Both `.mockups/` and `.specs/` are gitignored by the installer: they are working files, thrown away once the feature ships.
+
+### `/mockup`: start from the real page
+
+A mockup that looks slightly unlike the app gets judged on the wrong things. The usual way of mocking a change to an existing page (redraw the whole page in HTML, then add the idea) produces hundreds of lines of approximate chrome before the idea appears.
+
+The skill has two paths:
+
+- **The shell path.** A **shell** is a frozen copy of a real rendered page from your app: its actual HTML, stylesheet, fonts, and copy in one editable file. A mockup is a copy of a shell with one region changed, so everything around the idea is the app. This needs a small freezer tool in your project, which the kit specifies for any stack in [MOCKUP-SHELLS-SPEC.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/MOCKUP-SHELLS-SPEC.md) (commands `mock:shell`, `mock:shell --check`, `mock:edit`, and `mock:check`). The kit ships only the spec; you hand it to an agent to build the tool for your stack.
+- **The fresh path.** With no freezer, or for a brand-new page, the skill writes one self-contained HTML file using the app's own stylesheet, tokens, icons, and copy voice.
+
+Rules the skill follows on both paths: realistic data, never lorem ipsum; real icons from the app's icon set, never emoji; render it and look at the screenshot before handing it over; hand back a clickable `file://` link; edit the same file each round. On the shell path it checks first whether the shell is stale (the page's source files changed since it was frozen), because a stale shell produces a confident mockup of a layout that no longer exists.
+
+### `/spec`: write down what was decided before it is lost {#spec-skill}
+
+The decisions that make a feature good (the wording, the empty state, the option you turned down) are made while exploring, and they live in the conversation. The conversation is lost at compaction, does not reach a worktree agent, and cannot be edited before code exists. `/spec` turns it into a file and writes no code.
+
+It reconstructs the decisions from the conversation, the mockups, and the code. Where the exploration said nothing, it writes an open question with a recommended default instead of inventing an answer, because an invented requirement reads as if you agreed to it.
+
+**Every acceptance criterion gets a tag naming what will check it.** The skill's own phrase is that "a markdown assertion has no teeth"; the tag is what makes the criterion checkable.
+
+| Tag | The criterion is about | Checked by |
+|---|---|---|
+| `walk` | What a user sees, does not see, or is told | A browser check: a line on the check sheet, or a walk step if the project has a walk runner |
+| `unit` | A calculation, ranking, formatter, or parser | A test next to the code |
+| `structure` | How the code is organized: "there is one place that saves a task", "no caller does X any more" | An architecture guard or a grep assertion |
+
+Rules for writing criteria, from the skill:
+
+- **If a criterion cannot be tagged, it is too vague to build from.** Rewrite it now.
+- **Name the persona and the screen.** "A signed-in user can..." cannot be checked. "As the workspace admin, on the Members page..." can.
+- **One observable thing per criterion.** If it needs "and", split it.
+- **Write the negative as its own criterion** for anything about who can see or do something. "A member does NOT see the Billing page" gets its own number. Most defects in this area are something appearing for someone who should not see it.
+
+The spec follows the kit's [template](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/spec/TEMPLATE.md):
+
+```markdown
+# <Feature>, spec
+## Intent
+## Access and release
+### Access: what differs by person, and which lever handles it
+### Release
+## Stories and acceptance criteria
+### S1, <as a ..., I ...>
+## Decisions already made
+## Considered and rejected
+## Open questions
+## Constraints in this repo
+```
+
+The sections that carry the most weight:
+
+- **Decisions already made**: the wording, states, and names you settled. Without it, the build reopens them.
+- **Considered and rejected**, with the reason: without it, the agent proposes the rejected option again within a day.
+- **Access and release**: required, never blank. Covered [below](#decide-the-release-at-spec-time).
+- **Constraints in this repo**: where the logic lives, any migration, which access check applies, which architecture guards are likely to fire. Filled from your `CLAUDE.md`.
+
+The punch list is an ordered checklist. Each item names the files it will touch and the criteria it closes, and items are marked `[parallel]` only where they share no files:
+
+```
+- [ ] 1. Capability table gains `can.exportReports`     (src/access.ts)                closes 2.3
+- [ ] 2. Export button hidden without it                (ReportHeader.tsx, .test.tsx)  closes 2.1, 2.2   [parallel]
+```
+
+Then the skill stops and tells you what it assumed, what it left open, how the feature will be released (in one line), and which criteria can never be checked in a browser.
+
+### `/build-spec`: done means every criterion has evidence
+
+After you approve, `/build-spec` works the punch list one item at a time: implement the item, write the tests that close its `unit` and `structure` criteria, add its `walk` criteria to a check sheet, run the targeted tests, look at it in the browser if it is visual, check the box in `punchlist.md`, and commit that item alone with explicit paths (`git commit -m "..." -- <paths>`). Progress lives in the file, so a fresh session or a worktree agent picks up where the last one stopped.
+
+The `walk` criteria go into `.specs/<slug>/check.md`, three lines per entry, which you drive in a few minutes:
+
+```
+### 2.2, a member cannot export reports   [criterion 2.2]
+Go:      http://localhost:5181/reports   (signed in as a member)
+Do:      open the report menu
+Expect:  Export is NOT in the list.
+```
+
+`Go:` is a full clickable URL on the dev server the agent built against (its own port, from the kit's `dev-port` hook). At the end it leaves that server running and hands you the link, because in check-sheet mode you are the browser check.
+
+The skill's hard rules: never reword a criterion to make it pass, never drop a failing check, never claim a browser check it did not run. Its final report lists each criterion with the check that closed it, the ones still open and why, and what it assumed. A criterion that turned out to be uncheckable as written is reported plainly; the skill calls that the most useful thing it can hand back.
+
+## Driving the app to verify
+
+[DRIVING-THE-APP.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/DRIVING-THE-APP.md) covers how an agent sees what the running app actually does. Two rules underlie all of it:
+
+- **Run your own dev server on your assigned port.** Read the real port from the server's log, never assume the default, and stop only the process you started ([run your own dev server](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/run-your-own-dev-server.md)).
+- **Verify by reading state.** Confirm a flow worked by reading the URL, the page's DOM, and the network responses in each tool result. A screenshot shows that it looks right; the URL trail shows that it is right.
+
+| Tool | Use it when | How |
+|---|---|---|
+| **A screenshot** | The question is about one state: a layout, "did this land" | Playwright (`page.screenshot`) for repeatable captures; Claude in Chrome for a one-off in your own signed-in browser |
+| **A recording** | The question is about a sequence: reproducing a bug, demoing a flow | Dry-run the flow once without recording to learn the steps, then record a clean take |
+| **Driving the app** | You want Claude to run a whole flow and report what happened | A UI layer (Playwright or Claude in Chrome clicking the real interface) plus a backend layer (project scripts that seed data and exercise flows over HTTP) |
+
+The doc ranks these by fidelity. Writing rows straight to the database is fastest and proves nothing about the app. Calling the server over HTTP proves the endpoint. Only driving the real interface in a browser runs the client code a user's browser runs. Use the lower layers to set up state quickly, then switch to the browser for the part you are checking.
+
+**Verify in proportion to risk** ([memory](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/verify-proportional-to-risk.md)):
+
+| The change | Verification |
+|---|---|
+| Copy, a placeholder, a tooltip, a class name, an obvious one-liner: the effect is fully visible in the diff | Typecheck, then commit |
+| A new layout, a state change, an interaction, data loading: anything whose failure you cannot predict from the diff | Run it in the browser |
+| Anything that changes imports between server and client code | A real build as well, because a typecheck can pass while the build fails ([memory](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/verify-with-the-real-build.md)) |
+
+## Deploying and releasing are separate acts
+
+[RELEASE-PIPELINE.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/RELEASE-PIPELINE.md) starts from two definitions:
+
+- **Deploy**: code reaches a server.
+- **Release**: people see it.
+
+Most setups join them: push `main`, it builds, it is live. That works for one developer. With several agents and a collaborator committing to `main` all day, `main` always holds someone's half-finished work, so the push button becomes something the owner guards and finished work waits on one laptop. The kit separates three moments ([deploy is not release](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/deploy-is-not-release.md)):
+
+| You push | CI does | Who sees it |
+|---|---|---|
+| `main` | Check, test, build. **No deploy** | Nobody |
+| A tag `v<x.y.z>-rcN` | The same checks, then deploys **staging** and smoke-tests it | The team, on staging |
+| A tag `v<x.y.z>` | The same checks, then deploys **production** and smoke-tests it | Everyone the release flags allow |
+
+```{mermaid}
+flowchart LR
+  P["push main"] --> CI["CI only<br/>nobody sees it"]
+  RC["tag v1.4.2-rc1"] --> S["CI, then STAGING<br/>the team tries it"]
+  T["tag v1.4.2"] --> PR["CI, then PRODUCTION<br/>users, subject to flags"]
+  F["turn on a release flag"] --> AU["an audience<br/>sees the feature"]
+```
+
+Details that make it hold:
+
+- **The production job refuses any tag containing `-rc`**, so a release candidate cannot reach production by a typo. The staging job runs only on `-rc` tags, never on a push, so staging does not change under someone in the middle of a demo.
+- **A release candidate is named for the next version.** If production runs 1.4.1, the candidate is `v1.4.2-rc1`. Semver sorts `1.4.1-rc3` before `1.4.1`, so a candidate named for the current version looks older than it is. The skills compute the name instead of typing it.
+- **Push `main` and the tag together**: `git push --atomic origin main v<version>`. Without `--atomic`, a rejected `main` still lets the tag land, and the tag deploys production from a commit that is not on `main`.
+- **The smoke test compares commits.** A release candidate bumps no version, so a version check would pass against the previous build. The app exposes `{ version, commit }` on a status endpoint and the smoke test compares the commit.
+
+### The release skills
+
+| Skill | What it does |
+|---|---|
+| [`/push`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/push/SKILL.md) | The short road: cuts a release from `main` (customer-facing release notes, version bump, commit) and pushes. In a tag pipeline, it pushes `main` and the version tag together with `--atomic` |
+| [`/stage`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/stage/SKILL.md) | Commits your own outstanding work, applies pending migrations to the **staging** database through a wrapper that refuses production, checks parity with production and stops on any difference, tags the next release candidate, pushes atomically, watches the deploy, and smoke-tests the deployed commit |
+| [`/promote`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/promote/SKILL.md) | Ships to production exactly the commit staging is serving. Reads that commit from staging's status endpoint, refuses if CI was not green on it or a destructive migration is in range, builds the release in a temporary worktree, and merges it back so the tag is on `main` |
+| [`/remove-flag`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/remove-flag/SKILL.md) | Takes a release flag out of the code once its feature is on for everyone (see [Release flags](#release-flags)) |
+
+Invoking one of these is the authorization; they do not ask "are you sure". They stop only on real blockers: a destructive migration, a rebase conflict, red CI, a failed smoke test.
+
+There are **two roads to production**:
+
+- **Road A, straight to production** (`/push`): small, safe, or urgent work. A copy fix, a bug fix with a test, anything a release flag keeps dark.
+- **Road B, staging first** (`/stage`, people try it, `/promote`): changes that take effect for everyone the moment they deploy (migrations, infrastructure, dependency upgrades), and changes whose first audience could do harm outside the team that cannot be undone.
+
+**The one rule for road B: promote the exact commit you tested.** A release cut from the tip of `main` carries every commit made after the rehearsal. On a shared `main` that moves many times a day, that is the normal case. `/promote` reads the staged commit from staging itself (never from the newest tag, since a failed deploy leaves a tag that never ran) and releases that commit and nothing newer. If `main` has moved, it asks one question: promote the staged build alone, or ship all of `main` ([promote the staged commit](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/promote-the-staged-commit.md)).
+
+## The staging twin
+
+Staging is worth opening only if a test there predicts production. A staging site with old tables, missing settings, and demo accounts unlike any real account tells you little. [STAGING-TWIN-SPEC.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/STAGING-TWIN-SPEC.md) specifies a **twin**:
+
+| Property | What it means |
+|---|---|
+| **Same build and configuration** | The same environment variables by name and value, the same migrations, the same database region and size. Every difference is on a short written list, each with a reason (its own database URL and keys, for example) |
+| **A parity check** | A script compares the two environments and fails on any difference not on the list. It runs before every staging deploy, after every data refresh, and nightly. "Could not run" is reported as such, never as a pass |
+| **A slice of production data** | The team's own accounts and what they own, copied from production. Everyone else those rows mention becomes a locked placeholder: a name so pages render, a fake email on a domain you own, no way to sign in |
+| **An egress fence** | Every email and outbound request goes through one function. On the twin it lets through only the team's addresses and sandbox services, so nothing done there reaches a real person ([fence outward writes at one chokepoint](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/fence-outward-writes-at-one-chokepoint.md)) |
+| **Deliberate deploys** | Only a release-candidate tag deploys it. A staging site that redeploys on every push is the usual reason teams abandon staging |
+
+The twin is separate from the **disposable environment** in [DISPOSABLE-ENVIRONMENT.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/DISPOSABLE-ENVIRONMENT.md). The disposable copy is where agents drive (crawlers, the UX critic), with seeded data you can wipe. The twin is where people rehearse a release on real-shaped data. You never point a fuzzer at the twin, because it holds real names.
+
+## Release flags {#release-flags}
+
+[RELEASE-FLAGS-SPEC.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/RELEASE-FLAGS-SPEC.md) is the other half of separating deploy from release. Every commit ships to production switched off ("dark"). A super admin then turns the feature on from an admin page, one audience at a time: Off, Team, named users, tenants, Everyone. No deploy is involved, and turning it off again is a click.
+
+The design in brief:
+
+- **A registry in code lists the flags**, so a typo does not compile and removing a flag makes the compiler name every place still using it. **A table holds only audiences.** A flag with no row is off, so shipping code never releases anything by itself.
+- **Check on the server, at one seam.** A helper answers 404 when the flag is off, so a dark feature is unreachable by URL. A flag that only hides a button is not a gate, because the action behind the button still works for anyone who sends the request.
+- **With the flag off, behavior is byte-identical** to before the feature existed, and that is tested.
+- **An environment variable override**, `FLAG_<KEY>=0` or `=1`, beats the table. It is the kill switch during an incident and the way you build with the flag forced on locally.
+- **Flag debt is capped.** A test limits how many flags exist at once, reaching Everyone files a cleanup task, and `/remove-flag` deletes the registry entry, keeps the "on" branch at every call site, deletes the "off" branch, and commits once.
+- **Migrations are not flagged.** A migration runs for everyone when applied, so a flagged feature's schema change goes in compatible steps: add the new shape, write both, backfill, switch reads behind the flag, and drop the old shape only after the flag is removed.
+
+A release flag answers one question only: is this new code on for you yet? The spec lists six levers for "who sees what" and asks you to pick the first that fits:
+
+| Lever | Answers | Lives in |
+|---|---|---|
+| Release flag | Is the new code on for you yet? (weeks, then deleted) | The flag registry and table |
+| Kill switch | Is this safe to run right now? | An environment variable |
+| Experiment | Which variant are you in? | An experiment framework |
+| Role or relationship | Who are you to this data? | Relationship tables and row-level security |
+| Entitlement or enablement | Did your organization buy it or turn it on? | The organization's row: plan, license, settings |
+| Preference | How do you like it? | A per-user settings row |
+
+A paid tier or an admin-only page kept in a release flag is the most common mistake here; those are permanent, and a release flag exists to be deleted ([pick the lever by lifetime and owner](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/pick-the-lever-by-lifetime-and-owner.md)).
+
+## Decide the release at spec time {#decide-the-release-at-spec-time}
+
+How a feature reaches people shapes its code: where the check sits, what a user without the flag sees, whose flags apply, whether a migration must stay readable by the old code. A mockup is too early to decide this, and build time is too late, because the code's shape already exists. So the spec template's **Access and release** section is required ([decide the release at spec time](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/decide-the-release-at-spec-time.md)):
+
+| Field | What it records |
+|---|---|
+| **Kind** | Release flag, permanent kill switch, rehearse on staging, or no flag, and why |
+| **Flag key** | The `snake_case` key, or n/a |
+| **Seam** | The one place the check goes. If none exists, creating it is the first punch-list item |
+| **Whose flags apply** | The viewer, or the resource's owner (for shared pages and background jobs, which have no viewer) |
+| **Off path** | What a user without the flag sees (it should be: no change) |
+| **Rollout** | Team, then a pilot, then everyone, and who decides each step |
+
+A release flag brings three standard criteria into the spec: a `walk` check that a user without the flag does not see the feature, a `unit` test that flag-off behaves exactly as before, and a `structure` check that every server action and load checks the flag on the server. `/build-spec` builds with the flag forced on locally, never by changing a shared environment's audience, and its report says **"shipped dark"** with the release step. Without that line, an agent reports "done" for a feature nobody can see, and the owner believes it is live.
+
+## Flag or staging: decided by whose data
+
+A flag controls who the code runs for. It does not control what the code does, and turning it off undoes nothing already written: an email sent stays sent. Staging, with its egress fence, controls where the effects land. So the choice comes from two questions ([flag or staging is whose data](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/memory-pack/flag-or-staging-is-whose-data.md)):
+
+1. **Does it take effect for everyone the moment it deploys?** Migrations, containers, workers, dependency upgrades, and shared code edited on the way in run before any flag is checked. Rehearse the build on staging and promote that exact build.
+2. **For a change that runs per request, ask about the first audience:** what is the worst case, whose data does it land on, and can it be undone? If it lands on the team's own data or can be reversed, a flag is enough. If it is irreversible and lands outside the team (a real customer's inbox, a payment, someone else's system), rehearse on the fenced twin first.
+
+| Change | Road |
+|---|---|
+| A new settings panel that only reads and displays data | Flag, road A |
+| A migration that changes data or constraints | Staging, road B (it takes effect at deploy) |
+| An added column for a flagged feature, applied in compatible steps | Road A is acceptable: old code ignores the new column |
+| A feature that emails customers | Staging first, then a flag for the release |
+| A renamed module with no behavior change | Neither: tests only, there is nothing to release |
+
+Watch for the hidden case: a team member who is also a real customer makes "Team" an audience that reaches real people.
+
+## After release: the feedback loop
+
+[FEEDBACK-LOOP-SPEC.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/FEEDBACK-LOOP-SPEC.md) specifies the path back from users to code: a one-click widget that captures a report with its context (a screenshot, recent clicks, console and network errors, all scrubbed of secrets in the browser), an admin inbox, a `/fix-bug <id>` hand-off to a coding agent, and a `post-commit` git hook that closes the report and notifies the reporter when the fix is committed. Like the other build specs, it is detailed enough for an agent to build in your stack.
+
+Three skills work with it:
+
+| Skill | What it does |
+|---|---|
+| [`/fix-bug`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/fix-bug/SKILL.md) | Loads a bug report by id from the database, with its timeline and screenshot. Separates what the user saw from their theory of the cause, reproduces it, and reads the code path before changing anything. Only a reproduced bug gets a fix |
+| [`/ux-critique`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/ux-critique/SKILL.md) | Drives a flow in a real browser on the disposable environment, predicting at each step what should happen and recording where the app differs. Files findings into the same inbox as human reports |
+| [`/regression-check`](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/regression-check/SKILL.md) | Before you finish a change to shared code, finds every caller of what you changed, judges whether each feature's behavior changed, and adds a test that locks in the intended behavior |
+
+`fix-bug` and `regression-check` are worked examples from a real project, so their table names and paths are placeholders to adapt ([SKILLS.md](https://github.com/ai-foundry-byu/agent-team-kit/blob/main/docs/SKILLS.md)).
+
+::: {.callout-tip title="Try it"}
+Pick the next feature on your list and, before any code, answer the two questions above for it in one sentence each. Then ask Claude Code: *"Read https://github.com/ai-foundry-byu/agent-team-kit/blob/main/skills/spec/TEMPLATE.md and draft only the Access and release section for this feature: [describe it]. Name the kind, the seam, whose flags apply, and the off path, and list anything you had to assume as an open question."* You will run the full `/spec` and `/build-spec` loop in the [Lab](14-lab.qmd).
+:::

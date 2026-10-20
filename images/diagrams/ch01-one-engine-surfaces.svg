@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 540" role="img" aria-labelledby="t6 d6" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+  <title id="t6">One engine, four surfaces</title>
+  <desc id="d6">Two panels. Your laptop: the terminal, the VS Code extension, and the desktop app all read the same things on your machine: the configuration files (CLAUDE.md, skills, hooks, MCP servers, and settings) and, in a separate box, auto memory, the notes Claude writes for itself in ~/.claude/projects/&lt;project&gt;/memory/, labeled stays on this laptop. In the cloud: a cloud session at claude.ai/code runs on a fresh clone of your GitHub repo, which holds only what you committed and pushed. A highlighted arrow labeled git push runs from the configuration files to the repo; no arrow leaves auto memory. A note says auto memory and files that live only on your laptop, such as ~/.claude/settings.json, settings.local.json, and .env, are not there.</desc>
+  <defs>
+    <linearGradient id="sf-panel" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F6F8FA"/><stop offset="100%" stop-color="#EDF0F3"/></linearGradient>
+    <linearGradient id="sf-bar" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0E3F6A"/><stop offset="100%" stop-color="#001A36"/></linearGradient>
+    <linearGradient id="sf-card" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="100%" stop-color="#F5F8FC"/></linearGradient>
+    <marker id="sf-gray" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5A6672"/></marker>
+    <marker id="sf-royal" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0057B8"/></marker>
+    <filter id="sf-shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#0a2e4d" flood-opacity="0.14"/></filter>
+  </defs>
+  <rect x="0" y="0" width="1000" height="540" rx="8" fill="#FAFBFC"/>
+  <rect x="24" y="16" width="574" height="508" rx="10" fill="url(#sf-panel)"/>
+  <g transform="translate(51.0,37.0) scale(1.0833)" fill="none" stroke="#5A6672" stroke-width="1.846" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16" /></g>
+  <text x="86" y="57" font-size="18" font-weight="700" fill="#5A6672" letter-spacing="0.8">YOUR LAPTOP</text>
+  <rect x="52" y="88" width="162" height="148" rx="10" fill="url(#sf-card)" stroke="#D9DEE4" stroke-width="1.2" filter="url(#sf-shadow)"/>
+  <circle cx="133" cy="132" r="26" fill="#E6EEF7"/>
+  <g transform="translate(119.0,118.0) scale(1.1667)" fill="none" stroke="#002E5D" stroke-width="1.886" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5" /> <line x1="12" x2="20" y1="19" y2="19" /></g>
+  <text x="133" y="190" text-anchor="middle" font-size="19" font-weight="700" fill="#002E5D">Terminal</text>
+  <text x="133" y="214" text-anchor="middle" font-size="15" fill="#5A6672">claude</text>
+  <line x1="133" y1="240" x2="133" y2="262" stroke="#5A6672" stroke-width="2.5" marker-end="url(#sf-gray)"/>
+  <rect x="232" y="88" width="162" height="148" rx="10" fill="url(#sf-card)" stroke="#D9DEE4" stroke-width="1.2" filter="url(#sf-shadow)"/>
+  <circle cx="313" cy="132" r="26" fill="#E6EEF7"/>
+  <g transform="translate(299.0,118.0) scale(1.1667)" fill="none" stroke="#002E5D" stroke-width="1.886" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4" /> <path d="m6 8-4 4 4 4" /> <path d="m14.5 4-5 16" /></g>
+  <text x="313" y="190" text-anchor="middle" font-size="19" font-weight="700" fill="#002E5D">VS Code</text>
+  <text x="313" y="214" text-anchor="middle" font-size="15" fill="#5A6672">extension</text>
+  <line x1="313" y1="240" x2="313" y2="262" stroke="#5A6672" stroke-width="2.5" marker-end="url(#sf-gray)"/>
+  <rect x="412" y="88" width="162" height="148" rx="10" fill="url(#sf-card)" stroke="#D9DEE4" stroke-width="1.2" filter="url(#sf-shadow)"/>
+  <circle cx="493" cy="132" r="26" fill="#E6EEF7"/>
+  <g transform="translate(479.0,118.0) scale(1.1667)" fill="none" stroke="#002E5D" stroke-width="1.886" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2" /> <line x1="8" x2="16" y1="21" y2="21" /> <line x1="12" x2="12" y1="17" y2="21" /></g>
+  <text x="493" y="190" text-anchor="middle" font-size="19" font-weight="700" fill="#002E5D">Desktop app</text>
+  <text x="493" y="214" text-anchor="middle" font-size="15" fill="#5A6672">Code tab</text>
+  <line x1="493" y1="240" x2="493" y2="262" stroke="#5A6672" stroke-width="2.5" marker-end="url(#sf-gray)"/>
+  <rect x="40" y="268" width="546" height="240" rx="10" fill="#E3EAF2" stroke="#C9D3DE" stroke-width="1.5"/>
+  <rect x="52" y="284" width="522" height="96" rx="10" fill="url(#sf-bar)" filter="url(#sf-shadow)"/>
+  <g transform="translate(79.0,315.0) scale(1.4167)" fill="none" stroke="#FFFFFF" stroke-width="1.553" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /> <path d="M14 2v4a2 2 0 0 0 2 2h4" /> <path d="M10 9H8" /> <path d="M16 13H8" /> <path d="M16 17H8" /></g>
+  <text x="130" y="324" font-size="19" font-weight="700" fill="#FFFFFF">The same configuration files</text>
+  <text x="130" y="352" font-size="16" fill="#C9D8EA">CLAUDE.md, skills, hooks, MCP, settings</text>
+  <rect x="52" y="398" width="522" height="94" rx="10" fill="url(#sf-card)" stroke="#D9DEE4" stroke-width="1.2" filter="url(#sf-shadow)"/>
+  <g transform="translate(80,428) scale(1.417)" fill="none" stroke="#002E5D" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"><path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4" /> <path d="M2 6h4" /> <path d="M2 10h4" /> <path d="M2 14h4" /> <path d="M2 18h4" /> <path d="M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z" /></g>
+  <text x="130" y="438" font-size="19" font-weight="700" fill="#002E5D">Auto memory</text>
+  <text x="550" y="438" text-anchor="end" font-size="15" fill="#5A6672">stays on this laptop</text>
+  <text x="130" y="466" font-size="15" fill="#5A6672" font-family="Menlo, Consolas, monospace">~/.claude/projects/&lt;project&gt;/memory/</text>
+  <rect x="648" y="16" width="328" height="508" rx="10" fill="url(#sf-panel)"/>
+  <g transform="translate(675.0,37.0) scale(1.0833)" fill="none" stroke="#5A6672" stroke-width="1.846" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" /></g>
+  <text x="710" y="57" font-size="18" font-weight="700" fill="#5A6672" letter-spacing="0.8">IN THE CLOUD</text>
+  <rect x="690" y="88" width="258" height="148" rx="10" fill="url(#sf-card)" stroke="#D9DEE4" stroke-width="1.2" filter="url(#sf-shadow)"/>
+  <circle cx="819" cy="132" r="26" fill="#E6EEF7"/>
+  <g transform="translate(805.0,118.0) scale(1.1667)" fill="none" stroke="#002E5D" stroke-width="1.886" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /> <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /> <path d="M2 12h20" /></g>
+  <text x="819" y="190" text-anchor="middle" font-size="19" font-weight="700" fill="#002E5D">Cloud session</text>
+  <text x="819" y="214" text-anchor="middle" font-size="15" fill="#5A6672">claude.ai/code</text>
+  <rect x="690" y="284" width="258" height="96" rx="10" fill="url(#sf-card)" stroke="#0057B8" stroke-width="2" filter="url(#sf-shadow)"/>
+  <g transform="translate(713.0,317.0) scale(1.2500)" fill="none" stroke="#0057B8" stroke-width="1.760" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="6" y1="3" y2="15" /> <circle cx="18" cy="6" r="3" /> <circle cx="6" cy="18" r="3" /> <path d="M18 9a9 9 0 0 1-9 9" /></g>
+  <text x="756" y="324" font-size="19" font-weight="700" fill="#002E5D">Your GitHub repo</text>
+  <text x="756" y="350" font-size="15" fill="#5A6672">what you pushed</text>
+  <line x1="819" y1="280" x2="819" y2="242" stroke="#5A6672" stroke-width="2.5" marker-end="url(#sf-gray)"/>
+  <text x="831" y="266" font-size="15" fill="#5A6672">fresh clone</text>
+  <line x1="580" y1="332" x2="682" y2="332" stroke="#0057B8" stroke-width="3" marker-end="url(#sf-royal)"/>
+  <rect x="594" y="296" width="80" height="24" rx="12" fill="#FAFBFC"/>
+  <text x="634" y="313" text-anchor="middle" font-size="15" font-weight="700" fill="#0057B8" font-family="Menlo, Consolas, monospace">git push</text>
+  <text x="819" y="428" text-anchor="middle" font-size="15" fill="#5A6672">Not there: auto memory,</text>
+  <text x="819" y="450" text-anchor="middle" font-size="15" fill="#5A6672">~/.claude/settings.json,</text>
+  <text x="819" y="472" text-anchor="middle" font-size="15" fill="#5A6672">settings.local.json, .env</text>
+  </svg>

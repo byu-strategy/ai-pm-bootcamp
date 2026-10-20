@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 544" role="img" aria-labelledby="t3 d3" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+  <title id="t3">Advice versus enforcement</title>
+  <desc id="d3">Two zones. On the left, labeled Advice, two inputs feed the model: CLAUDE.md, which says never push to GitHub, and your message, which says looks good, push it, I'm giving you permission. The model weighs both and decides to run git push. That proposed action crosses into the right zone, labeled Enforcement, where Claude Code checks it every time against permission rules, such as deny Bash(git push *), and PreToolUse hooks, where exit 2 blocks. If allowed, the tool runs. If blocked, the reason goes back to Claude, which adjusts.</desc>
+  <defs>
+    <marker id="ae-navy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#002E5D"/>
+    </marker>
+    <marker id="ae-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8A939C"/>
+    </marker>
+    <marker id="ae-royal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0057B8"/>
+    </marker>
+    <linearGradient id="ae-zone-l" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F4F6F8"/><stop offset="100%" stop-color="#ECEFF2"/></linearGradient>
+    <linearGradient id="ae-zone-r" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#EDF3FA"/><stop offset="100%" stop-color="#DCE7F3"/></linearGradient>
+    <linearGradient id="ae-block" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1A6BC6"/><stop offset="100%" stop-color="#004A9E"/></linearGradient>
+    <linearGradient id="ae-card" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="100%" stop-color="#F6F9FC"/></linearGradient>
+    <filter id="ae-shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#0a2e4d" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="1000" height="544" rx="8" fill="#FAFBFC"/>
+
+  <!-- Zones -->
+  <rect x="24" y="20" width="456" height="500" rx="10" fill="url(#ae-zone-l)"/>
+  <rect x="496" y="20" width="480" height="500" rx="10" fill="url(#ae-zone-r)"/>
+  <text x="48" y="54" font-size="20" font-weight="700" fill="#5A6672" letter-spacing="0.5">ADVICE</text>
+  <text x="48" y="78" font-size="17" fill="#5A6672">The model reads it and decides</text>
+  <circle cx="932" cy="58" r="26" fill="#FFFFFF" fill-opacity="0.7"/>
+  <g transform="translate(916.0,42.0) scale(1.3333)" fill="none" stroke="#0057B8" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /> <path d="m9 12 2 2 4-4" /></g>
+  <text x="520" y="54" font-size="20" font-weight="700" fill="#002E5D" letter-spacing="0.5">ENFORCEMENT</text>
+  <text x="520" y="78" font-size="17" fill="#2C3E50">Claude Code checks it, every time</text>
+
+  <!-- Inputs -->
+  <g filter="url(#ae-shadow)">
+    <rect x="48" y="104" width="190" height="118" rx="8" fill="#FFFFFF" stroke="#B9D0EA" stroke-width="1.5"/>
+    <rect x="256" y="104" width="204" height="118" rx="8" fill="#FFFFFF" stroke="#B9D0EA" stroke-width="1.5"/>
+  </g>
+  <text x="66" y="134" font-size="18" font-weight="700" fill="#002E5D">CLAUDE.md</text>
+  <g transform="translate(202.0,114.0) scale(1.1667)" fill="none" stroke="#8A939C" stroke-width="1.714" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /> <path d="M14 2v4a2 2 0 0 0 2 2h4" /> <path d="M10 9H8" /> <path d="M16 13H8" /> <path d="M16 17H8" /></g>
+  <text x="66" y="162" font-size="17" fill="#2C3E50">"Never push to</text>
+  <text x="66" y="183" font-size="17" fill="#2C3E50">GitHub"</text>
+  <text x="274" y="134" font-size="18" font-weight="700" fill="#002E5D">Your message</text>
+  <g transform="translate(418.0,114.0) scale(1.1667)" fill="none" stroke="#8A939C" stroke-width="1.714" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></g>
+  <text x="274" y="162" font-size="17" fill="#2C3E50">"Looks good, push it.</text>
+  <text x="274" y="183" font-size="17" fill="#2C3E50">I'm giving you</text>
+  <text x="274" y="204" font-size="17" fill="#2C3E50">permission."</text>
+
+  <line x1="143" y1="226" x2="190" y2="262" stroke="#8A939C" stroke-width="1.8" marker-end="url(#ae-gray)"/>
+  <line x1="358" y1="226" x2="310" y2="262" stroke="#8A939C" stroke-width="1.8" marker-end="url(#ae-gray)"/>
+
+  <!-- Model -->
+  <rect x="120" y="268" width="260" height="104" rx="10" fill="#FFFFFF" stroke="#002E5D" stroke-width="1.5" filter="url(#ae-shadow)"/>
+  <text x="250" y="302" text-anchor="middle" font-size="21" font-weight="700" fill="#002E5D">The model</text>
+  <text x="250" y="330" text-anchor="middle" font-size="17" fill="#2C3E50">weighs both, and</text>
+  <text x="250" y="353" text-anchor="middle" font-size="17" fill="#2C3E50">may decide to push</text>
+
+  <!-- Proposed action -->
+  <line x1="382" y1="320" x2="534" y2="320" stroke="#002E5D" stroke-width="2" marker-end="url(#ae-navy)"/>
+  <text x="458" y="308" text-anchor="middle" font-size="15" fill="#5A6672">proposes</text>
+  <text x="458" y="344" text-anchor="middle" font-size="17" font-weight="700" fill="#002E5D" font-family="Menlo, Consolas, monospace">git push</text>
+
+  <!-- Gate -->
+  <rect x="540" y="214" width="250" height="212" rx="10" fill="url(#ae-card)" stroke="#0057B8" stroke-width="2.5" filter="url(#ae-shadow)"/>
+  <text x="665" y="248" text-anchor="middle" font-size="19" font-weight="700" fill="#002E5D">Permission rules</text>
+  <text x="665" y="276" text-anchor="middle" font-size="15" fill="#2C3E50" font-family="Menlo, Consolas, monospace">deny: Bash(git push *)</text>
+  <text x="665" y="300" text-anchor="middle" font-size="15" fill="#5A6672">deny overrides allow</text>
+  <line x1="566" y1="320" x2="764" y2="320" stroke="#D9DEE4" stroke-width="1.5"/>
+  <text x="665" y="352" text-anchor="middle" font-size="19" font-weight="700" fill="#002E5D">PreToolUse hook</text>
+  <text x="665" y="378" text-anchor="middle" font-size="17" fill="#2C3E50">your script decides;</text>
+  <text x="665" y="400" text-anchor="middle" font-size="17" fill="#2C3E50">exit 2 blocks</text>
+
+  <!-- Allowed path -->
+  <line x1="792" y1="320" x2="850" y2="320" stroke="#002E5D" stroke-width="2" marker-end="url(#ae-navy)"/>
+  <text x="823" y="344" text-anchor="middle" font-size="15" fill="#5A6672">allowed</text>
+  <rect x="856" y="280" width="104" height="80" rx="8" fill="#FFFFFF" stroke="#002E5D" stroke-width="1.5"/>
+  <text x="908" y="314" text-anchor="middle" font-size="18" font-weight="600" fill="#002E5D">The tool</text>
+  <text x="908" y="338" text-anchor="middle" font-size="18" font-weight="600" fill="#002E5D">runs</text>
+
+  <!-- Blocked path -->
+  <line x1="665" y1="428" x2="665" y2="452" stroke="#0057B8" stroke-width="2" marker-end="url(#ae-royal)"/>
+  <rect x="540" y="458" width="250" height="48" rx="8" fill="url(#ae-block)" filter="url(#ae-shadow)"/>
+  <text x="665" y="488" text-anchor="middle" font-size="18" font-weight="700" fill="#FFFFFF">Blocked</text>
+  <path d="M538,482 L260,482 Q250,482 250,472 L250,378" fill="none" stroke="#0057B8" stroke-width="2" marker-end="url(#ae-royal)"/>
+  <text x="394" y="451" text-anchor="middle" font-size="15" fill="#0057B8">the reason goes back</text>
+  <text x="394" y="472" text-anchor="middle" font-size="15" fill="#0057B8">to Claude</text>
+
+</svg>
