@@ -81,24 +81,15 @@ The terminal is only the window. The program that runs the commands is the **she
 
 ![You and Claude Code use the same shell. You reach it through a terminal window; Claude Code sends commands to it directly, from Claude's Bash tool and from hooks. A shell script is a file of commands; its first line names the shell that runs it.](images/diagrams/ch01-terminal-and-shell.svg){#fig-terminal-and-shell fig-alt="You type into a terminal window showing the command git status. The terminal passes the line to a tall box labeled Shell, zsh or Bash, reads each line and runs it. The shell runs programs and files: git, npm, python3, and your files. Below, Claude Code sends two commands straight to the same shell, through an empty dashed outline labeled no window: from the Bash tool, git commit -m, and from a hook, require-review.sh. At the bottom, a shell script named require-review.sh with three lines labeled: #!/bin/bash, which shell runs this file; CMD equals a jq command, commands, run top to bottom; exit 2, ends with an exit code." width="100%"}
 
-You approve or reject the agent's commands based on whether you can read them, so learn to recognize these:
+When Claude Code wants to run a command, it shows you the command and asks first. Approving well means reading it and knowing roughly what it touches. Most commands fall into one of three groups:
 
-| Command | What it does |
-|---|---|
-| `pwd` | Print the folder you are in |
-| `ls` | List files in the current folder (`ls -la` includes hidden files like `.claude`) |
-| `cd foldername`, `cd ..`, `cd ~` | Move into a folder, up one level, or to your home folder |
-| `mkdir my-project` | Make a folder |
-| `cat file.txt` | Show a file's contents |
-| `cp a.txt b.txt` | Copy a file |
-| `rm file.txt`, `rm -r folder` | Delete a file, or a folder and everything in it |
-| `open .` (macOS), `explorer.exe .` (Windows) | Open the current folder in Finder or File Explorer |
+| What it does | Commands you will see | When to approve |
+|---|---|---|
+| **Looks around** | `ls`, `cat`, `grep`, `git status`, `git diff`, `git log` | Freely. They read and change nothing |
+| **Changes files on your laptop** | `mkdir`, `cp`, `mv`, `npm install`, `git add`, `git commit` | When it matches what you asked for. Git can undo a committed change |
+| **Deletes, or leaves your laptop** | `rm -rf`, `git reset --hard`, `git push`, `vercel deploy`, `supabase db push`, `curl ... \| sh` | Only after reading the whole line. These are hard or impossible to undo, and `rm` skips the Trash |
 
-Three things to watch for:
-
-- Paths with spaces need quotes: `cd "My Folder"`.
-- macOS and Linux are usually case-sensitive; Windows is not.
-- `rm` deletes permanently. Nothing goes to the Trash. Read it carefully when an agent asks to run it.
+To move around yourself: `cd folder` goes into a folder, `cd ..` goes up one level, and `ls` shows what is there. Two things trip people up: a path with spaces needs quotes (`cd "My Folder"`), and macOS and Linux treat `File.txt` and `file.txt` as different files while Windows does not.
 
 A **package manager** installs software from the command line, so you type one command instead of clicking through an installer. On macOS the standard one is [Homebrew](https://brew.sh); on Windows 10 and 11, `winget` comes pre-installed. When Claude Code installs `git`, `node`, or `python` for you, it is calling one of these.
 

@@ -4,8 +4,6 @@ title: "Directing the Agent: The Basics"
 
 This page covers what the workshop assumes you know: what the agent can see, how to write a CLAUDE.md and a skill, the handful of commands that manage a session, and permission modes. Read it if you have run Claude Code a few times but have not yet written a CLAUDE.md or a skill. Skip it if you already use both daily.
 
-CLAUDE.md, auto memory, and skills all sit in the "read by the model" sector of your harness, mapped on [Understanding the Harness](10-the-harness.qmd#three-rings). That page covers where each one sits; this page covers how to write them.
-
 ## It Knows Only What It Can See
 
 **The agent can use only what is in its context window.** Whatever is not in it does not exist for the agent: not the conversation you had yesterday, not the decision you made in your head, not the file it never opened.
