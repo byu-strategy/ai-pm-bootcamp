@@ -24,6 +24,8 @@ Everything you add sits in one of three sectors of the outer layer, and the sect
 | **Applied by the harness** | `settings.json`: permission rules, hooks, the model, the effort level, the sandbox | The tool-call check, and other points in the loop | That it happens, whatever the model decides |
 | **Adds tools** | MCP connections (the Claude app calls them connectors), subagents, workflows | The tools | That the tool exists. The model still chooses whether to call it |
 
+**Two reference pages cover the two layers you work with.** For the built-in harness, Anthropic's [tools reference](https://code.claude.com/docs/en/tools-reference) lists every built-in tool: what it does, whether it asks permission, and the exact name to use in a permission rule or a hook. For your harness, [Explore the .claude directory](https://code.claude.com/docs/en/claude-directory#ce-claude-md) lists every file you can add (`CLAUDE.md`, `settings.json`, skills, rules, subagents, workflows, `.mcp.json`), where each one lives, when it loads, and whether to commit it. Click a file in its tree to see an example. Both accessed October 21, 2026.
+
 Three things on the figure are easy to misread:
 
 - **A CLI tool such as `gh` or `supabase` is not part of either harness.** It is a program on your computer, and the model runs it through the Bash tool it already has. That is why it sits outside the layers, in the terminal.
