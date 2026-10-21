@@ -1,0 +1,31 @@
+---
+title: "Sample Apps"
+---
+
+Apps built live with Claude Code during the workshop. Each one is deployed and working: open it, use it, and look at how it was put together.
+
+## Tetris
+
+**[Play it: brickboy-tetris.vercel.app](https://brickboy-tetris.vercel.app){.btn .btn-primary target="_blank"}**
+
+A handheld-style Tetris with the music, sound effects, and green screen of the original, built from a single prompt and deployed to Vercel with a Supabase database behind it.
+
+**How to play**
+
+| | On a laptop | On a phone |
+|---|---|---|
+| Move | Left and right arrows | Drag left or right on the screen |
+| Rotate | Up arrow | Tap the screen |
+| Drop | Space (all the way), down arrow (soft) | Swipe down |
+| Start, pause | Enter | START button |
+
+**Play someone head to head.** On the menu choose **2P VERSUS**, then **CREATE ROOM**. The game shows a four-letter room code. Your opponent opens the same link, chooses **2P VERSUS**, then **JOIN ROOM**, and types the code. When both of you press START, the countdown begins. Clearing 2, 3 or 4 lines at once sends 1, 2 or 4 rows of garbage to the other player. Last one standing wins.
+
+**Watch a match on the big screen.** `brickboy-tetris.vercel.app/watch.html?room=CODE` shows both players' screens side by side, live.
+
+**What's under the hood**
+
+- **Frontend:** plain HTML, CSS and JavaScript, no build step. The music is synthesized in the browser with the Web Audio API, the way the original handheld's sound chip worked.
+- **Database (Supabase):** `players` (name and settings), `scores` (one row per finished game), `saved_games` (close the tab mid-game and pick up where you left off), and `matches` (versus results). Row-level security lets anyone read the leaderboard while each player can write only their own rows. Every visitor gets an anonymous account, so there is no sign-up.
+- **Live features (Supabase Realtime):** the leaderboard updates the moment anyone finishes a game, and versus boards stream between players over a broadcast channel.
+- **Hosting:** Vercel.

@@ -24,6 +24,9 @@ book:
         - 13-spec-to-release.qmd
         - 14-lab.qmd
         - 15-software-factory.qmd
+    - part: Sample Apps
+      chapters:
+        - 80-sample-apps.qmd
     - part: Resources
       chapters:
         - 90-kit-reference.qmd
